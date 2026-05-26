@@ -445,22 +445,12 @@
   .wall .imgph{min-height:150px;}
   .wall .imgph.wide{grid-column:1 / -1;min-height:120px;}
 
-  /* ---------- PRINT BUTTON ---------- */
-  .printbtn{position:fixed;right:26px;bottom:26px;z-index:99;
-    background:var(--blue);color:#fff;border:none;cursor:pointer;
-    font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.12em;
-    padding:15px 22px;box-shadow:0 8px 26px rgba(29,78,216,.4);
-    display:flex;align-items:center;gap:9px;transition:.2s;}
-  .printbtn:hover{background:var(--blue-deep);transform:translateY(-2px);}
-  .printbtn svg{width:15px;height:15px;}
-
   *[id]{scroll-margin-top:24px;}
 
   /* ================= PRINT ================= */
   @page{size:A4;margin:0;}
   @media print{
     body{background:#fff;padding:0;}
-    .printbtn{display:none;}
     .page{margin:0;box-shadow:none;width:210mm;min-height:297mm;
       break-after:page;}
     .page:last-of-type{break-after:auto;}
@@ -477,11 +467,6 @@
 </style>
 </head>
 <body>
-
-<button class="printbtn" onclick="window.print()">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
-  下載 PDF
-</button>
 
 <!-- ============================ COVER ============================ -->
 <div class="page cover" id="cover">
@@ -1368,5 +1353,6 @@
   <div class="pgn">19</div>
 </div>
 
+  <script src="../assets/report-actions.js" defer></script>
 </body>
 </html>

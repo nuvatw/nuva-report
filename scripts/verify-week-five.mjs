@@ -35,7 +35,8 @@ const requiredFiles = [
   'docs/week-4-handoff.md',
   'docs/week-5-handoff.md',
   'templates/report-template.html',
-  'assets/favicon.svg'
+  'assets/favicon.svg',
+  'assets/report-actions.js'
 ];
 
 function assert(condition, message) {
@@ -78,6 +79,22 @@ async function verifyOptionalIndexFields() {
   }
 }
 
+async function verifyReportActions() {
+  const reportFiles = (await fs.readdir(path.join(root, 'reports')))
+    .filter((file) => file.toLowerCase().endsWith('.html'))
+    .sort();
+
+  assert(reportFiles.length > 0, 'No report HTML files found');
+
+  for (const file of reportFiles) {
+    const html = await fs.readFile(path.join(root, 'reports', file), 'utf8');
+    assert(
+      html.includes('../assets/report-actions.js'),
+      `${file} missing shared report actions script`
+    );
+  }
+}
+
 async function main() {
   await Promise.all(requiredFiles.map(assertFileExists));
 
@@ -86,6 +103,7 @@ async function main() {
 
   await assertFileExists('data/maintenance-summary.json');
   await verifyOptionalIndexFields();
+  await verifyReportActions();
 
   console.log('Week five verification passed: maintenance and expansion workflow is ready.');
 }

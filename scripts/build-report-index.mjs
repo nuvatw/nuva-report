@@ -7,6 +7,7 @@ const REPORTS_DIR = 'reports';
 const DATA_DIR = 'data';
 const JSON_FILE = 'reports.json';
 const JS_FILE = 'reports.js';
+const REPORT_ACTIONS_SCRIPT = '../assets/report-actions.js';
 
 export const REQUIRED_META_FIELDS = ['title', 'subtitle', 'date', 'period', 'category', 'client', 'timeline'];
 
@@ -107,6 +108,26 @@ function buildSearchText(report) {
     .toLowerCase();
 }
 
+function hasReportActionsScript(html) {
+  return /<script\b[^>]+\bsrc=["'][^"']*assets\/report-actions\.js[^"']*["'][^>]*>/i.test(html);
+}
+
+function injectReportActionsScript(html) {
+  if (hasReportActionsScript(html)) return html;
+
+  const scriptTag = `  <script src="${REPORT_ACTIONS_SCRIPT}" defer></script>\n`;
+  if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, `${scriptTag}</body>`);
+  if (/<\/html>/i.test(html)) return html.replace(/<\/html>/i, `${scriptTag}</html>`);
+  return `${html.trimEnd()}\n${scriptTag}`;
+}
+
+async function ensureReportActionsScript(root, fileName) {
+  const filePath = path.join(root, REPORTS_DIR, fileName);
+  const html = await fs.readFile(filePath, 'utf8');
+  const nextHtml = injectReportActionsScript(html);
+  if (nextHtml !== html) await fs.writeFile(filePath, nextHtml, 'utf8');
+}
+
 async function buildReport(root, fileName) {
   const filePath = path.join(root, REPORTS_DIR, fileName);
   const [html, stat] = await Promise.all([fs.readFile(filePath, 'utf8'), fs.stat(filePath)]);
@@ -155,6 +176,8 @@ export async function buildReportIndex({ root = process.cwd(), quiet = false } =
   const files = (await fs.readdir(reportsPath))
     .filter((file) => file.toLowerCase().endsWith('.html'))
     .sort((a, b) => a.localeCompare(b, 'zh-Hant'));
+
+  await Promise.all(files.map((file) => ensureReportActionsScript(root, file)));
 
   const reports = await Promise.all(files.map((file) => buildReport(root, file)));
   reports.sort((a, b) => {

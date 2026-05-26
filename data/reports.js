@@ -1,5 +1,5 @@
 window.REPORT_TIMELINE = {
-  "generatedAt": "2026-05-26T06:55:20.056Z",
+  "generatedAt": "2026-05-26T07:04:52.729Z",
   "count": 2,
   "reports": [
     {
@@ -24,8 +24,8 @@ window.REPORT_TIMELINE = {
       "pdf": "",
       "visibility": "public",
       "pages": 11,
-      "updatedAt": "2026-05-26T04:02:09.039Z",
-      "sizeKb": 51,
+      "updatedAt": "2026-05-26T07:04:15.965Z",
+      "sizeKb": 50,
       "search": "n8n 初階課程與生成式 ai 自動化 課程結案成果報告 課程成果 工研院 企業與研究機構 2026/05/20-21 2026 五月 n8n 生成式 ai 自動化 課程 reports/2026-05-22-itri-n8n-lv1.html"
     },
     {
@@ -50,8 +50,8 @@ window.REPORT_TIMELINE = {
       "pdf": "",
       "visibility": "public",
       "pages": 20,
-      "updatedAt": "2026-05-26T04:45:22.043Z",
-      "sizeKb": 77,
+      "updatedAt": "2026-05-26T07:04:15.965Z",
+      "sizeKb": 76,
       "search": "新北站《回到答案之前》 2026 全國公益露營車校園巡迴成果報告 活動成果 新北市政府青年局 x nuva 政府與公共部門 2026/05/12 2026 五月 ai 素養 青年政策 校園巡迴 活動 reports/2026-05-12-nuva-new-taipei.html"
     }
   ]

@@ -29,7 +29,8 @@ const requiredFiles = [
   'docs/week-3-handoff.md',
   'docs/week-4-handoff.md',
   'templates/report-template.html',
-  'assets/favicon.svg'
+  'assets/favicon.svg',
+  'assets/report-actions.js'
 ];
 
 function assert(condition, message) {

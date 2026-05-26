@@ -59,7 +59,7 @@ YYYY-MM-DD-project-slug.html
 | `clientGroup` | 建議 | 客戶分類，例如 `政府與公共部門`、`企業與研究機構`。 |
 | `tags` | 建議 | 搜尋與維運用關鍵字陣列。 |
 | `thumbnail` | 否 | 未來縮圖使用，目前首頁尚不顯示。 |
-| `pdf` | 否 | 未來 PDF 下載使用，目前首頁尚不顯示。 |
+| `pdf` | 否 | 報告右下角「下載 PDF」使用；未填時會開啟瀏覽器列印/另存 PDF。 |
 | `visibility` | 建議 | `public`、`internal` 或 `private`，只作為標籤。 |
 
 機器可讀 schema 位於 `docs/report-metadata.schema.json`。
@@ -108,7 +108,7 @@ YYYY-MM-DD-project-slug.html
 2. 將檔案命名為 `YYYY-MM-DD-project-slug.html`。
 3. 放入 `reports/`。
 4. 替換 metadata、封面文字、摘要、指標與內容頁。
-5. 執行 `npm run build`。
+5. 執行 `npm run build`，系統會自動替報告頁補上右下角「更多 AI 課程」與「下載 PDF」按鈕。
 6. 執行 `npm run verify`。
 7. 用 `npm run dev` 開首頁，確認 timeline 卡片與報告連結。
 8. 若是正式發布，執行 `npm run release:check`。
@@ -121,5 +121,6 @@ YYYY-MM-DD-project-slug.html
 - 第一頁可見日期與 metadata 對得起來。
 - 報告至少有一個 `.page`。
 - 首頁卡片標題、客戶、分類、頁數顯示正常。
+- 報告頁右下角出現「更多 AI 課程」與「下載 PDF」。
 - 搜尋客戶或主題可以找到該報告。
 - `clientGroup`、`tags`、`visibility` 已填寫。
