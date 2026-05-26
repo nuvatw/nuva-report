@@ -798,8 +798,8 @@
   <main class="shell">
     <header class="masthead">
       <div class="brandline">
-        <span>Report Timeline Hub</span>
-        <span id="generated-at">Index pending</span>
+        <span>成果報告時間軸</span>
+        <span id="generated-at">索引建立中</span>
       </div>
 
       <div class="hero-grid">
@@ -838,29 +838,29 @@
 
     <section class="stats" aria-label="索引摘要">
       <div class="stat">
-        <div class="stat-label">Reports</div>
+        <div class="stat-label">報告數</div>
         <div class="stat-value" id="total-count">0</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Latest</div>
+        <div class="stat-label">最新日期</div>
         <div class="stat-value" id="latest-date">--</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Categories</div>
+        <div class="stat-label">分類數</div>
         <div class="stat-value" id="category-count">0</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Months</div>
+        <div class="stat-label">月份數</div>
         <div class="stat-value" id="month-count">0</div>
       </div>
     </section>
 
     <section class="content">
       <aside class="rail">
-        <p class="section-label">Timeline</p>
+        <p class="section-label">時間軸</p>
         <p class="rail-note" id="result-note">目前顯示全部報告。</p>
         <div class="active-filters" id="active-filters"></div>
-        <button class="clear-filters" id="clear-filters" type="button" hidden>Clear Filters</button>
+        <button class="clear-filters" id="clear-filters" type="button" hidden>清除篩選</button>
       </aside>
       <div class="timeline" id="timeline"></div>
     </section>
@@ -927,11 +927,11 @@
     }
 
     function formatGeneratedAt(value) {
-      if (hasIndexLoadError) return 'Index missing';
-      if (!value) return 'Index pending';
+      if (hasIndexLoadError) return '索引遺失';
+      if (!value) return '索引建立中';
       const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return 'Index ready';
-      return `Updated ${date.toLocaleString('zh-TW', { hour12: false })}`;
+      if (Number.isNaN(date.getTime())) return '索引已建立';
+      return `更新時間 ${date.toLocaleString('zh-TW', { hour12: false })}`;
     }
 
     function categories() {
@@ -1075,7 +1075,7 @@
       const isLatest = report.id === latestReportId;
       const sideText = [
         report.client,
-        report.pages ? `${report.pages} pages` : '',
+        report.pages ? `${report.pages} 頁` : '',
         report.sizeKb ? `${report.sizeKb} KB` : ''
       ].filter(Boolean).join(' / ');
 
@@ -1089,7 +1089,7 @@
             <div class="meta">
               <span>${escapeHtml(report.category)}</span>
               <span>${escapeHtml(report.period || report.date)}</span>
-              ${isLatest ? '<span class="latest-badge">Latest</span>' : ''}
+              ${isLatest ? '<span class="latest-badge">最新</span>' : ''}
             </div>
             <h2 class="report-title">${escapeHtml(report.title)}</h2>
             <p class="report-subtitle">${escapeHtml(report.subtitle)}</p>

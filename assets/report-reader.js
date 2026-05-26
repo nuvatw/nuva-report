@@ -453,11 +453,11 @@
       <div class="reader-panel">
         <button class="reader-button" type="button" data-open-reader-search>
           ${icons.search}
-          <span>Search</span>
+          <span>搜尋</span>
         </button>
         <div class="reader-section-label">
           ${icons.section}
-          <span>Contents</span>
+          <span>目錄</span>
         </div>
         <div class="reader-list">
           ${items.map((item) => `
@@ -499,7 +499,7 @@
       </div>
       <div class="reader-search-meta">
         <span class="reader-result-count"></span>
-        <span>Best matches</span>
+        <span>最佳結果</span>
       </div>
       <div class="reader-result-list" role="listbox"></div>
     `;
@@ -559,7 +559,7 @@
   function renderResults(query) {
     currentResults = filteredResults(query);
     activeResultIndex = 0;
-    resultCount.textContent = `Search results (${currentResults.length})`;
+    resultCount.textContent = `搜尋結果（${currentResults.length}）`;
 
     if (!currentResults.length) {
       resultList.innerHTML = '<div class="reader-empty">找不到符合的章節</div>';
@@ -571,7 +571,7 @@
         ${icons.page}
         <span>
           <span class="reader-result-title">${highlight(item.title, query)}</span>
-          <span class="reader-result-path">${escapeHtml([item.code, item.page ? `Page ${item.page}` : ''].filter(Boolean).join(' ・ '))}</span>
+          <span class="reader-result-path">${escapeHtml([item.code, item.page ? `第 ${item.page} 頁` : ''].filter(Boolean).join(' ・ '))}</span>
           ${item.body ? `<span class="reader-result-excerpt">${highlight(item.body.slice(0, 86), query)}</span>` : ''}
         </span>
         <span class="reader-result-page">${escapeHtml(item.page || '')}</span>
