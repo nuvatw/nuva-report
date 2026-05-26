@@ -40,6 +40,7 @@ artifacts/qa/home-mobile.png
 ## 失敗處理
 
 - build 失敗：先檢查 `report-meta` JSON 是否合法。
+- Vercel 顯示找不到 `public`：確認 `vercel.json` 存在，且 `outputDirectory` 為 `.`。
 - metadata 失敗：依 `docs/report-delivery-standard.md` 修正。
 - 本機連結失敗：確認檔案路徑、圖片、favicon、報告連結是否存在。
 - 外部連結警告：通常不阻擋發布，但要人工判斷是否需要更換或移除。

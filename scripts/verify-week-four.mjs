@@ -9,6 +9,7 @@ const requiredFiles = [
   'index.html',
   'README.md',
   'package.json',
+  'vercel.json',
   'scripts/build-report-index.mjs',
   'scripts/dev-server.mjs',
   'scripts/check-links.mjs',

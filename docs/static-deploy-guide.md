@@ -55,6 +55,7 @@ npm run build
 - Framework preset：Other
 - Build command：`npm run build`
 - Output directory：`.`
+- 專案已提供 `vercel.json`，會自動指定 `outputDirectory` 為專案根目錄。
 
 ## 任意靜態伺服器
 
