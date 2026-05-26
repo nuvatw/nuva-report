@@ -20,13 +20,16 @@
         bottom: 26px;
         z-index: 1000;
         display: flex;
+        flex-direction: column;
         gap: 10px;
-        align-items: center;
+        align-items: stretch;
         justify-content: flex-end;
+        width: 148px;
       }
 
       .report-action {
         min-height: 48px;
+        width: 100%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -84,14 +87,11 @@
         .${actionsClass} {
           right: 12px;
           bottom: 12px;
-          width: calc(100vw - 24px);
+          width: min(148px, calc(100vw - 24px));
           align-items: stretch;
-          justify-content: stretch;
         }
 
         .report-action {
-          flex: 1 1 0;
-          min-width: 0;
           min-height: 44px;
           padding: 13px 12px;
           font-size: 11px;
