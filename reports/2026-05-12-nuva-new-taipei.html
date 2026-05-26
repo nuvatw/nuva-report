@@ -287,6 +287,14 @@
   .imgph .ik{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;
     text-transform:uppercase;color:var(--blue);}
   .imgph .it{font-size:11.5px;color:var(--ink-s);margin-top:6px;line-height:1.6;}
+  .imgph.photo{display:block;padding:0;overflow:hidden;text-align:left;
+    border:1.6px solid var(--ink);background:var(--paper);}
+  .imgph.photo img{display:block;width:100%;height:220px;object-fit:cover;
+    object-position:center 52%;}
+  .imgph.photo figcaption{display:flex;align-items:baseline;justify-content:space-between;
+    gap:16px;padding:10px 13px;border-top:1px solid var(--ink);}
+  .imgph.photo .ik{color:var(--blue);}
+  .imgph.photo .it{margin-top:0;color:var(--ink-s);font-size:11px;}
 
   /* ---------- TOC ---------- */
   .toc-head{font-family:'Space Mono',monospace;letter-spacing:.16em;
@@ -1318,11 +1326,13 @@
   <p class="lead">本頁彙整新北站活動照片留存區，供成果書編輯時置入大合照、現場與露營車互動畫面。</p>
 
   <div class="wall">
-    <div class="imgph wide">
-      <div class="ii"></div>
-      <div class="ik">照片 01 — 活動大合照</div>
-      <div class="it">圖片預留：新北站活動大合照</div>
-    </div>
+    <figure class="imgph wide photo">
+      <img src="../assets/reports/2026-05-12-nuva-new-taipei/group-photo.jpg" alt="新北站活動大合照，講者與參與青年於輔仁大學會場合影">
+      <figcaption>
+        <div class="ik">照片 01 — 活動大合照</div>
+        <div class="it">新北站｜天主教輔仁大學</div>
+      </figcaption>
+    </figure>
     <div class="imgph">
       <div class="ii"></div>
       <div class="ik">照片 02 — 專題演講</div>

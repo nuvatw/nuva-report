@@ -1,5 +1,5 @@
 window.REPORT_TIMELINE = {
-  "generatedAt": "2026-05-26T07:11:51.602Z",
+  "generatedAt": "2026-05-26T07:15:05.693Z",
   "count": 2,
   "reports": [
     {
@@ -50,8 +50,8 @@ window.REPORT_TIMELINE = {
       "pdf": "",
       "visibility": "public",
       "pages": 20,
-      "updatedAt": "2026-05-26T07:11:34.670Z",
-      "sizeKb": 76,
+      "updatedAt": "2026-05-26T07:14:39.487Z",
+      "sizeKb": 77,
       "search": "新北站《回到答案之前》 2026 全國公益露營車校園巡迴成果報告 活動成果 新北市政府青年局 x nuva 政府與公共部門 2026/05/12 2026 五月 ai 素養 青年政策 校園巡迴 活動 reports/2026-05-12-nuva-new-taipei.html"
     }
   ]
