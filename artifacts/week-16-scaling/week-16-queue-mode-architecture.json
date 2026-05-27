@@ -1,0 +1,149 @@
+{
+  "week": 16,
+  "title": "Week 16 queue mode architecture diagram",
+  "officialSources": {
+    "queueMode": "https://docs.n8n.io/hosting/scaling/queue-mode/",
+    "queueModeEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/queue-mode/",
+    "concurrencyControl": "https://docs.n8n.io/hosting/scaling/concurrency-control/",
+    "binaryData": "https://docs.n8n.io/hosting/scaling/binary-data/",
+    "externalStorage": "https://docs.n8n.io/hosting/scaling/external-storage/",
+    "prometheusMetrics": "https://docs.n8n.io/hosting/configuration/configuration-examples/prometheus/",
+    "taskRunners": "https://docs.n8n.io/hosting/configuration/task-runners/",
+    "executeCommand": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.executecommand/"
+  },
+  "mermaid": "flowchart LR\n    U[\"Users and editor\"] --> MAIN[\"main n8n process: UI, API, triggers\"]\n    WH[\"Webhook providers\"] --> LB[\"load balancer\"]\n    LB --> WPH[\"webhook processor pool\"]\n    LB --> MAIN\n    MAIN --> REDIS[\"Redis: queue / message broker\"]\n    WPH --> REDIS\n    REDIS --> W1[\"worker 1: n8n worker --concurrency=5\"]\n    REDIS --> W2[\"worker 2: n8n worker --concurrency=5\"]\n    W1 --> PG[\"PostgreSQL: workflows, credentials, executions\"]\n    W2 --> PG\n    MAIN --> PG\n    WPH --> PG\n    W1 --> OBJ[\"S3/database binary data storage\"]\n    W2 --> OBJ\n    MAIN --> LOG[\"centralized logs and metrics\"]\n    WPH --> LOG\n    W1 --> LOG\n    W2 --> LOG",
+  "sequence": [
+    {
+      "step": 1,
+      "actor": "main",
+      "action": "Creates an execution record in PostgreSQL and enqueues the execution ID in Redis."
+    },
+    {
+      "step": 2,
+      "actor": "Redis",
+      "action": "Maintains the pending execution queue."
+    },
+    {
+      "step": 3,
+      "actor": "worker",
+      "action": "Claims an execution ID from Redis."
+    },
+    {
+      "step": 4,
+      "actor": "worker",
+      "action": "Loads workflow information from PostgreSQL."
+    },
+    {
+      "step": 5,
+      "actor": "worker",
+      "action": "Executes the workflow and writes results to PostgreSQL."
+    },
+    {
+      "step": 6,
+      "actor": "worker",
+      "action": "Posts completion to Redis so the main process can observe completion."
+    }
+  ],
+  "components": [
+    {
+      "id": "main-process",
+      "role": "Serves UI and API, handles triggers, creates executions, performs at-most-once tasks, and coordinates queue mode.",
+      "requiredConfiguration": [
+        "EXECUTIONS_MODE=queue",
+        "N8N_ENCRYPTION_KEY",
+        "DB_TYPE=postgresdb",
+        "QUEUE_BULL_REDIS_HOST",
+        "QUEUE_BULL_REDIS_PORT"
+      ]
+    },
+    {
+      "id": "redis",
+      "role": "Message broker for pending executions.",
+      "requiredConfiguration": [
+        "QUEUE_BULL_REDIS_HOST",
+        "QUEUE_BULL_REDIS_PORT",
+        "QUEUE_BULL_REDIS_USERNAME if required",
+        "QUEUE_BULL_REDIS_PASSWORD if required",
+        "QUEUE_BULL_REDIS_DB"
+      ]
+    },
+    {
+      "id": "worker-pool",
+      "role": "Executes production workflows from Redis jobs and writes results back to PostgreSQL.",
+      "requiredConfiguration": [
+        "EXECUTIONS_MODE=queue",
+        "same N8N_ENCRYPTION_KEY as main",
+        "database access",
+        "Redis access",
+        "n8n worker --concurrency=5",
+        "QUEUE_HEALTH_CHECK_ACTIVE for readiness where used"
+      ]
+    },
+    {
+      "id": "webhook-processors",
+      "role": "Optional ingress scaling layer for high-volume webhook requests.",
+      "requiredConfiguration": [
+        "EXECUTIONS_MODE=queue",
+        "WEBHOOK_URL on main",
+        "load balancer route /webhook/* to webhook processors",
+        "load balancer route /webhook-waiting/* to webhook processors",
+        "route /webhook-test/* to main",
+        "N8N_DISABLE_PRODUCTION_MAIN_PROCESS=true when disabling production webhooks on main"
+      ]
+    },
+    {
+      "id": "postgresql",
+      "role": "Durable database for workflows, credentials, users, executions, and settings.",
+      "requiredConfiguration": [
+        "Postgres 13+ recommended",
+        "backup and restore drill",
+        "connection pool awareness",
+        "execution data pruning"
+      ]
+    },
+    {
+      "id": "binary-storage",
+      "role": "Stores binary data in a queue-mode compatible location.",
+      "requiredConfiguration": [
+        "N8N_DEFAULT_BINARY_DATA_MODE=database or s3",
+        "filesystem mode is not used with queue mode",
+        "S3 lifecycle if external storage is used"
+      ]
+    },
+    {
+      "id": "centralized-logs-and-metrics",
+      "role": "Collects logs and metrics from main, webhook processors, workers, Redis, PostgreSQL, and load balancer.",
+      "requiredConfiguration": [
+        "N8N_METRICS=true",
+        "N8N_METRICS_INCLUDE_QUEUE_METRICS=true",
+        "centralized log sink",
+        "alerts for queue waiting, failed jobs, worker restarts, DB connections, and webhook 5xx"
+      ]
+    }
+  ],
+  "routingRules": [
+    {
+      "path": "/webhook/*",
+      "target": "webhook processor pool"
+    },
+    {
+      "path": "/webhook-waiting/*",
+      "target": "webhook processor pool"
+    },
+    {
+      "path": "/webhook-test/*",
+      "target": "main process"
+    },
+    {
+      "path": "editor, static files, internal API, settings",
+      "target": "main process"
+    }
+  ],
+  "mustNotDo": [
+    "Do not add the main process to the webhook load balancer pool when webhook processors exist.",
+    "Do not use filesystem binary data storage with queue mode.",
+    "Do not run workers with a different N8N_ENCRYPTION_KEY than main.",
+    "Do not scale worker count beyond PostgreSQL connection capacity.",
+    "Do not start with Kubernetes before Redis queue mode and worker operations are understood."
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "week": 17,
+  "title": "log/env/DNS/proxy/DB check order",
+  "principle": "Always gather evidence in the same order before changing workflows or rebuilding containers.",
+  "sequence": [
+    {
+      "step": 1,
+      "gate": "log",
+      "purpose": "Capture exact error text, process, timestamp, and whether the failure is startup or runtime.",
+      "commands": [
+        "docker logs --since 30m n8n",
+        "docker logs --tail 200 n8n",
+        "query centralized logs for the incident timestamp"
+      ],
+      "passSignal": "The responder can name the first failing process and timestamp.",
+      "failAction": "Increase log detail temporarily with N8N_LOG_LEVEL=debug in a controlled window and capture logs again."
+    },
+    {
+      "step": 2,
+      "gate": "env",
+      "purpose": "Confirm n8n public identity, DB settings, security settings, and instance encryption key source.",
+      "commands": [
+        "docker inspect n8n --format '{{range .Config.Env}}{{println .}}{{end}}'",
+        "compare .env against deployed secrets",
+        "check WEBHOOK_URL, N8N_EDITOR_BASE_URL, N8N_ENCRYPTION_KEY, DB_POSTGRESDB_*"
+      ],
+      "passSignal": "Public URL, encryption key, database target, and security flags are known.",
+      "failAction": "Correct env through the deployment source of truth, then restart in the documented order."
+    },
+    {
+      "step": 3,
+      "gate": "DNS",
+      "purpose": "Confirm public hostname resolves to the intended ingress or reverse proxy.",
+      "commands": [
+        "dig n8n.example.com",
+        "nslookup n8n.example.com",
+        "curl -Iv https://n8n.example.com/healthz"
+      ],
+      "passSignal": "The public hostname resolves and reaches the expected TLS endpoint.",
+      "failAction": "Fix DNS record, TTL assumptions, firewall, certificate, or ingress target before changing n8n."
+    },
+    {
+      "step": 4,
+      "gate": "proxy",
+      "purpose": "Confirm TLS termination, route mapping, forwarded headers, and proxy hop count.",
+      "commands": [
+        "inspect Caddy, Nginx, Traefik, or load balancer route config",
+        "check X-Forwarded-For, X-Forwarded-Host, X-Forwarded-Proto",
+        "check N8N_PROXY_HOPS"
+      ],
+      "passSignal": "The proxy forwards HTTPS scheme and host to n8n, and webhook routes reach the correct process.",
+      "failAction": "Fix forwarded headers, proxy hops, TLS termination, and /webhook route mapping."
+    },
+    {
+      "step": 5,
+      "gate": "DB",
+      "purpose": "Confirm durable state is reachable and migrated.",
+      "commands": [
+        "curl -s -o /dev/null -w '%{http_code}' http://localhost:5687/healthz/readiness",
+        "docker compose ps postgres",
+        "docker logs --since 30m postgres"
+      ],
+      "passSignal": "/healthz/readiness returns 200 and DB logs show no authentication or network failure.",
+      "failAction": "Fix DB_TYPE, DB_POSTGRESDB_HOST, port, database, user, password, SSL, network, or DB readiness."
+    },
+    {
+      "step": 6,
+      "gate": "container",
+      "purpose": "Confirm the n8n process, image, restart count, ports, and mounts are sane.",
+      "commands": [
+        "docker ps --filter name=n8n --format '{{.Names}} {{.Status}} {{.Ports}}'",
+        "docker inspect n8n --format '{{json .Mounts}}'",
+        "docker inspect n8n --format '{{.Config.Image}}'"
+      ],
+      "passSignal": "Container is stable, using the expected image, and has the expected mounts and ports.",
+      "failAction": "Fix startup error, image tag, port conflict, volume mount, or permission issue without deleting state."
+    },
+    {
+      "step": 7,
+      "gate": "credentials",
+      "purpose": "Confirm encrypted credential state can be decrypted by the current instance key.",
+      "commands": [
+        "compare N8N_ENCRYPTION_KEY across main, workers, and stored deployment secret",
+        "review credential decrypt errors in logs",
+        "verify restore notes include the original key"
+      ],
+      "passSignal": "Credentials decrypt and every process uses the same instance key.",
+      "failAction": "Restore the original key or restore DB plus key from backup; recreate credentials only after confirming key loss."
+    },
+    {
+      "step": 8,
+      "gate": "OAuth",
+      "purpose": "Confirm redirect URLs match between n8n and external providers.",
+      "commands": [
+        "copy the OAuth Redirect URL displayed in n8n",
+        "compare with provider redirect URI",
+        "check WEBHOOK_URL and N8N_EDITOR_BASE_URL"
+      ],
+      "passSignal": "Provider redirect URI exactly matches the n8n OAuth Redirect URL.",
+      "failAction": "Correct public URL or provider redirect URI, then reconnect the credential."
+    },
+    {
+      "step": 9,
+      "gate": "security",
+      "purpose": "Confirm HTTPS, cookie behavior, SameSite, API exposure, and audit posture.",
+      "commands": [
+        "curl -I https://n8n.example.com",
+        "check N8N_SECURE_COOKIE and N8N_SAMESITE_COOKIE",
+        "run n8n audit in a controlled maintenance window"
+      ],
+      "passSignal": "Cookie, session, and security posture match public exposure.",
+      "failAction": "Fix TLS, secure cookie settings, public API exposure, and audit findings."
+    },
+    {
+      "step": 10,
+      "gate": "resource",
+      "purpose": "Confirm the incident is not caused by CPU, memory, payload size, or binary data pressure.",
+      "commands": [
+        "docker stats --no-stream",
+        "docker inspect n8n --format '{{.State.OOMKilled}}'",
+        "review execution payload and binary data mode"
+      ],
+      "passSignal": "Resource usage and execution size are within expected bounds.",
+      "failAction": "Reduce concurrency, split workflows, move binary data, prune execution data, or increase resources."
+    },
+    {
+      "step": 11,
+      "gate": "queue",
+      "purpose": "For queue mode, confirm Redis, workers, DB, and shared encryption key.",
+      "commands": [
+        "docker logs --since 30m n8n-worker",
+        "check EXECUTIONS_MODE=queue",
+        "check QUEUE_BULL_REDIS_HOST and QUEUE_BULL_REDIS_PORT"
+      ],
+      "passSignal": "Workers can reach Redis and DB, process jobs, and share the main encryption key.",
+      "failAction": "Fix Redis, DB, worker env, version mismatch, or worker concurrency."
+    },
+    {
+      "step": 12,
+      "gate": "workflow",
+      "purpose": "Only after infrastructure evidence is gathered, isolate workflow logic, node configuration, and external API behavior.",
+      "commands": [
+        "open the failed execution",
+        "identify the first failed node",
+        "check retry, timeout, response mode, and external API status"
+      ],
+      "passSignal": "The first workflow-level failure is identified with execution evidence.",
+      "failAction": "Fix node configuration, split the workflow, add retries, or change webhook response behavior."
+    }
+  ]
+}

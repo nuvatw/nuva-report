@@ -1,0 +1,86 @@
+{
+  "week": 19,
+  "title": "Capstone deployment package manifest",
+  "primaryRoute": "VPS Docker Compose + PostgreSQL + Caddy",
+  "acceptanceTarget": "A teammate can understand architecture, startup, backup, risks, and next steps by reading only the deployment package.",
+  "officialSources": {
+    "n8nDocker": "https://docs.n8n.io/hosting/installation/docker/",
+    "n8nDockerCompose": "https://docs.n8n.io/hosting/installation/server-setups/docker-compose/",
+    "n8nDigitalOceanCaddy": "https://docs.n8n.io/hosting/installation/server-setups/digital-ocean/",
+    "n8nWebhookUrl": "https://docs.n8n.io/hosting/configuration/configuration-examples/webhook-url/",
+    "n8nSsl": "https://docs.n8n.io/hosting/securing/set-up-ssl/",
+    "n8nDatabases": "https://docs.n8n.io/hosting/configuration/supported-databases-settings/",
+    "n8nEncryptionKey": "https://docs.n8n.io/hosting/configuration/configuration-examples/encryption-key/",
+    "n8nUpdating": "https://docs.n8n.io/hosting/installation/updating/",
+    "n8nLogging": "https://docs.n8n.io/hosting/logging-monitoring/logging/",
+    "n8nMonitoring": "https://docs.n8n.io/hosting/logging-monitoring/monitoring/",
+    "n8nExecutionData": "https://docs.n8n.io/hosting/scaling/execution-data/",
+    "n8nBinaryData": "https://docs.n8n.io/hosting/scaling/binary-data/"
+  },
+  "architecture": {
+    "publicEntry": "DNS points n8n.example.com to the VPS public IP. Caddy owns ports 80 and 443.",
+    "reverseProxy": "Caddy terminates TLS and forwards traffic to n8n:5678 inside the Docker network.",
+    "application": "n8n runs as a Docker Compose service with PostgreSQL database configuration.",
+    "database": "PostgreSQL stores workflows, credentials metadata, executions, users, and settings.",
+    "state": [
+      "postgres_data volume stores PostgreSQL data",
+      "n8n_data volume stores n8n local state and settings",
+      "caddy_data and caddy_config volumes store TLS state and Caddy config"
+    ],
+    "operations": [
+      "backup-restore-runbook.md",
+      "update-runbook.md",
+      "troubleshooting-playbook.md",
+      "final-demo-checklist.csv"
+    ]
+  },
+  "packageFiles": [
+    {
+      "path": "deployment-package/README.md",
+      "role": "README-style handoff",
+      "requiredForHandoff": true
+    },
+    {
+      "path": "deployment-package/compose.yaml",
+      "role": "Docker Compose runtime for n8n, PostgreSQL, and Caddy",
+      "requiredForHandoff": true
+    },
+    {
+      "path": "deployment-package/.env.template",
+      "role": "Environment template with public URL, database, encryption key, runtime, logging, and security settings",
+      "requiredForHandoff": true
+    },
+    {
+      "path": "deployment-package/Caddyfile",
+      "role": "TLS reverse proxy configuration",
+      "requiredForHandoff": true
+    },
+    {
+      "path": "deployment-package/backup-restore-runbook.md",
+      "role": "Backup and restore runbook",
+      "requiredForHandoff": true
+    },
+    {
+      "path": "deployment-package/update-runbook.md",
+      "role": "Update and rollback runbook",
+      "requiredForHandoff": true
+    },
+    {
+      "path": "deployment-package/troubleshooting-playbook.md",
+      "role": "Incident troubleshooting playbook",
+      "requiredForHandoff": true
+    },
+    {
+      "path": "deployment-package/final-demo-checklist.csv",
+      "role": "Final demo checklist",
+      "requiredForHandoff": true
+    }
+  ],
+  "handoffReadiness": [
+    "Architecture is visible in README.md and this manifest.",
+    "Startup path is documented with Docker Compose commands.",
+    "Backup path covers PostgreSQL, volumes, Caddy state, and secrets.",
+    "Risk section covers encryption key, wrong webhook URL, database connection, secure cookie, storage growth, and updates.",
+    "Next steps explain when to move toward PaaS, n8n Cloud, queue mode, or AWS/GCP."
+  ]
+}

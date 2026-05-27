@@ -1,0 +1,71 @@
+{
+  "week": 20,
+  "title": "Three-hour final showcase agenda",
+  "durationMinutes": 180,
+  "goal": "Show deployment selection, architecture, runbooks, risk, cost, and next-stage priorities.",
+  "agenda": [
+    {
+      "start": "00:00",
+      "end": "00:20",
+      "section": "Executive summary",
+      "evidence": [
+        "final-recommendation-report.md",
+        "week-18-deployment-recommendation-matrix.json"
+      ],
+      "requiredAnswer": "Why the recommended route is VPS Docker Compose + PostgreSQL + Caddy for self-hosted baseline, and when n8n Cloud is better."
+    },
+    {
+      "start": "00:20",
+      "end": "01:00",
+      "section": "Deployment package demo",
+      "evidence": [
+        "deployment-package/README.md",
+        "deployment-package/compose.yaml",
+        "deployment-package/.env.template",
+        "deployment-package/Caddyfile"
+      ],
+      "requiredAnswer": "How DNS, TLS, n8n, PostgreSQL, and volumes fit together."
+    },
+    {
+      "start": "01:00",
+      "end": "01:35",
+      "section": "Runbook drill",
+      "evidence": [
+        "backup-restore-runbook.md",
+        "update-runbook.md",
+        "troubleshooting-playbook.md"
+      ],
+      "requiredAnswer": "How to back up, restore, update, roll back, and investigate incidents."
+    },
+    {
+      "start": "01:35",
+      "end": "02:10",
+      "section": "Risk and cost review",
+      "evidence": [
+        "week-18-cost-risk-worksheet.csv",
+        "week-20-adoption-candidates-and-owners.csv"
+      ],
+      "requiredAnswer": "Where cost and operational risk can grow: RAM, CPU, storage, egress, logs, DB, backups, maintenance labor."
+    },
+    {
+      "start": "02:10",
+      "end": "02:40",
+      "section": "Scaling gate",
+      "evidence": [
+        "week-16-scaling-ladder.json",
+        "week-20-final-scorecard.json"
+      ],
+      "requiredAnswer": "When to stay single instance, when to add concurrency control, when to evaluate queue mode, and when AWS/GCP is justified."
+    },
+    {
+      "start": "02:40",
+      "end": "03:00",
+      "section": "Next-stage owner review",
+      "evidence": [
+        "week-20-90-day-maintenance-cadence.csv",
+        "week-20-adoption-candidates-and-owners.csv"
+      ],
+      "requiredAnswer": "Which owner is accountable for each next action and what evidence proves completion."
+    }
+  ]
+}

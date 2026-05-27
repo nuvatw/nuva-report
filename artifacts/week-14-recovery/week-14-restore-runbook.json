@@ -1,0 +1,129 @@
+{
+  "week": 14,
+  "title": "Week 14 restore runbook and drill design",
+  "acceptanceTarget": "Design and execute a non-production restore drill that proves database, volume, encryption key, and Compose/env/proxy config can restore n8n to a usable state.",
+  "officialSources": {
+    "postgresPgRestore": "https://www.postgresql.org/docs/current/app-pgrestore.html",
+    "postgresPgDump": "https://www.postgresql.org/docs/current/app-pgdump.html",
+    "dockerVolumes": "https://docs.docker.com/engine/storage/volumes/",
+    "n8nDocker": "https://docs.n8n.io/hosting/installation/docker/",
+    "n8nEncryptionKey": "https://docs.n8n.io/hosting/configuration/configuration-examples/encryption-key/",
+    "n8nWebhookUrl": "https://docs.n8n.io/hosting/configuration/configuration-examples/webhook-url/",
+    "n8nBinaryData": "https://docs.n8n.io/hosting/scaling/binary-data/"
+  },
+  "drill": {
+    "id": "week-14-restore-drill-small-business-compose-postgres",
+    "restoreProject": "n8n-week14-restore-drill",
+    "environment": "isolated Docker Compose project",
+    "mustNotTouchProduction": true,
+    "rtoMeasurementRequired": true,
+    "rpoEvidenceRequired": true,
+    "backupSetRequiredFiles": [
+      "database.dump",
+      "n8n_data.tgz",
+      "caddy_data.tgz",
+      "caddy_config.tgz",
+      "n8n-encryption-key.txt",
+      "compose.yaml",
+      ".env",
+      "Caddyfile",
+      "docker-compose.rendered.yaml",
+      "SHA256SUMS"
+    ]
+  },
+  "restoreSteps": [
+    {
+      "id": "verify-checksums",
+      "phase": "integrity",
+      "command": "shasum -a 256 -c \"${BACKUP_DIR}/SHA256SUMS\"",
+      "expectedResult": "All files in the backup set pass checksum verification."
+    },
+    {
+      "id": "stop-isolated-project",
+      "phase": "prepare",
+      "command": "docker compose -p \"${RESTORE_PROJECT}\" --env-file \"${BACKUP_DIR}/.env\" -f \"${BACKUP_DIR}/compose.yaml\" down --remove-orphans",
+      "expectedResult": "No old restore-drill containers remain."
+    },
+    {
+      "id": "create-restore-volumes",
+      "phase": "volume",
+      "command": "docker volume create \"${RESTORE_PROJECT}_n8n_data\"; docker volume create \"${RESTORE_PROJECT}_caddy_data\"; docker volume create \"${RESTORE_PROJECT}_caddy_config\"; docker volume create \"${RESTORE_PROJECT}_postgres_data\"",
+      "expectedResult": "Fresh isolated volumes exist for the drill."
+    },
+    {
+      "id": "restore-n8n-volume",
+      "phase": "volume",
+      "command": "docker run --rm -v \"${RESTORE_PROJECT}_n8n_data\":/target -v \"${PWD}/${BACKUP_DIR}\":/backup:ro alpine:3.20 sh -c 'cd /target && tar -xzf /backup/n8n_data.tgz'",
+      "expectedResult": "The /home/node/.n8n volume content is restored."
+    },
+    {
+      "id": "restore-proxy-volumes",
+      "phase": "volume",
+      "command": "docker run --rm -v \"${RESTORE_PROJECT}_caddy_data\":/target -v \"${PWD}/${BACKUP_DIR}\":/backup:ro alpine:3.20 sh -c 'cd /target && tar -xzf /backup/caddy_data.tgz'; docker run --rm -v \"${RESTORE_PROJECT}_caddy_config\":/target -v \"${PWD}/${BACKUP_DIR}\":/backup:ro alpine:3.20 sh -c 'cd /target && tar -xzf /backup/caddy_config.tgz'",
+      "expectedResult": "Caddy state volumes are restored for proxy parity."
+    },
+    {
+      "id": "start-postgres",
+      "phase": "database",
+      "command": "docker compose -p \"${RESTORE_PROJECT}\" --env-file \"${BACKUP_DIR}/.env\" -f \"${BACKUP_DIR}/compose.yaml\" up -d postgres",
+      "expectedResult": "PostgreSQL starts in the isolated project."
+    },
+    {
+      "id": "prepare-database",
+      "phase": "database",
+      "command": "docker compose -p \"${RESTORE_PROJECT}\" --env-file \"${BACKUP_DIR}/.env\" -f \"${BACKUP_DIR}/compose.yaml\" exec -T postgres sh -c \"dropdb -U \\\"${POSTGRES_USER}\\\" --if-exists \\\"${POSTGRES_DB}\\\" && createdb -U \\\"${POSTGRES_USER}\\\" \\\"${POSTGRES_DB}\\\"\"",
+      "expectedResult": "The restore database is empty and ready."
+    },
+    {
+      "id": "restore-database",
+      "phase": "database",
+      "command": "docker compose -p \"${RESTORE_PROJECT}\" --env-file \"${BACKUP_DIR}/.env\" -f \"${BACKUP_DIR}/compose.yaml\" exec -T postgres pg_restore -U \"${POSTGRES_USER}\" -d \"${POSTGRES_DB}\" --no-owner --no-acl --exit-on-error < \"${BACKUP_DIR}/database.dump\"",
+      "expectedResult": "pg_restore completes with exit code 0."
+    },
+    {
+      "id": "start-n8n",
+      "phase": "application",
+      "command": "docker compose -p \"${RESTORE_PROJECT}\" --env-file \"${BACKUP_DIR}/.env\" -f \"${BACKUP_DIR}/compose.yaml\" up -d n8n",
+      "expectedResult": "n8n starts with the restored database, restored volume, and same N8N_ENCRYPTION_KEY."
+    },
+    {
+      "id": "inspect-logs",
+      "phase": "smoke-test",
+      "command": "docker compose -p \"${RESTORE_PROJECT}\" --env-file \"${BACKUP_DIR}/.env\" -f \"${BACKUP_DIR}/compose.yaml\" logs --tail=120 n8n",
+      "expectedResult": "Logs have no encryption key, migration, permission, or database fatal errors."
+    }
+  ],
+  "acceptanceChecks": [
+    "The isolated restore project does not use production container names or production DNS.",
+    "Checksum validation passes before any restore command runs.",
+    "PostgreSQL restore completes with pg_restore --exit-on-error.",
+    "n8n starts using the same N8N_ENCRYPTION_KEY that was saved during backup.",
+    "Workflows, credentials, users, and settings are visible after login.",
+    "Existing credentials do not show decryption failures.",
+    "WEBHOOK_URL, N8N_EDITOR_BASE_URL, N8N_PROXY_HOPS, and Caddy reverse proxy config match the saved Compose/env/proxy config.",
+    "Filesystem binary data can be sampled when the deployment uses filesystem binary data mode.",
+    "Measured restore duration and RTO evidence are recorded."
+  ],
+  "failureDiagnosis": [
+    {
+      "symptom": "n8n starts but credentials fail to decrypt",
+      "firstCheck": "Verify N8N_ENCRYPTION_KEY matches the key used when the database backup was created."
+    },
+    {
+      "symptom": "workflows are missing",
+      "firstCheck": "Verify POSTGRES_DB, POSTGRES_USER, schema, compose project, and pg_restore target database."
+    },
+    {
+      "symptom": "webhook URL points to localhost or an old domain",
+      "firstCheck": "Verify WEBHOOK_URL, N8N_EDITOR_BASE_URL, N8N_PROXY_HOPS, and Caddyfile from the backup set."
+    },
+    {
+      "symptom": "binary data is missing",
+      "firstCheck": "Verify the active binary data mode and restore the corresponding filesystem, database, or S3 data."
+    },
+    {
+      "symptom": "proxy TLS behavior differs from production",
+      "firstCheck": "Verify Caddyfile, caddy_data, caddy_config, DNS, and TLS state."
+    }
+  ]
+}

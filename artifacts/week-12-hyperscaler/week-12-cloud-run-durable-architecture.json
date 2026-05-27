@@ -1,0 +1,96 @@
+{
+  "week": 12,
+  "title": "Cloud Run durable architecture for n8n",
+  "generatedAt": "2026-05-27T00:00:00.000+08:00",
+  "officialSources": {
+    "n8nCloudRun": "https://docs.n8n.io/hosting/installation/server-setups/google-cloud-run/",
+    "cloudSqlPostgresConnectRun": "https://docs.cloud.google.com/sql/docs/postgres/connect-run",
+    "cloudRunSecrets": "https://docs.cloud.google.com/run/docs/configuring/services/secrets",
+    "cloudRunServiceIdentity": "https://docs.cloud.google.com/run/docs/configuring/services/service-identity",
+    "cloudRunEnvironmentVariables": "https://docs.cloud.google.com/run/docs/configuring/services/environment-variables"
+  },
+  "mermaid": "flowchart TD\n    U[\"User / webhook provider\"] --> CR[\"Cloud Run service: n8n\"]\n    CR -->|\"DB_TYPE=postgresdb\"| SQL[\"Cloud SQL PostgreSQL\"]\n    CR -->|\"Secret env vars\"| SM[\"Secret Manager\"]\n    CR -->|\"runtime identity\"| SA[\"n8n Cloud Run service account\"]\n    SA -->|\"roles/cloudsql.client\"| SQL\n    SA -->|\"roles/secretmanager.secretAccessor\"| SM\n    CR --> LOG[\"Cloud Logging and Cloud Monitoring\"]\n    CR --> URL[\"WEBHOOK_URL / N8N_EDITOR_BASE_URL\"]",
+  "modes": {
+    "easyMode": {
+      "purpose": "Demo and short-lived experiments",
+      "stateModel": "Not suitable for durable n8n state",
+      "risk": "Redeploy, revision replacement, or scale-to-zero can make state unreliable"
+    },
+    "durableMode": {
+      "purpose": "Production-oriented Cloud Run deployment",
+      "stateModel": "Cloud SQL PostgreSQL for main state, Secret Manager for sensitive data, service account for controlled access",
+      "risk": "More components must be assembled and maintained"
+    }
+  },
+  "components": [
+    {
+      "id": "cloud-run-service",
+      "name": "Cloud Run service",
+      "responsibility": "Run the n8n container and receive editor/webhook/API traffic",
+      "n8nSettings": [
+        "Container image pinned to a known n8n version",
+        "Port 5678",
+        "WEBHOOK_URL and N8N_EDITOR_BASE_URL set to stable HTTPS URL"
+      ]
+    },
+    {
+      "id": "cloud-sql-postgres",
+      "name": "Cloud SQL PostgreSQL",
+      "responsibility": "Persist workflows, credentials, and execution history",
+      "n8nSettings": [
+        "DB_TYPE=postgresdb",
+        "DB_POSTGRESDB_HOST=/cloudsql/PROJECT:REGION:n8n-db",
+        "DB_POSTGRESDB_DATABASE=n8n",
+        "DB_POSTGRESDB_USER=n8n-user"
+      ]
+    },
+    {
+      "id": "secret-manager",
+      "name": "Secret Manager",
+      "responsibility": "Store DB password, N8N_ENCRYPTION_KEY, and other secrets",
+      "n8nSettings": [
+        "DB_POSTGRESDB_PASSWORD from Secret Manager",
+        "N8N_ENCRYPTION_KEY from Secret Manager"
+      ]
+    },
+    {
+      "id": "service-account",
+      "name": "Cloud Run service account",
+      "responsibility": "Runtime identity for accessing Cloud SQL and Secret Manager",
+      "requiredRoles": [
+        "roles/cloudsql.client",
+        "roles/secretmanager.secretAccessor"
+      ]
+    },
+    {
+      "id": "observability",
+      "name": "Cloud Logging and Cloud Monitoring",
+      "responsibility": "Collect logs, request metrics, revision health, and alerts",
+      "requiredChecks": [
+        "Error logs visible",
+        "Latency and request count dashboarded",
+        "Alert owner defined"
+      ]
+    }
+  ],
+  "envVarBaseline": [
+    "DB_TYPE=postgresdb",
+    "DB_POSTGRESDB_HOST=/cloudsql/PROJECT:REGION:n8n-db",
+    "DB_POSTGRESDB_DATABASE=n8n",
+    "DB_POSTGRESDB_USER=n8n-user",
+    "DB_POSTGRESDB_PASSWORD=<Secret Manager reference>",
+    "N8N_ENCRYPTION_KEY=<Secret Manager reference>",
+    "WEBHOOK_URL=https://n8n.example.com/",
+    "N8N_EDITOR_BASE_URL=https://n8n.example.com/",
+    "N8N_ENDPOINT_HEALTH=health",
+    "N8N_PROXY_HOPS=1"
+  ],
+  "acceptanceChecks": [
+    "n8n connects to Cloud SQL PostgreSQL and does not use container filesystem as main state",
+    "DB password and N8N_ENCRYPTION_KEY are injected from Secret Manager",
+    "Cloud Run runtime identity is a dedicated service account with least-privilege roles",
+    "WEBHOOK_URL and N8N_EDITOR_BASE_URL use stable HTTPS public URL",
+    "Cloud SQL backup retention and restore drill are documented",
+    "Redeploy test confirms workflows, credentials, and execution history persist"
+  ]
+}

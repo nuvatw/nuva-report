@@ -1,0 +1,201 @@
+{
+  "week": 13,
+  "title": "Week 13 sizing recommendation table",
+  "acceptanceTarget": "small business can justify 4 vCPU / 8 GB RAM / PostgreSQL / backup / monitoring as a starting point or provide adjustment reasons",
+  "officialSources": {
+    "serverSizing": "https://docs.n8n.io/hosting/oem-deployment/prerequisites/",
+    "performanceBenchmarking": "https://docs.n8n.io/hosting/scaling/performance-benchmarking/",
+    "scalingOverview": "https://docs.n8n.io/hosting/scaling/overview/",
+    "supportedDatabases": "https://docs.n8n.io/hosting/configuration/supported-databases-settings/",
+    "databaseEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/database/",
+    "queueMode": "https://docs.n8n.io/hosting/scaling/queue-mode/",
+    "concurrencyControl": "https://docs.n8n.io/hosting/scaling/concurrency-control/",
+    "executionData": "https://docs.n8n.io/hosting/scaling/execution-data/",
+    "binaryData": "https://docs.n8n.io/hosting/scaling/binary-data/",
+    "binaryDataEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/binary-data/",
+    "externalStorage": "https://docs.n8n.io/hosting/scaling/external-storage/",
+    "monitoring": "https://docs.n8n.io/hosting/logging-monitoring/monitoring/"
+  },
+  "assumptions": [
+    "These are starting recommendations for self-hosted planning, not absolute performance guarantees.",
+    "The n8n official server sizing table is treated as an input, while the actual recommendation depends on users, workflows, executions, binary size, and execution duration.",
+    "PostgreSQL is preferred once workflows become business-critical, shared by multiple people, or require backup and restore discipline.",
+    "Binary-heavy workflows should not stay on default memory binary mode in production.",
+    "Queue mode requires Redis and workers, and should use PostgreSQL rather than SQLite."
+  ],
+  "capacityDrivers": [
+    {
+      "name": "frequency",
+      "effect": "Raises execution count, database writes, log volume, and API calls."
+    },
+    {
+      "name": "concurrency",
+      "effect": "Raises simultaneous memory, CPU, event loop, database connection, and external API pressure."
+    },
+    {
+      "name": "binary size",
+      "effect": "Determines whether memory, filesystem, database, or external object storage becomes the bottleneck."
+    },
+    {
+      "name": "wait states",
+      "effect": "Keeps paused execution state available for resume and can retain data longer than normal pruning windows."
+    },
+    {
+      "name": "AI calls",
+      "effect": "Adds external model latency, large prompt and response payloads, retries, and rate-limit behavior."
+    },
+    {
+      "name": "browser automation",
+      "effect": "Adds host or worker process CPU, memory, temp file, screenshot, and download pressure."
+    }
+  ],
+  "profiles": [
+    {
+      "id": "learning",
+      "label": "learning",
+      "startingSpec": {
+        "vcpu": 1,
+        "ramGb": "1-2",
+        "summary": "1 vCPU / 1 to 2 GB RAM"
+      },
+      "database": "SQLite acceptable for short-lived learning; export workflows and preserve the encryption key if anything matters.",
+      "backup": "Manual export and local snapshot are enough for training data.",
+      "monitoring": "Local logs and manual checks.",
+      "concurrencyModel": "Manual executions or very low-frequency triggers.",
+      "binaryDataModel": "Default mode acceptable only for tiny files; use filesystem when testing file workflows.",
+      "warningSigns": [
+        "Container restarts when processing files",
+        "Manual execution slows when inspecting large data",
+        "Database file grows without intention"
+      ],
+      "upgradeTriggers": [
+        "A workflow becomes important enough that data loss matters",
+        "You need stable public webhooks",
+        "You process real customer files"
+      ]
+    },
+    {
+      "id": "personal",
+      "label": "personal",
+      "startingSpec": {
+        "vcpu": 2,
+        "ramGb": 4,
+        "summary": "2 vCPU / 4 GB RAM"
+      },
+      "database": "SQLite is acceptable for low-risk personal automations; PostgreSQL is recommended for important always-on workflows.",
+      "backup": "Daily volume snapshot or database dump when automations matter.",
+      "monitoring": "Basic uptime, logs, disk usage, and failed execution review.",
+      "concurrencyModel": "Low-frequency schedules and small webhook bursts.",
+      "binaryDataModel": "Filesystem mode for recurring file work; avoid default memory mode for large files.",
+      "warningSigns": [
+        "Webhook responses slow during file handling",
+        "Disk grows faster than expected",
+        "Failed executions increase after adding large payloads"
+      ],
+      "upgradeTriggers": [
+        "More than a few production webhooks",
+        "Recurring binary files",
+        "Need for restore drill"
+      ]
+    },
+    {
+      "id": "freelancer",
+      "label": "freelancer",
+      "startingSpec": {
+        "vcpu": "2-4",
+        "ramGb": "4-8",
+        "summary": "2 vCPU / 4 GB RAM, or 4 vCPU / 8 GB RAM when client workloads are steady"
+      },
+      "database": "PostgreSQL recommended once client workflows or credentials are stored.",
+      "backup": "Daily PostgreSQL backup and monthly restore drill.",
+      "monitoring": "HTTP status, CPU, memory, disk, database size, failed executions, and backup status.",
+      "concurrencyModel": "Moderate schedules, client webhooks, and some overlapping executions.",
+      "binaryDataModel": "Filesystem mode with persistent volume; database mode only when queue-mode sharing requires it.",
+      "warningSigns": [
+        "Client webhook latency varies by workload",
+        "Database size grows from execution history",
+        "BinaryData folder grows without predictable retention"
+      ],
+      "upgradeTriggers": [
+        "Multiple clients rely on the same instance",
+        "p95 execution duration rises",
+        "Recovery expectations become business-critical"
+      ]
+    },
+    {
+      "id": "small-business",
+      "label": "small business",
+      "startingSpec": {
+        "vcpu": 4,
+        "ramGb": 8,
+        "summary": "4 vCPU / 8 GB RAM / PostgreSQL / backup / monitoring"
+      },
+      "database": "PostgreSQL required as the baseline for workflows, credentials, execution history, backup, restore, and migration.",
+      "backup": "Daily automated PostgreSQL backup, retention policy, and monthly restore drill.",
+      "monitoring": "CPU, memory, restart count, webhook latency, failed executions, PostgreSQL size, PostgreSQL connections, binary storage, and backup status.",
+      "concurrencyModel": "Start with regular mode and a conservative N8N_CONCURRENCY_PRODUCTION_LIMIT, then move to queue mode if webhook bursts become normal.",
+      "binaryDataModel": "Filesystem mode on persistent volume for ordinary files; database or S3 for queue-mode or multi-worker binary-heavy workflows.",
+      "warningSigns": [
+        "Memory stays above 70 percent during business hours",
+        "Webhook p95 latency approaches external provider timeout",
+        "PostgreSQL backup duration increases week over week",
+        "Binary storage grows without pruning relief"
+      ],
+      "upgradeTriggers": [
+        "Frequent overlapping production executions",
+        "Binary-heavy workflow becomes business-critical",
+        "AI calls or browser automation run alongside normal webhook traffic",
+        "Database storage or connections approach configured limits"
+      ],
+      "acceptanceConclusion": "For a small business, 4 vCPU / 8 GB RAM / PostgreSQL / backup / monitoring is a reasonable starting point because it covers shared production workflows, durable state, restore needs, and enough memory headroom for moderate binary data without overcommitting to queue mode on day one."
+    },
+    {
+      "id": "agency",
+      "label": "agency",
+      "startingSpec": {
+        "vcpu": "4-8",
+        "ramGb": "16+",
+        "summary": "4 to 8 vCPU / 16 GB RAM or separate worker pool"
+      },
+      "database": "Managed PostgreSQL with restore drill, connection planning, and execution data retention rules.",
+      "backup": "Point-in-time recovery or snapshot policy, restore runbook, and environment-specific retention.",
+      "monitoring": "Dashboards and alerts for workers, queue depth, database, binary storage, webhook latency, failed executions, and cost-sensitive logs.",
+      "concurrencyModel": "Queue mode with Redis and separate workers once client traffic overlaps.",
+      "binaryDataModel": "Database or S3 mode depending on queue-mode architecture; avoid tying workers to a single local filesystem.",
+      "warningSigns": [
+        "Queue backlog grows during client campaigns",
+        "One client's binary workflows slow down other clients",
+        "Database connection count increases with each worker"
+      ],
+      "upgradeTriggers": [
+        "Need client isolation",
+        "Need deploy windows and rollback discipline",
+        "Need separate worker pools for heavy workflow classes"
+      ]
+    },
+    {
+      "id": "ai-heavy",
+      "label": "AI-heavy",
+      "startingSpec": {
+        "vcpu": "8+",
+        "ramGb": "16-32+",
+        "summary": "8 vCPU / 16 to 32 GB RAM with dedicated workers for long-running AI and browser automation"
+      },
+      "database": "Managed PostgreSQL with Redis queue mode and retention tuned for large execution payloads.",
+      "backup": "Database backup plus object storage lifecycle and restore validation.",
+      "monitoring": "Model latency, model error rate, retry count, queue depth, worker memory, browser process duration, binary storage, and backup duration.",
+      "concurrencyModel": "Queue mode with worker pools separated by workload class.",
+      "binaryDataModel": "S3 or database mode; never rely on default memory mode for large document, media, or screenshot flows.",
+      "warningSigns": [
+        "AI API 429 or 5xx increases",
+        "Worker memory spikes during document processing",
+        "Headless browser jobs leave temp files or long-running processes"
+      ],
+      "upgradeTriggers": [
+        "RAG or document processing becomes core workload",
+        "Browser automation is used in production",
+        "Large files are retained for audit or human review"
+      ]
+    }
+  ]
+}

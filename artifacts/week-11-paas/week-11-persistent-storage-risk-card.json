@@ -1,0 +1,217 @@
+{
+  "week": 11,
+  "title": "Persistent storage risk card for n8n on PaaS",
+  "acceptanceConclusion": "服務能啟動不代表 state 能在 redeploy 後存活；必須驗證 PostgreSQL、user folder volume、N8N_ENCRYPTION_KEY、binary data path、backup/restore、stable WEBHOOK_URL。",
+  "riskCards": [
+    {
+      "id": "ephemeral-filesystem",
+      "severity": "high",
+      "risk": "n8n writes state into an ephemeral filesystem.",
+      "symptoms": [
+        "Redeploy returns to first-run setup screen.",
+        "Workflows or credentials disappear after restart.",
+        "SQLite database lives inside the container layer."
+      ],
+      "impact": "Loss of workflows, credentials, executions, and operator trust.",
+      "firstChecks": [
+        "Does the platform document the filesystem as ephemeral by default?",
+        "Is DB_TYPE set to postgresdb?",
+        "Is the n8n user folder mounted to durable storage?"
+      ],
+      "mitigation": [
+        "Use PostgreSQL for n8n main state.",
+        "Mount persistent storage for /home/node/.n8n or an explicitly configured N8N_USER_FOLDER.",
+        "Run a redeploy persistence smoke test before production."
+      ]
+    },
+    {
+      "id": "managed-db-without-app-volume",
+      "severity": "high",
+      "risk": "PostgreSQL exists, but n8n user folder and encryption material are ignored.",
+      "symptoms": [
+        "Workflows remain but credentials cannot decrypt.",
+        "Binary file workflows fail after redeploy.",
+        "Source-control or local-file features lose expected files."
+      ],
+      "impact": "Partial state survival creates harder incidents than a clean failure.",
+      "firstChecks": [
+        "Is N8N_ENCRYPTION_KEY fixed in platform secrets?",
+        "Does the deployment rely on n8n auto-generated settings in ephemeral storage?",
+        "Do workflows produce binary files on local disk?"
+      ],
+      "mitigation": [
+        "Set N8N_ENCRYPTION_KEY explicitly and back it up.",
+        "Persist n8n user folder or configure external storage where available.",
+        "Document which state lives in DB and which state lives in files."
+      ]
+    },
+    {
+      "id": "app-volume-without-db-backup",
+      "severity": "high",
+      "risk": "A volume exists, but PostgreSQL backup and restore are not designed.",
+      "symptoms": [
+        "Redeploy works but a DB corruption or deletion has no recovery path.",
+        "Snapshots exist but nobody has tested restore.",
+        "Execution history grows until DB storage pressure appears."
+      ],
+      "impact": "A single DB incident can erase the automation system.",
+      "firstChecks": [
+        "Is PostgreSQL managed or template-based/unmanaged?",
+        "Where are backups stored?",
+        "When was the last restore test?"
+      ],
+      "mitigation": [
+        "Enable managed database backups or external backups.",
+        "Write a restore runbook.",
+        "Schedule a restore drill for a staging database."
+      ]
+    },
+    {
+      "id": "free-or-sleeping-service",
+      "severity": "high",
+      "risk": "Production webhooks run on a free or sleeping service tier.",
+      "symptoms": [
+        "Webhook providers timeout on cold starts.",
+        "Scheduled workflows miss expected timing.",
+        "Free database expires or becomes unavailable."
+      ],
+      "impact": "Automation becomes unreliable even when configuration is correct.",
+      "firstChecks": [
+        "Does the web service sleep after inactivity?",
+        "Does the database expire after a fixed period?",
+        "Are production workflows time-sensitive?"
+      ],
+      "mitigation": [
+        "Use paid always-on compute for production.",
+        "Use paid persistent database resources.",
+        "Create alerts for service suspension, sleep, and database expiration."
+      ]
+    },
+    {
+      "id": "single-region-local-volume",
+      "severity": "medium-high",
+      "risk": "A local volume is mistaken for replicated durable storage.",
+      "symptoms": [
+        "One region or host issue takes down stateful service.",
+        "Scaling multiple instances fails or causes data divergence.",
+        "New Machine cannot automatically see the same files."
+      ],
+      "impact": "Downtime or data loss during host, region, or scaling events.",
+      "firstChecks": [
+        "Is the volume local to one host or region?",
+        "Can multiple replicas mount it safely?",
+        "Does the provider replicate the data automatically?"
+      ],
+      "mitigation": [
+        "Use managed PostgreSQL for shared state.",
+        "Keep off-platform backups.",
+        "Do not scale stateful local-volume services without a replication design."
+      ]
+    },
+    {
+      "id": "redeploy-reset",
+      "severity": "high",
+      "risk": "Only first launch is tested; redeploy is not tested.",
+      "symptoms": [
+        "The first demo works.",
+        "After image update, the instance is empty.",
+        "Webhook URL or credentials change unexpectedly."
+      ],
+      "impact": "A normal deployment becomes a data-loss event.",
+      "firstChecks": [
+        "Has a redeploy smoke test been run?",
+        "Were workflow and credential records checked after redeploy?",
+        "Was the same custom domain still shown in webhook nodes?"
+      ],
+      "mitigation": [
+        "Create a workflow and test credential.",
+        "Trigger redeploy.",
+        "Verify workflow, credential, execution history, and webhook URL after redeploy."
+      ]
+    },
+    {
+      "id": "custom-domain-mismatch",
+      "severity": "medium-high",
+      "risk": "The editor opens, but public webhook URL points to the wrong base URL.",
+      "symptoms": [
+        "Webhook node shows localhost, http, a temporary provider domain, or an old domain.",
+        "OAuth callback fails.",
+        "External services call a stale endpoint."
+      ],
+      "impact": "The instance looks healthy but integrations fail.",
+      "firstChecks": [
+        "Is WEBHOOK_URL set to the stable HTTPS custom domain?",
+        "Is N8N_EDITOR_BASE_URL set consistently?",
+        "Does DNS/TLS work for the chosen domain?"
+      ],
+      "mitigation": [
+        "Use a stable custom domain for production.",
+        "Set WEBHOOK_URL and N8N_EDITOR_BASE_URL explicitly.",
+        "Update OAuth provider callback URLs."
+      ]
+    },
+    {
+      "id": "secret-loss-or-rotation",
+      "severity": "high",
+      "risk": "Secrets are not backed up or are rotated without a plan.",
+      "symptoms": [
+        "Existing credentials cannot decrypt.",
+        "OAuth tokens fail after redeploy.",
+        "DB password changes but dependent service is not redeployed."
+      ],
+      "impact": "Credential outage and possible permanent access loss.",
+      "firstChecks": [
+        "Where is N8N_ENCRYPTION_KEY stored?",
+        "Can the team recover DB credentials?",
+        "Does provider require redeploy after secret changes?"
+      ],
+      "mitigation": [
+        "Keep N8N_ENCRYPTION_KEY in platform secrets and password manager.",
+        "Back up DB before secret rotation.",
+        "Document service redeploy order after secret changes."
+      ]
+    },
+    {
+      "id": "binary-data-location",
+      "severity": "medium",
+      "risk": "Binary data is written to a non-persistent path.",
+      "symptoms": [
+        "Downloaded attachments disappear.",
+        "File processing workflows fail after restart.",
+        "Read/Write Files from Disk workflows are inconsistent."
+      ],
+      "impact": "Workflow outputs become incomplete or unrecoverable.",
+      "firstChecks": [
+        "Do workflows handle files, images, PDFs, or attachments?",
+        "Where does n8n store binary data?",
+        "Is that path in a persistent volume?"
+      ],
+      "mitigation": [
+        "Place binary data path on durable storage.",
+        "Use external storage where supported and licensed.",
+        "Add binary-data workflows to redeploy smoke tests."
+      ]
+    },
+    {
+      "id": "execution-history-growth",
+      "severity": "medium",
+      "risk": "Execution history grows without retention control.",
+      "symptoms": [
+        "Database size climbs every week.",
+        "Backups become slow or expensive.",
+        "Queries and editor pages become sluggish."
+      ],
+      "impact": "Cost and reliability degrade over time.",
+      "firstChecks": [
+        "Is execution pruning enabled?",
+        "What is monthly execution volume?",
+        "What is the database storage trend?"
+      ],
+      "mitigation": [
+        "Configure execution data pruning.",
+        "Monitor database size.",
+        "Align retention with compliance and debugging needs."
+      ]
+    }
+  ]
+}

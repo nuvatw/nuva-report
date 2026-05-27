@@ -1,0 +1,238 @@
+{
+  "week": 16,
+  "title": "Week 16 scaling ladder",
+  "acceptanceTarget": "Provide a gradual route from single container + Postgres to Redis workers instead of starting with Kubernetes.",
+  "officialSources": {
+    "scalingOverview": "https://docs.n8n.io/hosting/scaling/overview/",
+    "queueMode": "https://docs.n8n.io/hosting/scaling/queue-mode/",
+    "concurrencyControl": "https://docs.n8n.io/hosting/scaling/concurrency-control/",
+    "queueModeEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/queue-mode/",
+    "executionData": "https://docs.n8n.io/hosting/scaling/execution-data/",
+    "binaryData": "https://docs.n8n.io/hosting/scaling/binary-data/",
+    "externalStorage": "https://docs.n8n.io/hosting/scaling/external-storage/",
+    "prometheusMetrics": "https://docs.n8n.io/hosting/configuration/configuration-examples/prometheus/",
+    "monitoring": "https://docs.n8n.io/hosting/logging-monitoring/monitoring/",
+    "logging": "https://docs.n8n.io/hosting/logging-monitoring/logging/",
+    "openshiftKubernetesExample": "https://docs.n8n.io/hosting/installation/server-setups/openshift-crc/"
+  },
+  "principles": [
+    "single instance first",
+    "PostgreSQL first",
+    "Observe before adding Redis workers",
+    "Use queue mode when execution concurrency and worker separation are real bottlenecks",
+    "Use separate webhook processors only after webhook ingress becomes the bottleneck",
+    "Consider Kubernetes only after queue mode operations, managed DB/Redis, centralized logs, and platform skill are mature"
+  ],
+  "stages": [
+    {
+      "id": "stage-0-local-learning",
+      "label": "local / learning single container",
+      "architecture": "single n8n container, local volume, no production public ingress",
+      "entryCriteria": [
+        "Learning or demo workflows",
+        "No business-critical credentials",
+        "No production webhook exposure"
+      ],
+      "requiredSettings": [
+        "local volume for /home/node/.n8n",
+        "fixed N8N_ENCRYPTION_KEY if any credentials matter"
+      ],
+      "exitSignals": [
+        "Workflow becomes business-critical",
+        "Need stable webhook URL",
+        "Need durable database backup"
+      ],
+      "doNotSkip": [
+        "Do not use tunnel as production",
+        "Do not store important credentials without backup"
+      ]
+    },
+    {
+      "id": "stage-1-single-container-postgres",
+      "label": "single container + PostgreSQL",
+      "architecture": "n8n single container with PostgreSQL durable state",
+      "entryCriteria": [
+        "Workflow stores real business data",
+        "Credentials and executions need restore",
+        "Single process is still enough for traffic"
+      ],
+      "requiredSettings": [
+        "DB_TYPE=postgresdb",
+        "PostgreSQL host, database, user, password, schema",
+        "fixed N8N_ENCRYPTION_KEY",
+        "backup and restore drill"
+      ],
+      "exitSignals": [
+        "p95 execution latency rises under normal production load",
+        "Active executions overlap frequently",
+        "Memory or CPU high-water marks become routine"
+      ],
+      "doNotSkip": [
+        "Do not add Redis before PostgreSQL is stable",
+        "Do not add workers before restore is proven"
+      ]
+    },
+    {
+      "id": "stage-2-larger-single-instance",
+      "label": "larger single instance + PostgreSQL + concurrency control",
+      "architecture": "larger single n8n instance with tuned execution data and concurrency",
+      "entryCriteria": [
+        "CPU or memory pressure is visible but not consistently saturated",
+        "Workload can still be handled by one n8n process",
+        "Queue backlog is not yet a persistent problem"
+      ],
+      "requiredSettings": [
+        "N8N_CONCURRENCY_PRODUCTION_LIMIT",
+        "execution data pruning",
+        "binary data mode chosen intentionally",
+        "N8N_METRICS=true",
+        "central logs for the single instance"
+      ],
+      "exitSignals": [
+        "Regular mode concurrency queues frequently",
+        "Main process becomes unresponsive while executions run",
+        "Webhook response time is affected by heavy production executions"
+      ],
+      "doNotSkip": [
+        "Do not confuse bad workflow design with platform scaling need",
+        "Do not ignore database storage growth"
+      ]
+    },
+    {
+      "id": "stage-3-observability-and-managed-state",
+      "label": "managed PostgreSQL/Redis-ready observability",
+      "architecture": "single or larger n8n instance with managed database readiness, centralized logs, metrics, and alerts",
+      "entryCriteria": [
+        "Traffic is steady enough to justify operations investment",
+        "Scaling decisions need reliable metrics",
+        "Team needs repeatable recovery and alerting"
+      ],
+      "requiredSettings": [
+        "managed PostgreSQL or equivalent DB runbook",
+        "centralized logs",
+        "Prometheus metrics",
+        "alerts for p95 latency, failed executions, DB connections, memory, storage",
+        "Week 14 backup and restore drill"
+      ],
+      "exitSignals": [
+        "Metrics show sustained execution concurrency pressure",
+        "Worker separation is needed to protect UI/API",
+        "Webhook ingress and execution workloads should be separated"
+      ],
+      "doNotSkip": [
+        "Do not add queue workers without seeing their logs",
+        "Do not run Redis as an unmonitored side process"
+      ]
+    },
+    {
+      "id": "stage-4-redis-queue-workers",
+      "label": "Redis queue mode + workers",
+      "architecture": "main n8n process, Redis message broker, PostgreSQL, one or more worker processes",
+      "entryCriteria": [
+        "Production executions overlap enough to justify worker pool",
+        "Main UI/API or webhook coordination is affected by execution load",
+        "PostgreSQL and Redis are reachable and observable"
+      ],
+      "requiredSettings": [
+        "EXECUTIONS_MODE=queue",
+        "QUEUE_BULL_REDIS_HOST",
+        "QUEUE_BULL_REDIS_PORT",
+        "shared N8N_ENCRYPTION_KEY across main and workers",
+        "n8n worker --concurrency=5",
+        "N8N_METRICS_INCLUDE_QUEUE_METRICS=true",
+        "binary data mode database or S3"
+      ],
+      "exitSignals": [
+        "Webhook ingress becomes bottleneck",
+        "Queue depth grows even after adding workers",
+        "Workers need separate pools by workload class"
+      ],
+      "doNotSkip": [
+        "Do not use filesystem binary data with queue mode",
+        "Do not set very low worker concurrency across many workers if DB connections are limited"
+      ]
+    },
+    {
+      "id": "stage-5-webhook-processors",
+      "label": "separate webhook processors + worker pools",
+      "architecture": "main process, webhook processor pool behind load balancer, Redis, workers, PostgreSQL",
+      "entryCriteria": [
+        "Webhook request volume is the ingress bottleneck",
+        "Main process should not receive heavy webhook load",
+        "Workers already process production executions"
+      ],
+      "requiredSettings": [
+        "webhook processors with EXECUTIONS_MODE=queue",
+        "WEBHOOK_URL configured on main",
+        "load balancer routes /webhook/* and /webhook-waiting/* to webhook processors",
+        "/webhook-test/* routes to main",
+        "N8N_DISABLE_PRODUCTION_MAIN_PROCESS=true when appropriate"
+      ],
+      "exitSignals": [
+        "Need high availability for main process",
+        "Need independent rolling deploys",
+        "Need worker autoscaling and platform-level orchestration"
+      ],
+      "doNotSkip": [
+        "Do not add main process to the webhook load balancer pool",
+        "Do not route manual webhook-test traffic away from main"
+      ]
+    },
+    {
+      "id": "stage-6-managed-db-redis-centralized-logs",
+      "label": "managed DB/Redis + centralized logs + multi-main review",
+      "architecture": "queue mode with managed PostgreSQL, managed Redis, centralized logs and metrics, optional multi-main evaluation",
+      "entryCriteria": [
+        "Queue mode is the core production path",
+        "Redis and database availability affect business operations",
+        "Team needs operational governance and HA evaluation"
+      ],
+      "requiredSettings": [
+        "managed PostgreSQL or mature self-managed equivalent",
+        "managed Redis or mature self-managed equivalent",
+        "centralized logs for main, webhook processors, workers, Redis, PostgreSQL, load balancer",
+        "all main and worker processes run same n8n version",
+        "sticky sessions if multi-main is used"
+      ],
+      "exitSignals": [
+        "Need pod scheduling or worker autoscaling",
+        "Need rolling deploy primitives across many processes",
+        "Need standard Kubernetes platform governance"
+      ],
+      "doNotSkip": [
+        "Do not enable multi-main without understanding leader/follower behavior",
+        "Do not scale worker count beyond DB connection capacity"
+      ]
+    },
+    {
+      "id": "stage-7-kubernetes",
+      "label": "Kubernetes / OpenShift / EKS style orchestration",
+      "architecture": "main pods, worker pods, webhook processor pods, PostgreSQL, Redis, object storage, ingress, secrets, centralized logs",
+      "entryCriteria": [
+        "Queue mode operations are already understood",
+        "DB/Redis/object storage are managed or professionally operated",
+        "Team needs rolling updates, worker autoscaling, pod scheduling, and platform governance",
+        "Team can operate Kubernetes incidents"
+      ],
+      "requiredSettings": [
+        "shared database",
+        "message queue",
+        "object storage for binary data",
+        "centralized logs",
+        "secret manager",
+        "ingress/load balancer",
+        "backup and restore",
+        "rollout and rollback"
+      ],
+      "exitSignals": [
+        "Move to enterprise HA/multi-main architecture",
+        "Formal SRE ownership",
+        "Multi-environment platform lifecycle"
+      ],
+      "doNotSkip": [
+        "Do not start with Kubernetes to avoid learning queue mode",
+        "Do not hide DB/Redis/logging gaps behind pods"
+      ]
+    }
+  ]
+}

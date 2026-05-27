@@ -1,0 +1,13 @@
+layer,check,expected_result,why_it_matters
+"DNS","Create A record n8n.example.com -> VPS_PUBLIC_IPV4","DNS resolves to the VPS public IPv4 before starting Caddy certificate issuance","Caddy can only obtain a public certificate when the domain points to the server and reaches ports 80/443."
+"Firewall","Allow tcp/22 from admin IP range","SSH remains available for controlled administration","A VPS needs administrative access, but broad SSH exposure should be narrowed when possible."
+"Firewall","Allow tcp/80 from 0.0.0.0/0 and ::/0","HTTP ACME challenge and HTTP-to-HTTPS redirects can reach Caddy","Caddy automatic HTTPS uses HTTP port 80 for redirects and common ACME flows."
+"Firewall","Allow tcp/443 from 0.0.0.0/0 and ::/0","Users and webhook providers reach n8n through HTTPS","Production webhook callbacks must use HTTPS."
+"Firewall","Do not allow tcp/5678 from the internet","n8n is reachable only through Caddy reverse proxy","Direct public n8n port exposure bypasses the proxy boundary and makes webhook URL mistakes more likely."
+"Firewall","Do not allow tcp/5432 from the internet","PostgreSQL is only reachable on the internal Docker network","Database exposure is not required for this architecture and increases risk."
+"Docker Compose","docker compose --env-file .env.example -f compose.yaml config succeeds","Rendered Compose config contains caddy, n8n, postgres, volumes, networks, and expected env vars","A valid Compose graph is the minimum deployability check before touching a VPS."
+"Caddy","Caddyfile validates with caddy validate","Caddy accepts n8n.example.com and reverse_proxy n8n:5678","Caddy syntax errors would block HTTPS and webhook delivery."
+"HTTPS","curl -I https://n8n.example.com returns 200 or 302 from n8n","TLS terminates at Caddy and traffic reaches n8n","A browser loading the editor is not enough; webhook providers also need a reachable public endpoint."
+"n8n env","WEBHOOK_URL=https://n8n.example.com/ and N8N_EDITOR_BASE_URL=https://n8n.example.com/","Production webhook URL and editor URL do not show localhost","OAuth callback and webhook providers must not be configured with localhost."
+"n8n env","N8N_PROXY_HOPS=1","n8n trusts the immediate reverse proxy hop","Forwarded protocol and host data should represent the original HTTPS request."
+"Persistence","n8n_data, postgres_data, caddy_data, and caddy_config volumes exist","Workflows, credentials, database state, and Caddy certificates survive container replacement","Production-like deployment requires persistence across updates and restarts."

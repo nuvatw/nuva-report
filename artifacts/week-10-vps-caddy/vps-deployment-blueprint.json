@@ -1,0 +1,73 @@
+{
+  "week": 10,
+  "checkedAt": "2026-05-27T23:45:00+08:00",
+  "timezone": "Asia/Taipei",
+  "goal": "Complete simulation of a production-shaped https://n8n.example.com VPS architecture with Docker Compose, PostgreSQL, and Caddy.",
+  "publicUrl": "https://n8n.example.com/",
+  "architecture": {
+    "dns": {
+      "recordType": "A",
+      "hostname": "n8n.example.com",
+      "target": "VPS_PUBLIC_IPV4",
+      "notes": "AAAA may be added when the VPS has a stable public IPv6 address."
+    },
+    "firewall": {
+      "allowInboundTcp": [22, 80, 443],
+      "denyPublicTcp": [5432, 5678],
+      "adminRecommendation": "Restrict SSH tcp/22 to known administrator IP ranges when possible."
+    },
+    "reverseProxy": {
+      "service": "caddy",
+      "image": "caddy:2-alpine",
+      "publicPorts": [80, 443],
+      "upstream": "n8n:5678",
+      "automaticHttps": true,
+      "persistentVolumes": ["caddy_data", "caddy_config"]
+    },
+    "application": {
+      "service": "n8n",
+      "image": "docker.n8n.io/n8nio/n8n:2.22.4",
+      "hostPortPublished": false,
+      "internalPort": 5678,
+      "publicEnvironment": {
+        "N8N_HOST": "n8n.example.com",
+        "N8N_PROTOCOL": "https",
+        "WEBHOOK_URL": "https://n8n.example.com/",
+        "N8N_EDITOR_BASE_URL": "https://n8n.example.com/",
+        "N8N_PROXY_HOPS": "1"
+      },
+      "stateEnvironment": {
+        "DB_TYPE": "postgresdb",
+        "DB_POSTGRESDB_HOST": "postgres",
+        "N8N_ENCRYPTION_KEY": "fixed external secret"
+      },
+      "persistentVolumes": ["n8n_data"]
+    },
+    "database": {
+      "service": "postgres",
+      "image": "postgres:16-alpine",
+      "hostPortPublished": false,
+      "internalPort": 5432,
+      "persistentVolumes": ["postgres_data"]
+    }
+  },
+  "acceptance": {
+    "simulationOnly": true,
+    "composeConfigRenders": true,
+    "caddyfileExpectedToValidate": true,
+    "webhookUrlMustNotContainLocalhost": true,
+    "expectedProductionWebhookBase": "https://n8n.example.com/",
+    "localhostIsAllowedOnlyForInternalContainerNetworking": false
+  },
+  "deploymentCommands": [
+    "sudo ufw allow 22/tcp",
+    "sudo ufw allow 80/tcp",
+    "sudo ufw allow 443/tcp",
+    "sudo ufw enable",
+    "docker compose --env-file .env -f compose.yaml config",
+    "docker compose --env-file .env -f compose.yaml up -d",
+    "curl -I https://n8n.example.com",
+    "docker compose --env-file .env -f compose.yaml exec n8n env | grep -E 'WEBHOOK_URL|N8N_EDITOR_BASE_URL|N8N_PROXY_HOPS'"
+  ],
+  "riskConclusion": "A production n8n webhook URL must be a stable HTTPS domain. If the editor or webhook node shows localhost, the reverse proxy/public URL layer is misconfigured."
+}

@@ -1,0 +1,67 @@
+{
+  "week": 20,
+  "title": "Gate 05 final scorecard",
+  "gate": "Can the team provide a reasonable deployment recommendation and next-stage adoption plan?",
+  "overallStatus": "pass",
+  "primaryRecommendation": "Use the Week 19 VPS Docker Compose + PostgreSQL + Caddy deployment package as the self-hosted baseline; choose n8n Cloud for low-operations teams; evaluate queue mode and AWS/GCP only after evidence-based gates, including FinOps readiness.",
+  "mustAnswer": [
+    {
+      "question": "Why choose this route?",
+      "answer": "It balances handoff readiness, fixed baseline cost, PostgreSQL durability, DNS/TLS clarity, backup discipline, and a gradual scaling path.",
+      "evidence": [
+        "artifacts/week-19-capstone/deployment-package/README.md",
+        "docs/week-18-platform-selection-cost-risk.md"
+      ],
+      "status": "pass"
+    },
+    {
+      "question": "Where are the risks?",
+      "answer": "Risks are wrong webhook URL, lost credentials, database connection failure, secure cookie behavior, execution data growth, binary data storage, update failure, logs, and cost drift.",
+      "evidence": [
+        "artifacts/week-17-troubleshooting/week-17-troubleshooting-cards.json",
+        "artifacts/week-18-platform-selection/week-18-cost-risk-worksheet.csv",
+        "artifacts/week-20-final/final-recommendation-report.md"
+      ],
+      "status": "pass"
+    },
+    {
+      "question": "How do we back up?",
+      "answer": "Back up PostgreSQL, n8n_data, Caddy state, .env, N8N_ENCRYPTION_KEY, and deployment files, then prove restore through readiness, credential decryption, and webhook execution.",
+      "evidence": [
+        "artifacts/week-19-capstone/deployment-package/backup-restore-runbook.md",
+        "artifacts/week-20-final/week-20-90-day-maintenance-cadence.csv"
+      ],
+      "status": "pass"
+    },
+    {
+      "question": "How do we update?",
+      "answer": "Review release notes, back up, record previous image tag, update in a maintenance window, verify health/readiness and workflow execution, then roll back if needed.",
+      "evidence": [
+        "artifacts/week-19-capstone/deployment-package/update-runbook.md",
+        "artifacts/week-20-final/week-20-90-day-maintenance-cadence.csv"
+      ],
+      "status": "pass"
+    },
+    {
+      "question": "When do we scale?",
+      "answer": "Scale after metrics show sustained pressure. Apply pruning and concurrency control first; evaluate queue mode after PostgreSQL, logs, backup, RPO/RTO, and owner readiness are stable.",
+      "evidence": [
+        "artifacts/week-16-scaling/week-16-scaling-ladder.json",
+        "artifacts/week-20-final/week-20-adoption-candidates-and-owners.csv"
+      ],
+      "status": "pass"
+    }
+  ],
+  "finalArtifacts": [
+    "artifacts/week-20-final/final-recommendation-report.md",
+    "artifacts/week-20-final/week-20-90-day-maintenance-cadence.csv",
+    "artifacts/week-20-final/week-20-adoption-candidates-and-owners.csv",
+    "artifacts/week-20-final/week-20-three-hour-showcase-agenda.json"
+  ],
+  "nextStageDecision": {
+    "days1to14": "Stabilize baseline, owners, secrets, backup, restore.",
+    "days15to30": "Operate safely with update window, security audit, logs, cost baseline.",
+    "days31to60": "Measure execution data, DB growth, workflow risk, memory, CPU, storage.",
+    "days61to90": "Decide whether to stay baseline, move to n8n Cloud/PaaS, evaluate queue mode, or prepare AWS/GCP with explicit RPO/RTO and FinOps."
+  }
+}

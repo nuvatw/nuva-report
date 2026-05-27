@@ -1,0 +1,71 @@
+{
+  "week": 7,
+  "executedAt": "2026-05-27T22:48:00+08:00",
+  "purpose": "Run n8n with Docker Compose and PostgreSQL as a production-shaped local stack",
+  "compose": {
+    "projectName": "n8n-week7",
+    "composeFile": "artifacts/week-07-compose/compose.yaml",
+    "envFile": "artifacts/week-07-compose/.env",
+    "composeVersion": "v5.1.0",
+    "command": "docker compose --env-file artifacts/week-07-compose/.env -f artifacts/week-07-compose/compose.yaml up -d"
+  },
+  "services": {
+    "postgres": {
+      "container": "n8n-week7-postgres-1",
+      "image": "postgres:16-alpine",
+      "status": "running",
+      "health": "healthy",
+      "publishedToHost": false,
+      "internalPort": 5432,
+      "volume": "n8n-week7_postgres_data:/var/lib/postgresql/data",
+      "database": "n8n_week7",
+      "user": "n8n_week7"
+    },
+    "n8n": {
+      "container": "n8n-week7-n8n-1",
+      "image": "docker.n8n.io/n8nio/n8n:2.22.4",
+      "n8nVersion": "2.22.4",
+      "status": "running",
+      "hostPort": 5687,
+      "containerPort": 5678,
+      "url": "http://localhost:5687",
+      "httpStatus": 200,
+      "volume": "n8n-week7_n8n_data:/home/node/.n8n",
+      "dependsOn": "postgres: service_healthy"
+    }
+  },
+  "databaseVerification": {
+    "dbType": "postgresdb",
+    "dbHostFromN8n": "postgres",
+    "publicTableCount": 93,
+    "migrationCount": 184,
+    "requiredTablesObserved": [
+      "credentials_entity",
+      "execution_entity",
+      "migrations",
+      "workflow_entity"
+    ],
+    "workflowProbe": {
+      "id": "week07PostgresProbe",
+      "name": "Week 07 PostgreSQL Probe",
+      "observedInPostgres": true,
+      "observedAfterN8nRestart": true
+    }
+  },
+  "environment": {
+    "DB_TYPE": "postgresdb",
+    "DB_POSTGRESDB_HOST": "postgres",
+    "DB_POSTGRESDB_PORT": "5432",
+    "DB_POSTGRESDB_DATABASE": "n8n_week7",
+    "DB_POSTGRESDB_USER": "n8n_week7",
+    "DB_POSTGRESDB_PASSWORD": "redacted_local_test_value",
+    "N8N_ENCRYPTION_KEY": "redacted_fixed_local_test_value",
+    "GENERIC_TIMEZONE": "Asia/Taipei",
+    "TZ": "Asia/Taipei"
+  },
+  "decision": {
+    "productionShape": "Separate n8n and database services, keep PostgreSQL data in a named volume, keep n8n user folder in a named volume, wait for PostgreSQL health before n8n starts, pin the n8n image, and fix N8N_ENCRYPTION_KEY.",
+    "notYetProduction": "This local stack still lacks TLS, reverse proxy, external backups, secrets management, monitoring, alerting, and tested restore automation.",
+    "nextWeek": "Week 08 can add tunnel and stable public domain behavior on top of the local stack."
+  }
+}

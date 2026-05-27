@@ -1,0 +1,84 @@
+name: n8n-week10-vps
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      n8n:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - type: bind
+        source: ./Caddyfile
+        target: /etc/caddy/Caddyfile
+        read_only: true
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - frontdoor
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.22.4
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${POSTGRES_DB}
+      DB_POSTGRESDB_USER: ${POSTGRES_USER}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_POSTGRESDB_SCHEMA: public
+      N8N_HOST: ${N8N_DOMAIN}
+      N8N_PORT: 5678
+      N8N_PROTOCOL: https
+      WEBHOOK_URL: ${N8N_PUBLIC_URL}
+      N8N_EDITOR_BASE_URL: ${N8N_PUBLIC_URL}
+      N8N_PROXY_HOPS: 1
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      N8N_RUNNERS_ENABLED: "true"
+      N8N_SECURE_COOKIE: "true"
+      GENERIC_TIMEZONE: ${GENERIC_TIMEZONE}
+      TZ: ${TZ}
+    expose:
+      - "5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - frontdoor
+      - internal
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+networks:
+  frontdoor:
+  internal:
+    internal: true
+
+volumes:
+  caddy_data:
+  caddy_config:
+  n8n_data:
+  postgres_data:

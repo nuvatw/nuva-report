@@ -1,0 +1,324 @@
+{
+  "week": 17,
+  "title": "Troubleshooting cards for n8n deployment incidents",
+  "acceptanceTarget": "For wrong webhook URL, lost credentials, database connection failed, and secure cookie error, the responder can state the first check and repair direction without guessing.",
+  "officialSources": {
+    "webhookUrl": "https://docs.n8n.io/hosting/configuration/configuration-examples/webhook-url/",
+    "webhookCommonIssues": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/common-issues/",
+    "telegramWebhookHttps": "https://docs.n8n.io/integrations/builtin/trigger-nodes/n8n-nodes-base.telegramtrigger/common-issues/",
+    "databaseEnvironment": "https://docs.n8n.io/hosting/configuration/environment-variables/database/",
+    "supportedDatabases": "https://docs.n8n.io/hosting/configuration/supported-databases-settings/",
+    "logging": "https://docs.n8n.io/hosting/logging-monitoring/logging/",
+    "logsEnvironment": "https://docs.n8n.io/hosting/configuration/environment-variables/logs/",
+    "monitoring": "https://docs.n8n.io/hosting/logging-monitoring/monitoring/",
+    "securityEnvironment": "https://docs.n8n.io/hosting/configuration/environment-variables/security/",
+    "sslSetup": "https://docs.n8n.io/hosting/securing/set-up-ssl/",
+    "customEncryptionKey": "https://docs.n8n.io/hosting/configuration/configuration-examples/encryption-key/",
+    "encryptionKeyRotation": "https://docs.n8n.io/hosting/securing/encryption-key-rotation/",
+    "deploymentEnvironment": "https://docs.n8n.io/hosting/configuration/environment-variables/deployment/",
+    "oauthCredentials": "https://docs.n8n.io/integrations/builtin/credentials/httprequest/",
+    "memoryErrors": "https://docs.n8n.io/hosting/scaling/memory-errors/",
+    "queueMode": "https://docs.n8n.io/hosting/scaling/queue-mode/"
+  },
+  "cards": [
+    {
+      "id": "T01",
+      "name": "wrong webhook URL",
+      "layer": "URL",
+      "symptom": "The external service calls localhost, an old domain, an HTTP URL, or reports a bad webhook URL.",
+      "likelyCauses": [
+        "WEBHOOK_URL is unset or points to the wrong public base URL",
+        "Reverse proxy exposes HTTPS but n8n generated an internal HTTP URL",
+        "Workflow was reactivated before URL configuration was corrected"
+      ],
+      "firstCheck": "Compare the Webhook node Production URL in the editor with WEBHOOK_URL and the actual public domain.",
+      "checkCommands": [
+        "docker inspect n8n --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E 'WEBHOOK_URL|N8N_PROXY_HOPS|N8N_EDITOR_BASE_URL'",
+        "curl -Iv https://n8n.example.com/healthz",
+        "curl -Iv https://n8n.example.com/webhook/path"
+      ],
+      "repairDirection": "Set WEBHOOK_URL to the HTTPS public base URL, set N8N_PROXY_HOPS when behind a proxy, restart n8n, then reactivate or re-register the webhook.",
+      "prevention": "Keep WEBHOOK_URL in deployment secrets and verify displayed webhook URLs after any domain or proxy change.",
+      "evidenceRequired": [
+        "Editor Production URL",
+        "Container env",
+        "Provider webhook registration",
+        "curl result"
+      ]
+    },
+    {
+      "id": "T02",
+      "name": "lost credentials",
+      "layer": "security",
+      "symptom": "After migration, container recreation, or worker rollout, credentials cannot decrypt or OAuth tokens fail unexpectedly.",
+      "likelyCauses": [
+        "N8N_ENCRYPTION_KEY changed",
+        "Original .n8n settings file was not preserved",
+        "Workers use a different encryption key than main"
+      ],
+      "firstCheck": "Verify the active N8N_ENCRYPTION_KEY against the original production key before changing credentials.",
+      "checkCommands": [
+        "docker inspect n8n --format '{{range .Config.Env}}{{println .}}{{end}}' | grep N8N_ENCRYPTION_KEY",
+        "docker logs --since 30m n8n | grep -i 'credential\\|encryption\\|decrypt'",
+        "grep -R \"N8N_ENCRYPTION_KEY\" .env artifacts/week-07-compose/.env artifacts/week-08-tunnel/.env"
+      ],
+      "repairDirection": "Restore the original N8N_ENCRYPTION_KEY or restore from a backup that includes the matching key; if the key is permanently lost, recreate affected credentials.",
+      "prevention": "Store the instance encryption key in a managed secret store, include it in restore drills, and require the same key on main, workers, and webhook processors.",
+      "evidenceRequired": [
+        "Current key source",
+        "Original key source",
+        "Credential error text",
+        "Backup timestamp"
+      ]
+    },
+    {
+      "id": "T03",
+      "name": "database connection failed",
+      "layer": "DB",
+      "symptom": "n8n startup logs show database connection failed, or /healthz is reachable while /healthz/readiness is not ready.",
+      "likelyCauses": [
+        "DB_TYPE or DB_POSTGRESDB_HOST is wrong",
+        "PostgreSQL password, database name, port, or SSL settings are wrong",
+        "n8n and PostgreSQL are not on the same Docker network"
+      ],
+      "firstCheck": "Check DB_TYPE=postgresdb and every DB_POSTGRESDB_* value, then test /healthz/readiness.",
+      "checkCommands": [
+        "docker logs --since 30m n8n | grep -i 'database\\|postgres\\|connection'",
+        "curl -s -o /dev/null -w '%{http_code}' http://localhost:5687/healthz/readiness",
+        "docker compose ps postgres"
+      ],
+      "repairDirection": "Correct PostgreSQL host, port, database, user, password, SSL, and Docker network; restart n8n only after DB is healthy.",
+      "prevention": "Pin DB env in .env, run readiness checks after deploy, and include DB restore and connection tests in release gates.",
+      "evidenceRequired": [
+        "DB env",
+        "DB logs",
+        "n8n startup logs",
+        "readiness HTTP status"
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "secure cookie error",
+      "layer": "security",
+      "symptom": "Login session does not persist, browser rejects cookies, or secure cookie behavior fails behind a proxy.",
+      "likelyCauses": [
+        "Public access uses HTTP while N8N_SECURE_COOKIE remains true",
+        "TLS terminates at the proxy but X-Forwarded-Proto is missing or wrong",
+        "Local testing copied production cookie settings without HTTPS"
+      ],
+      "firstCheck": "Confirm the browser URL is HTTPS and the final proxy sends X-Forwarded-Proto=https to n8n.",
+      "checkCommands": [
+        "curl -I https://n8n.example.com",
+        "docker inspect n8n --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E 'N8N_SECURE_COOKIE|N8N_PROXY_HOPS|N8N_PROTOCOL'",
+        "docker logs --since 30m n8n | grep -i 'cookie\\|secure\\|session'"
+      ],
+      "repairDirection": "For production, fix TLS and forwarded headers; for local-only HTTP testing, set N8N_SECURE_COOKIE=false and revert before public exposure.",
+      "prevention": "Keep production on HTTPS, test proxy headers during deploy, and separate local-only env from public env.",
+      "evidenceRequired": [
+        "Response headers",
+        "Proxy headers",
+        "Cookie settings",
+        "Browser console message"
+      ]
+    },
+    {
+      "id": "T05",
+      "name": "OAuth callback mismatch",
+      "layer": "OAuth",
+      "symptom": "The provider rejects OAuth login with redirect URI mismatch or invalid callback.",
+      "likelyCauses": [
+        "Provider redirect URI does not match the n8n OAuth Redirect URL",
+        "WEBHOOK_URL or N8N_EDITOR_BASE_URL points to a stale domain",
+        "Proxy rewrites scheme or host"
+      ],
+      "firstCheck": "Copy the OAuth Redirect URL displayed by n8n and compare it byte-for-byte with the provider redirect URI.",
+      "checkCommands": [
+        "docker inspect n8n --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E 'WEBHOOK_URL|N8N_EDITOR_BASE_URL|N8N_PROTOCOL|N8N_HOST'",
+        "curl -Iv https://n8n.example.com/rest/oauth2-credential/callback"
+      ],
+      "repairDirection": "Correct the n8n public URL or provider redirect URI, then reconnect the credential through the n8n UI.",
+      "prevention": "Document OAuth redirect URI for each credential and retest after domain, proxy, or protocol changes.",
+      "evidenceRequired": [
+        "n8n OAuth Redirect URL",
+        "Provider redirect URI",
+        "Public base URL",
+        "Provider error message"
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "proxy forwarded headers",
+      "layer": "proxy",
+      "symptom": "IP whitelist, scheme detection, websocket, or client IP behavior is wrong behind a reverse proxy.",
+      "likelyCauses": [
+        "N8N_PROXY_HOPS is not set",
+        "X-Forwarded-For, X-Forwarded-Host, or X-Forwarded-Proto is missing",
+        "Multiple proxies changed the expected hop count"
+      ],
+      "firstCheck": "Inspect the last proxy configuration and confirm n8n receives the correct forwarded headers.",
+      "checkCommands": [
+        "docker inspect n8n --format '{{range .Config.Env}}{{println .}}{{end}}' | grep N8N_PROXY_HOPS",
+        "curl -Iv https://n8n.example.com/healthz"
+      ],
+      "repairDirection": "Set N8N_PROXY_HOPS to the number of trusted proxies and configure the final proxy to pass X-Forwarded-* headers.",
+      "prevention": "Include proxy header tests in every public URL change and keep a route map for /webhook, /webhook-waiting, and /webhook-test.",
+      "evidenceRequired": [
+        "Proxy config",
+        "n8n env",
+        "Access log",
+        "Failing IP or scheme behavior"
+      ]
+    },
+    {
+      "id": "T07",
+      "name": "DNS or TLS failure",
+      "layer": "DNS",
+      "symptom": "The public domain does not resolve, TLS certificate fails, or HTTPS health checks fail.",
+      "likelyCauses": [
+        "DNS A, AAAA, or CNAME record points to the wrong target",
+        "Reverse proxy certificate does not cover the hostname",
+        "Firewall or load balancer is not forwarding 443"
+      ],
+      "firstCheck": "Resolve the hostname and run an HTTPS header check against /healthz.",
+      "checkCommands": [
+        "dig n8n.example.com",
+        "curl -Iv https://n8n.example.com/healthz",
+        "curl -Iv http://n8n.example.com/healthz"
+      ],
+      "repairDirection": "Fix DNS records, proxy virtual host, certificate coverage, or firewall forwarding before changing n8n workflows.",
+      "prevention": "Track DNS TTL, certificate renewal, and proxy route ownership in the deployment runbook.",
+      "evidenceRequired": [
+        "DNS answer",
+        "Certificate subject and SAN",
+        "HTTP status",
+        "Proxy access log"
+      ]
+    },
+    {
+      "id": "T08",
+      "name": "container restart loop",
+      "layer": "container",
+      "symptom": "The n8n container restarts repeatedly or the UI cannot be reached after deploy.",
+      "likelyCauses": [
+        "Invalid env value",
+        "Volume permission or mount issue",
+        "Port collision",
+        "Image tag or package startup failure"
+      ],
+      "firstCheck": "Check docker ps, restart count, and the first startup error in docker logs.",
+      "checkCommands": [
+        "docker ps --filter name=n8n --format '{{.Names}} {{.Status}} {{.Ports}}'",
+        "docker logs --tail 200 n8n",
+        "docker inspect n8n --format '{{json .Mounts}}'"
+      ],
+      "repairDirection": "Fix the startup error, env file, mount, permission, or port mapping; do not delete data volumes during first response.",
+      "prevention": "Run deploys with health checks, keep env validation, and document volume names.",
+      "evidenceRequired": [
+        "Restart count",
+        "Startup error",
+        "Mount list",
+        "Image tag"
+      ]
+    },
+    {
+      "id": "T09",
+      "name": "resource exhaustion",
+      "layer": "resource",
+      "symptom": "Users see 503, Connection Lost, or workflows stop with memory-related messages.",
+      "likelyCauses": [
+        "Workflow fetches or transforms too much data in one execution",
+        "Binary data is handled in memory",
+        "Concurrency is higher than available CPU or memory"
+      ],
+      "firstCheck": "Inspect memory, CPU, OOM events, and the execution that was running when the error occurred.",
+      "checkCommands": [
+        "docker stats --no-stream",
+        "docker logs --since 30m n8n | grep -i 'heap\\|memory\\|503\\|Connection Lost'",
+        "docker inspect n8n --format '{{.State.OOMKilled}}'"
+      ],
+      "repairDirection": "Reduce concurrency, split heavy workflows, adjust binary data storage, prune executions, or increase resources.",
+      "prevention": "Add resource alerts, define workflow payload limits, and review heavy binary workflows before production.",
+      "evidenceRequired": [
+        "OOM state",
+        "Memory usage",
+        "Execution id",
+        "Workflow payload size"
+      ]
+    },
+    {
+      "id": "T10",
+      "name": "queue worker stalled",
+      "layer": "queue",
+      "symptom": "Executions wait in queue, workers do not process jobs, or queue mode incidents only affect production executions.",
+      "likelyCauses": [
+        "Redis connection failed",
+        "Workers cannot reach PostgreSQL",
+        "Workers do not share the main N8N_ENCRYPTION_KEY",
+        "Worker concurrency and DB pool are mismatched"
+      ],
+      "firstCheck": "Check worker logs, Redis env, DB env, and shared N8N_ENCRYPTION_KEY across main and workers.",
+      "checkCommands": [
+        "docker logs --since 30m n8n-worker",
+        "docker inspect n8n-worker --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E 'EXECUTIONS_MODE|QUEUE_BULL_REDIS|DB_POSTGRESDB|N8N_ENCRYPTION_KEY'",
+        "curl -s -o /dev/null -w '%{http_code}' http://localhost:5687/healthz/readiness"
+      ],
+      "repairDirection": "Fix Redis, DB, shared encryption key, worker command, or concurrency; restart workers after main and DB are ready.",
+      "prevention": "Keep main and workers on the same version, expose worker health checks, and monitor queue metrics.",
+      "evidenceRequired": [
+        "Worker logs",
+        "Redis env",
+        "DB readiness",
+        "Shared key confirmation"
+      ]
+    },
+    {
+      "id": "T11",
+      "name": "webhook path or method conflict",
+      "layer": "workflow",
+      "symptom": "n8n reports that a webhook path is already in use, or Production URL does not trigger while Test URL works.",
+      "likelyCauses": [
+        "Another active workflow owns the same path and HTTP method",
+        "The workflow is not active",
+        "The caller uses Test URL behavior for a production workflow"
+      ],
+      "firstCheck": "Confirm workflow active state, webhook path, HTTP method, and whether the caller uses Test URL or Production URL.",
+      "checkCommands": [
+        "curl -Iv https://n8n.example.com/webhook/path",
+        "docker logs --since 30m n8n | grep -i 'webhook\\|path\\|method'"
+      ],
+      "repairDirection": "Deactivate the conflicting workflow, change path or method, activate production workflow, and update the external caller.",
+      "prevention": "Maintain a webhook registry with path, method, owner, active workflow, and external caller.",
+      "evidenceRequired": [
+        "Workflow active state",
+        "Webhook path",
+        "HTTP method",
+        "Caller URL"
+      ]
+    },
+    {
+      "id": "T12",
+      "name": "missing logs or evidence",
+      "layer": "observability",
+      "symptom": "The team cannot determine which process, node, or request caused the incident.",
+      "likelyCauses": [
+        "N8N_LOG_LEVEL is too low for the incident",
+        "Logs are only local container stdout and were rotated away",
+        "Main, workers, proxy, DB, and Redis logs are not correlated"
+      ],
+      "firstCheck": "Confirm log output, format, retention, and whether the incident timestamp exists in logs.",
+      "checkCommands": [
+        "docker logs --since 2h n8n",
+        "docker inspect n8n --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E 'N8N_LOG_LEVEL|N8N_LOG_OUTPUT|N8N_LOG_FORMAT|DB_LOGGING_ENABLED'",
+        "curl -s http://localhost:5687/healthz"
+      ],
+      "repairDirection": "Enable structured logs, centralize process logs, add DB logging during investigation when needed, and write an incident note with exact timestamps.",
+      "prevention": "Use JSON logs, centralized retention, incident note discipline, and monitoring links in every alert.",
+      "evidenceRequired": [
+        "Log configuration",
+        "Incident timestamp",
+        "Process list",
+        "Alert link"
+      ]
+    }
+  ]
+}

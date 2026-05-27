@@ -1,0 +1,9 @@
+workload,trigger_type,formula,monthly_executions,counts_toward_quota,cloud_fit,watchouts
+"Daily CRM cleanup","schedule","1 run/day * 31 days",31,true,"Starter friendly","Low volume; check credential ownership and error notifications."
+"Hourly support digest","schedule","24 runs/day * 31 days",744,true,"Starter friendly","Execution data retention may be enough at 7 days only for short debugging windows."
+"Every 5 minute monitor","schedule","12 runs/hour * 24 hours/day * 31 days",8928,true,"Pro candidate","Monthly volume exceeds Starter baseline; confirm concurrency during outages."
+"Lead intake webhook","webhook","80 events/day * 31 days",2480,true,"Starter edge","Almost consumes the Starter baseline by itself; add buffer before launch."
+"Payment event webhook","webhook","500 events/day * 31 days",15500,true,"Pro or Enterprise candidate","Burst concurrency and retry behavior matter more than average daily count."
+"Support chatbot","chatbot","120 conversations/week * 8 messages/conversation * 4.345 weeks/month",4172,true,"Pro candidate","Each message can become one production execution; also watch AI provider cost."
+"AI document processing","webhook","50 documents/day * 31 days",1550,true,"Cloud only if files are small","Binary data and memory can become the real limit before execution count."
+"Manual workflow testing","manual","Manual test executions during development",0,false,"Cloud friendly","Manual executions do not count toward quota, but large manual runs can still consume memory."

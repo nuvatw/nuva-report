@@ -1,0 +1,6 @@
+services:
+  n8n:
+    environment:
+      WEBHOOK_URL: ${WEEK8_PUBLIC_URL}
+      N8N_EDITOR_BASE_URL: ${WEEK8_PUBLIC_URL}
+      N8N_PROXY_HOPS: "1"

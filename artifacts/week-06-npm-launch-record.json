@@ -1,0 +1,50 @@
+{
+  "week": 6,
+  "executedAt": "2026-05-27T22:33:00+08:00",
+  "purpose": "Compare n8n npm/npx quick start with Docker single-container self-hosting",
+  "localRuntime": {
+    "node": "v24.13.1",
+    "npm": "11.8.0",
+    "npx": "11.8.0"
+  },
+  "n8n": {
+    "npxVersionCommand": "N8N_USER_FOLDER=/Users/linshangche/Desktop/projects/nuva-report/artifacts/week-06-npm-user-folder N8N_PORT=5686 GENERIC_TIMEZONE=Asia/Taipei TZ=Asia/Taipei N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true N8N_RUNNERS_ENABLED=true npx --yes n8n --version",
+    "npxVersionResult": "2.22.4",
+    "npxStartCommand": "N8N_USER_FOLDER=/Users/linshangche/Desktop/projects/nuva-report/artifacts/week-06-npm-user-folder N8N_PORT=5686 GENERIC_TIMEZONE=Asia/Taipei TZ=Asia/Taipei N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true N8N_RUNNERS_ENABLED=true npx --yes n8n start",
+    "npxPort": 5686,
+    "npxHttpStatus": 200,
+    "npxEditorUrl": "http://localhost:5686",
+    "npxProcessStopped": true,
+    "npxUserFolderRemovedAfterRecord": true
+  },
+  "observedNpmInstallSignals": {
+    "peerDependencyWarningsObserved": true,
+    "deprecatedPackageWarningsObserved": true,
+    "examples": [
+      "ERESOLVE overriding peer dependency for zod-related AI SDK packages",
+      "deprecated warnings for glob, rimraf, uuid, tar, npmlog, gauge, q, gm, lodash.get and others",
+      "runtime warning that N8N_RUNNERS_ENABLED is no longer needed in n8n 2.22.4"
+    ]
+  },
+  "observedN8nUserFolderFiles": [
+    ".n8n/config",
+    ".n8n/database.sqlite",
+    ".n8n/database.sqlite-shm",
+    ".n8n/database.sqlite-wal",
+    ".n8n/n8nEventLog.log",
+    ".n8n/nodes/package.json"
+  ],
+  "dockerBaselineFromWeek05": {
+    "containerName": "n8n-week5-local",
+    "image": "docker.n8n.io/n8nio/n8n:latest",
+    "n8nVersion": "2.22.4",
+    "volumeName": "n8n_data",
+    "mount": "n8n_data:/home/node/.n8n",
+    "portMapping": "0.0.0.0:5678->5678/tcp"
+  },
+  "decision": {
+    "npmQuickStartValue": "Fastest path for local learning, CLI checks, one-person experiments and throwaway workflow exploration.",
+    "stopUsingNpmAsLongTermPlanWhen": "The instance needs uptime, stable public URLs, OAuth callbacks, team usage, real credentials, repeatable upgrades, controlled rollback, backup discipline, or production-style isolation.",
+    "defaultLongerTermRecommendation": "Move from npm quick start to Docker single-container for local durable self-hosting, then to Docker Compose plus PostgreSQL before production workflows become critical."
+  }
+}

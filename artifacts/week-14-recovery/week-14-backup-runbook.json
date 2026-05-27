@@ -1,0 +1,140 @@
+{
+  "week": 14,
+  "title": "Week 14 backup runbook",
+  "acceptanceTarget": "Explicitly preserve database, volume, encryption key, and Compose/env/proxy config before update or incident response.",
+  "officialSources": {
+    "n8nDocker": "https://docs.n8n.io/hosting/installation/docker/",
+    "n8nDockerComposeUpdating": "https://docs.n8n.io/hosting/installation/docker/#updating-docker-compose",
+    "n8nEncryptionKey": "https://docs.n8n.io/hosting/configuration/configuration-examples/encryption-key/",
+    "n8nDatabaseEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/database/",
+    "n8nWebhookUrl": "https://docs.n8n.io/hosting/configuration/configuration-examples/webhook-url/",
+    "n8nBinaryData": "https://docs.n8n.io/hosting/scaling/binary-data/",
+    "postgresPgDump": "https://www.postgresql.org/docs/current/app-pgdump.html",
+    "dockerVolumes": "https://docs.docker.com/engine/storage/volumes/"
+  },
+  "scope": {
+    "referenceArchitecture": "Week 10 VPS + Docker Compose + Caddy + PostgreSQL",
+    "composeProject": "n8n-week10-vps",
+    "composeDirectory": "artifacts/week-10-vps-caddy",
+    "services": [
+      "n8n",
+      "postgres",
+      "caddy"
+    ]
+  },
+  "backupSet": [
+    {
+      "id": "database",
+      "required": true,
+      "artifact": "database.dump",
+      "method": "pg_dump -Fc --no-owner --no-acl",
+      "why": "Preserves PostgreSQL state such as workflows, credentials metadata, executions, users, and settings."
+    },
+    {
+      "id": "volume",
+      "required": true,
+      "artifact": "n8n_data.tgz",
+      "method": "Docker volume archive with an alpine tar helper container",
+      "why": "Preserves /home/node/.n8n data including encryption keys, logs, source control assets, and filesystem binary data when applicable."
+    },
+    {
+      "id": "proxy-volumes",
+      "required": true,
+      "artifact": "caddy_data.tgz and caddy_config.tgz",
+      "method": "Docker volume archive with an alpine tar helper container",
+      "why": "Preserves reverse proxy state, certificates, and Caddy configuration cache when the deployment relies on those volumes."
+    },
+    {
+      "id": "encryption-key",
+      "required": true,
+      "artifact": "n8n-encryption-key.txt",
+      "method": "Extract N8N_ENCRYPTION_KEY from .env or controlled secret manager",
+      "why": "n8n credentials are encrypted with this key; restoring the database without the same key can leave credentials unusable."
+    },
+    {
+      "id": "compose-env-proxy-config",
+      "required": true,
+      "artifact": "compose.yaml, .env, Caddyfile, docker-compose.rendered.yaml",
+      "method": "Copy source config and render docker compose config before the change window",
+      "why": "Recreates image tags, environment variables, database settings, webhook URL, editor URL, proxy routes, and TLS behavior."
+    },
+    {
+      "id": "checksum-manifest",
+      "required": true,
+      "artifact": "SHA256SUMS",
+      "method": "shasum -a 256 backup files",
+      "why": "Detects corrupted or partial backup transfer before restore."
+    }
+  ],
+  "commands": [
+    {
+      "id": "prepare-backup-dir",
+      "phase": "prepare",
+      "command": "APP_DIR=\"artifacts/week-10-vps-caddy\"; BACKUP_ID=\"$(date -u +%Y%m%dT%H%M%SZ)\"; BACKUP_DIR=\"backups/${BACKUP_ID}\"; cd \"${APP_DIR}\"; mkdir -p \"${BACKUP_DIR}\"; chmod 700 \"${BACKUP_DIR}\"",
+      "mustPass": true
+    },
+    {
+      "id": "load-env",
+      "phase": "prepare",
+      "command": "set -a; . ./.env; set +a",
+      "mustPass": true
+    },
+    {
+      "id": "save-compose-env-proxy-config",
+      "phase": "config",
+      "command": "docker compose --env-file .env -f compose.yaml config > \"${BACKUP_DIR}/docker-compose.rendered.yaml\"; cp compose.yaml .env Caddyfile \"${BACKUP_DIR}/\"",
+      "mustPass": true
+    },
+    {
+      "id": "save-encryption-key",
+      "phase": "secret",
+      "command": "awk -F= '/^N8N_ENCRYPTION_KEY=/{print $2}' .env > \"${BACKUP_DIR}/n8n-encryption-key.txt\"; chmod 600 \"${BACKUP_DIR}/.env\" \"${BACKUP_DIR}/n8n-encryption-key.txt\"",
+      "mustPass": true
+    },
+    {
+      "id": "dump-database",
+      "phase": "database",
+      "command": "docker compose --env-file .env -f compose.yaml exec -T postgres pg_dump -U \"${POSTGRES_USER}\" -d \"${POSTGRES_DB}\" -Fc --no-owner --no-acl > \"${BACKUP_DIR}/database.dump\"",
+      "mustPass": true
+    },
+    {
+      "id": "archive-n8n-volume",
+      "phase": "volume",
+      "command": "docker run --rm -v n8n-week10-vps_n8n_data:/source:ro -v \"${PWD}/${BACKUP_DIR}\":/backup alpine:3.20 tar -czf /backup/n8n_data.tgz -C /source .",
+      "mustPass": true
+    },
+    {
+      "id": "archive-caddy-data-volume",
+      "phase": "volume",
+      "command": "docker run --rm -v n8n-week10-vps_caddy_data:/source:ro -v \"${PWD}/${BACKUP_DIR}\":/backup alpine:3.20 tar -czf /backup/caddy_data.tgz -C /source .",
+      "mustPass": true
+    },
+    {
+      "id": "archive-caddy-config-volume",
+      "phase": "volume",
+      "command": "docker run --rm -v n8n-week10-vps_caddy_config:/source:ro -v \"${PWD}/${BACKUP_DIR}\":/backup alpine:3.20 tar -czf /backup/caddy_config.tgz -C /source .",
+      "mustPass": true
+    },
+    {
+      "id": "write-checksums",
+      "phase": "integrity",
+      "command": "shasum -a 256 \"${BACKUP_DIR}\"/* > \"${BACKUP_DIR}/SHA256SUMS\"",
+      "mustPass": true
+    }
+  ],
+  "verification": [
+    "database.dump exists and pg_restore -l database.dump can list the archive",
+    "n8n_data.tgz exists and tar -tzf n8n_data.tgz can list the archive",
+    "N8N_ENCRYPTION_KEY in n8n-encryption-key.txt matches the controlled production key",
+    "compose.yaml, .env, Caddyfile, and docker-compose.rendered.yaml are in the same backup set",
+    "SHA256SUMS verifies after copying the backup set to off-host storage",
+    "Backup set is encrypted at rest and stored outside the production host"
+  ],
+  "failureRules": [
+    "Do not upgrade if database.dump is missing or empty.",
+    "Do not upgrade if n8n_data.tgz is missing.",
+    "Do not upgrade if N8N_ENCRYPTION_KEY is missing or unverified.",
+    "Do not upgrade if Compose/env/proxy config is missing.",
+    "Do not upgrade if checksum verification fails."
+  ]
+}

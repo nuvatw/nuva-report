@@ -1,0 +1,131 @@
+{
+  "week": 18,
+  "title": "Deployment recommendation matrix",
+  "acceptanceTarget": "Beginner, freelancer, agency, and production team each have a primary recommendation, alternative option, and explicit avoid list.",
+  "officialSources": {
+    "n8nDocker": "https://docs.n8n.io/hosting/installation/docker/",
+    "n8nScalingOverview": "https://docs.n8n.io/hosting/scaling/overview/",
+    "n8nQueueMode": "https://docs.n8n.io/hosting/scaling/queue-mode/",
+    "n8nExecutionData": "https://docs.n8n.io/hosting/scaling/execution-data/",
+    "n8nBinaryData": "https://docs.n8n.io/hosting/scaling/binary-data/",
+    "n8nExternalStorage": "https://docs.n8n.io/hosting/scaling/external-storage/",
+    "n8nLogging": "https://docs.n8n.io/hosting/logging-monitoring/logging/",
+    "n8nMonitoring": "https://docs.n8n.io/hosting/logging-monitoring/monitoring/",
+    "renderPricing": "https://render.com/pricing",
+    "renderFree": "https://render.com/free",
+    "railwayPricing": "https://railway.com/pricing",
+    "flyPricing": "https://fly.io/pricing/",
+    "cloudRunPricing": "https://cloud.google.com/run/pricing",
+    "awsFargatePricing": "https://aws.amazon.com/fargate/pricing/",
+    "awsRdsPricing": "https://aws.amazon.com/rds/pricing/",
+    "awsDataTransferPricing": "https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer",
+    "awsLightsailPricing": "https://aws.amazon.com/lightsail/pricing/"
+  },
+  "recommendations": [
+    {
+      "userType": "beginner",
+      "primaryRecommendation": "n8n Cloud",
+      "alternative": "Local Docker Desktop for learning volume, credentials, and workflow export behavior",
+      "avoid": [
+        "public tunnel as production",
+        "self-hosted VPS with real client credentials before backup and security are understood",
+        "AWS, Kubernetes, or queue mode as the first deployment"
+      ],
+      "why": "The beginner should learn automation semantics before owning hosting, backups, public URLs, secure cookies, and database operations.",
+      "costRisk": "Subscription cost is easier to understand than variable infrastructure cost; the main risk is overbuying before workflows are valuable.",
+      "operationalResponsibility": [
+        "workflow design",
+        "credential hygiene",
+        "basic execution review"
+      ],
+      "first90Days": [
+        "Build workflows on n8n Cloud or local Docker",
+        "Export important workflows weekly",
+        "Document credentials and owners",
+        "Avoid public self-hosting until backup and restore are practiced"
+      ]
+    },
+    {
+      "userType": "freelancer",
+      "primaryRecommendation": "Single VPS with Docker Compose, PostgreSQL, Caddy, backup, and patch cadence",
+      "alternative": "Railway, Render, or Fly with managed PostgreSQL; n8n Cloud when the client pays for low operations",
+      "avoid": [
+        "free tier production",
+        "usage-priced platform without monthly budget alerts",
+        "AWS ECS/RDS or Kubernetes for a small client workflow",
+        "single Docker container without PostgreSQL backup"
+      ],
+      "why": "The freelancer needs a clear client bill, predictable maintenance scope, and a deployment that can be restored without a platform team.",
+      "costRisk": "VPS is mostly fixed but labor-heavy; PaaS is faster but RAM, CPU, storage, egress, and database plan can drift.",
+      "operationalResponsibility": [
+        "patching",
+        "backup and restore drill",
+        "Caddy or proxy configuration",
+        "incident response",
+        "client cost explanation"
+      ],
+      "first90Days": [
+        "Use PostgreSQL rather than SQLite for paid work",
+        "Set WEBHOOK_URL and HTTPS correctly",
+        "Schedule monthly update windows",
+        "Add storage and execution pruning alerts"
+      ]
+    },
+    {
+      "userType": "agency",
+      "primaryRecommendation": "Standardized client blueprint using isolated Compose or PaaS instances, managed PostgreSQL, backup, patch cadence, and incident notes",
+      "alternative": "n8n Cloud Business or Enterprise for low-operations client delivery",
+      "avoid": [
+        "multiple clients on one unisolated instance",
+        "shared credentials across clients",
+        "manual one-off deployments without a runbook",
+        "usage-priced platform without per-client budget ownership"
+      ],
+      "why": "The agency optimizes for repeatability, client isolation, handoff, and maintenance margins rather than a single lowest monthly bill.",
+      "costRisk": "The largest risk is hidden labor from many small incidents; per-client budgets, support terms, and standardized restore drills matter more than a tiny compute saving.",
+      "operationalResponsibility": [
+        "client isolation",
+        "maintenance retainer",
+        "backup evidence",
+        "patch cadence",
+        "incident notes",
+        "budget alerts"
+      ],
+      "first90Days": [
+        "Define one supported blueprint per client tier",
+        "Separate each client database and encryption key",
+        "Price maintenance hours explicitly",
+        "Use Week 17 incident note for every incident"
+      ]
+    },
+    {
+      "userType": "production team",
+      "primaryRecommendation": "AWS or GCP production architecture with managed PostgreSQL, Redis queue, workers, centralized logs, IaC, budgets, and on-call",
+      "alternative": "n8n Cloud Enterprise or mature PaaS with managed database and Redis during transition",
+      "avoid": [
+        "single VM for high-SLO workloads",
+        "queue mode without centralized logs and DB capacity planning",
+        "autoscaling without maximum instance limits and budget alerts",
+        "production platform without RPO, RTO, and security review"
+      ],
+      "why": "The production team has compliance, private networking, IAM, SLO, queue workers, logs, and disaster recovery requirements that justify cloud architecture complexity.",
+      "costRisk": "AWS and GCP cost is a stack total: compute, RDS, Redis, logs, load balancer, NAT, egress, backup, storage, support, and operations labor.",
+      "operationalResponsibility": [
+        "IaC",
+        "FinOps",
+        "on-call",
+        "RPO/RTO",
+        "security review",
+        "centralized observability",
+        "capacity planning"
+      ],
+      "first90Days": [
+        "Define RPO and RTO",
+        "Implement centralized logs and metrics",
+        "Set budgets and anomaly alerts",
+        "Run restore drill",
+        "Load-test queue workers before production cutover"
+      ]
+    }
+  ]
+}

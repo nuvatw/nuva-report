@@ -1,0 +1,159 @@
+{
+  "week": 11,
+  "title": "Railway, Zeabur, Render, Fly.io PaaS persistence platform matrix",
+  "generatedAt": "2026-05-27T00:00:00.000+08:00",
+  "acceptanceQuestion": "PaaS 可以省下哪些維運，又在哪些地方最容易踩到持久化陷阱？",
+  "officialSources": {
+    "n8nDocker": "https://docs.n8n.io/hosting/installation/docker/",
+    "n8nWebhookUrl": "https://docs.n8n.io/hosting/configuration/configuration-examples/webhook-url/",
+    "n8nEncryptionKey": "https://docs.n8n.io/hosting/configuration/configuration-examples/encryption-key/",
+    "railwayVolumes": "https://docs.railway.com/reference/volumes",
+    "railwayPostgresql": "https://docs.railway.com/databases/postgresql/",
+    "railwayPublicNetworking": "https://docs.railway.com/reference/public-networking",
+    "railwayVariables": "https://docs.railway.com/variables",
+    "renderN8n": "https://render.com/docs/deploy-n8n/",
+    "renderDisks": "https://render.com/docs/disks",
+    "renderCustomDomains": "https://render.com/docs/custom-domains/",
+    "renderEnvVars": "https://render.com/docs/configure-environment-variables/",
+    "zeaburVolumes": "https://zeabur.com/docs/en-US/data-management/volumes",
+    "zeaburPublicNetworking": "https://zeabur.com/docs/en-US/networking/public",
+    "zeaburEnvVars": "https://zeabur.com/docs/en-US/deploy/special-variables",
+    "zeaburTemplates": "https://zeabur.com/docs/template",
+    "zeaburPricing": "https://zeabur.com/docs/en-US/billing/pricing",
+    "flyVolumes": "https://fly.io/docs/volumes/overview/",
+    "flyManagedPostgres": "https://fly.io/docs/mpg",
+    "flyUnmanagedPostgresWarning": "https://fly.io/docs/postgres/getting-started/what-you-should-know/",
+    "flyCustomDomains": "https://fly.io/docs/networking/custom-domain/",
+    "flySecrets": "https://www.fly.io/docs/apps/secrets/"
+  },
+  "platforms": [
+    {
+      "name": "Railway",
+      "persistentStorage": {
+        "model": "Attach a Railway Volume to the n8n service user folder and use a separate PostgreSQL service for main workflow state.",
+        "durabilityWarning": "A service can have only one volume, replicas cannot be used with volumes, and database templates are unmanaged services that still need backups and monitoring.",
+        "requiredN8nChecks": [
+          "Mount durable storage for n8n user folder when local files or generated settings matter.",
+          "Use PostgreSQL for workflows, credentials, and execution history.",
+          "Keep N8N_ENCRYPTION_KEY fixed in Railway variables."
+        ]
+      },
+      "postgresModel": {
+        "type": "Railway PostgreSQL template or external managed PostgreSQL",
+        "managedLevel": "Template-based database service, not a full hands-off managed database for production operations",
+        "connectionVariables": [
+          "DATABASE_URL",
+          "PGHOST",
+          "PGPORT",
+          "PGUSER",
+          "PGPASSWORD",
+          "PGDATABASE"
+        ]
+      },
+      "customDomainTls": "Railway provides Railway domains, custom domains, and automatic SSL certificates through public networking.",
+      "envVars": "Use service variables, shared variables, sealed variables, and reference variables for DB credentials and n8n secrets.",
+      "pricingAlwaysOn": "Subscription plus usage. Always-on n8n consumes compute, memory, volume, and egress continuously.",
+      "stateSurvivalRisk": "Medium unless Postgres, volume, fixed encryption key, backups, and redeploy test are all verified.",
+      "n8nRecommendation": "Good for prototypes and small production when configured with PostgreSQL, a user-folder volume, custom domain, fixed N8N_ENCRYPTION_KEY, and backups."
+    },
+    {
+      "name": "Zeabur",
+      "persistentStorage": {
+        "model": "Services are stateless by default; mount Zeabur Volumes to persist directories that must survive restart.",
+        "durabilityWarning": "Zeabur volume mount enables state but removes zero-downtime restarts, and deleting a volume clears the data.",
+        "requiredN8nChecks": [
+          "Verify whether the n8n template uses PostgreSQL or SQLite.",
+          "Mount a Volume for the n8n user folder if local state or binary files are used.",
+          "Run a redeploy persistence test after template deployment."
+        ]
+      },
+      "postgresModel": {
+        "type": "Database service or template-created PostgreSQL",
+        "managedLevel": "Template/database convenience with project wiring; production still requires backup and recovery ownership",
+        "connectionVariables": [
+          "Database service credentials",
+          "Automatically injected service variables",
+          "Referenced service variables"
+        ]
+      },
+      "customDomainTls": "Supports generated zeabur.app domains and custom domains through public networking and dashboard DNS instructions.",
+      "envVars": "Set variables in the service Variables tab; Zeabur injects service host, port, database credentials, and referenced variables.",
+      "pricingAlwaysOn": "Usage-based memory, egress, and persistent volume pricing. Suspended services stop compute billing but retained state still needs review.",
+      "stateSurvivalRisk": "Medium because templates start quickly but state model must be explicitly verified.",
+      "n8nRecommendation": "Best fast-start PaaS candidate for non-ops users when the template is inspected and PostgreSQL, Volume, secrets, and webhook URL are verified."
+    },
+    {
+      "name": "Render",
+      "persistentStorage": {
+        "model": "Filesystem is ephemeral by default. Use Render Postgres for workflow data or attach a paid persistent disk for SQLite/local filesystem state.",
+        "durabilityWarning": "Persistent disk preserves only its mount path and disables zero-downtime deploys. Free web services spin down and free Postgres expires.",
+        "requiredN8nChecks": [
+          "Prefer Render Postgres for workflow state.",
+          "Do not treat a free Postgres database as long-term production storage.",
+          "Set WEBHOOK_URL after service URL or custom domain is known."
+        ]
+      },
+      "postgresModel": {
+        "type": "Render Postgres",
+        "managedLevel": "Managed Postgres product with Render n8n guide and Blueprint route",
+        "connectionVariables": [
+          "DB_POSTGRESDB_DATABASE",
+          "DB_POSTGRESDB_HOST",
+          "DB_POSTGRESDB_PORT",
+          "DB_POSTGRESDB_USER",
+          "DB_POSTGRESDB_PASSWORD"
+        ]
+      },
+      "customDomainTls": "Supports custom domains, automatic TLS certificates, and HTTP to HTTPS redirects.",
+      "envVars": "Use service environment variables, secrets, secret files, environment groups, and Blueprint-defined variables.",
+      "pricingAlwaysOn": "Free web service sleeps after idle and free Postgres expires after 30 days; production needs paid always-on compute and paid database.",
+      "stateSurvivalRisk": "Low to medium with Render Postgres on paid plans; high if using free DB for long-term state or local ephemeral files.",
+      "n8nRecommendation": "Strong low-maintenance PaaS option because Render has an official n8n guide and clearly documents the Postgres versus persistent disk tradeoff."
+    },
+    {
+      "name": "Fly.io",
+      "persistentStorage": {
+        "model": "Fly Machine root filesystem is ephemeral. Fly Volumes provide local persistent storage attached to one Machine in one server/region.",
+        "durabilityWarning": "Volumes are local, not automatically replicated, and a single Machine plus volume can cause downtime or data loss during host issues.",
+        "requiredN8nChecks": [
+          "Use Managed Postgres or an external managed PostgreSQL for production.",
+          "Treat Fly Volumes as local storage, not a cross-region replicated database.",
+          "Use fly secrets for N8N_ENCRYPTION_KEY and DB credentials."
+        ]
+      },
+      "postgresModel": {
+        "type": "Fly.io Managed Postgres or external managed PostgreSQL",
+        "managedLevel": "Managed Postgres exists; older Fly Postgres is explicitly unmanaged and unsupported for hands-off production operations",
+        "connectionVariables": [
+          "DATABASE_URL",
+          "DB_POSTGRESDB_* via secrets",
+          "fly secrets runtime variables"
+        ]
+      },
+      "customDomainTls": "Supports fly.dev subdomains, custom domains, DNS setup, and TLS certificates through Fly Proxy.",
+      "envVars": "Use fly secrets for sensitive runtime values and fly.toml for app configuration.",
+      "pricingAlwaysOn": "Pay for Machines, volumes, egress, snapshots, and Managed Postgres. Always-on plus managed DB requires a real monthly estimate.",
+      "stateSurvivalRisk": "Medium for experienced operators using Managed Postgres; high for unmanaged Postgres or single-volume assumptions.",
+      "n8nRecommendation": "Use when you want Machines, regions, and network control. Not the simplest beginner route."
+    }
+  ],
+  "maintenanceSavedByPaaS": [
+    "Public ingress and TLS automation",
+    "Dashboard or CLI deployment lifecycle",
+    "Built-in logs and basic metrics",
+    "Service variable and secret management",
+    "Quick database/service provisioning"
+  ],
+  "responsibilitiesStillOwnedByUser": [
+    "n8n state model verification",
+    "PostgreSQL backup and restore drills",
+    "User folder volume mount and binary data location",
+    "N8N_ENCRYPTION_KEY custody",
+    "Stable public HTTPS URL for webhooks and OAuth callbacks",
+    "Usage-based cost monitoring"
+  ],
+  "acceptanceConclusion": {
+    "canExplainStartupVersusPersistence": true,
+    "summary": "A running PaaS service only proves the container and ingress started. It does not prove n8n workflows, credentials, execution history, binary data, or encryption keys will survive redeploy. Persistence requires PostgreSQL, durable user-folder storage or equivalent key strategy, stable secrets, stable public URL, and backup/restore verification."
+  }
+}

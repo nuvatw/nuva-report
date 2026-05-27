@@ -1,0 +1,119 @@
+{
+  "week": 12,
+  "title": "AWS three-stage evolution path for n8n",
+  "officialSources": {
+    "lightsailContainers": "https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-services.html",
+    "lightsailCustomDomains": "https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-enabling-container-services-custom-domains.html",
+    "ec2SecurityGroups": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html",
+    "ecsFargateTasks": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-tasks-services.html",
+    "rdsAutomatedBackups": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ManagingAutomatedBackups.html",
+    "secretsManager": "https://docs.aws.amazon.com/secretsmanager/",
+    "albTargetGroups": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html",
+    "ecsAwslogs": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html",
+    "cloudWatchContainerInsights": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html"
+  },
+  "mermaid": "flowchart LR\n    A[\"Stage 1: Lightsail or EC2 single-server\"] --> B[\"Stage 2: EC2 + RDS + Secrets Manager + ALB + CloudWatch\"]\n    B --> C[\"Stage 3: ECS/Fargate + RDS + Secrets Manager + ALB + CloudWatch Container Insights\"]\n    A1[\"Docker Compose / local Postgres / simple domain\"] --> A\n    B1[\"Managed DB, separated secrets, load balancer, logs\"] --> B\n    C1[\"Task definitions, services, target groups, autoscaling, container logs\"] --> C",
+  "stages": [
+    {
+      "id": "stage-1-lightsail-or-ec2",
+      "name": "Stage 1: Lightsail or EC2 single-server",
+      "bestFor": "AWS account users who still need a VPS-shaped deployment with low architectural overhead",
+      "buildingBlocks": [
+        "Lightsail container service or EC2 instance",
+        "Security group or Lightsail firewall",
+        "Docker Compose",
+        "Domain and TLS certificate",
+        "EBS or instance storage backup plan"
+      ],
+      "advantages": [
+        "Simpler mental model",
+        "Good bridge from Week 10 VPS",
+        "Lower AWS-specific orchestration burden"
+      ],
+      "assemblyAndOpsCost": [
+        "Patch operating system and Docker runtime",
+        "Maintain firewall/security group rules",
+        "Design database and volume backups",
+        "Monitor logs manually or add CloudWatch"
+      ],
+      "moveForwardWhen": [
+        "Database backup and restore need managed service support",
+        "Secrets need managed storage and rotation",
+        "Single instance failure is no longer acceptable"
+      ]
+    },
+    {
+      "id": "stage-2-ec2-rds-secrets-alb-cloudwatch",
+      "name": "Stage 2: EC2 + RDS + Secrets Manager + ALB + CloudWatch",
+      "bestFor": "Important n8n production workloads that need managed database, separated secrets, ingress health checks, and centralized logs",
+      "buildingBlocks": [
+        "EC2",
+        "RDS PostgreSQL",
+        "Secrets Manager",
+        "Application Load Balancer",
+        "Target groups",
+        "CloudWatch Logs and Metrics",
+        "Security groups",
+        "IAM roles"
+      ],
+      "advantages": [
+        "Database durability improves through RDS backups and restore options",
+        "Secrets are not stored in instance files",
+        "ALB gives health checks and TLS/HTTP routing",
+        "CloudWatch creates a central operations surface"
+      ],
+      "assemblyAndOpsCost": [
+        "VPC/subnet/security group design",
+        "ALB listener and target group health check design",
+        "RDS backup window and retention management",
+        "Secrets rotation and application reload behavior",
+        "CloudWatch log retention and alert tuning"
+      ],
+      "moveForwardWhen": [
+        "Deployment frequency and rollback needs outgrow hand-managed EC2",
+        "Multiple isolated environments are needed",
+        "Task-level scaling and immutable revisions become important"
+      ]
+    },
+    {
+      "id": "stage-3-ecs-fargate-rds-alb-cloudwatch",
+      "name": "Stage 3: ECS/Fargate + RDS + Secrets Manager + ALB + CloudWatch Container Insights",
+      "bestFor": "Teams that need container orchestration, task isolation, service autoscaling, and production release pipelines",
+      "buildingBlocks": [
+        "ECS cluster",
+        "Fargate task definitions",
+        "ECS services",
+        "ECR image registry",
+        "RDS PostgreSQL",
+        "Secrets Manager",
+        "Application Load Balancer target groups",
+        "CloudWatch Logs awslogs driver",
+        "CloudWatch Container Insights"
+      ],
+      "advantages": [
+        "No EC2 host patching for Fargate tasks",
+        "Task definitions support repeatable releases",
+        "ALB target groups and ECS services support rolling replacement",
+        "Container logs and metrics are first-class operations inputs"
+      ],
+      "assemblyAndOpsCost": [
+        "Task CPU/memory sizing",
+        "awsvpc networking and security group mapping",
+        "Execution role and task role separation",
+        "DB connection limits and worker concurrency control",
+        "CloudWatch logs and Container Insights cost control",
+        "Autoscaling and rollback runbooks"
+      ],
+      "moveForwardWhen": [
+        "Queue mode and worker separation are required",
+        "Multiple n8n instances need coordinated deployments",
+        "Compliance or governance requires formal IAM and audit controls"
+      ]
+    }
+  ],
+  "acceptanceConclusion": {
+    "awsPowerSource": "AWS is powerful because it exposes compute, networking, database, secrets, load balancing, logging, metrics, IAM, backup, and container orchestration as composable building blocks.",
+    "costOfPower": "Each building block adds IAM permissions, network rules, health checks, billing dimensions, alarms, backups, failure modes, and documentation responsibilities.",
+    "canExplainBuildingBlocksAndOpsCost": true
+  }
+}

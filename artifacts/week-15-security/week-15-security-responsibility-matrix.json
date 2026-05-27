@@ -1,0 +1,190 @@
+{
+  "week": 15,
+  "title": "Week 15 security responsibility matrix",
+  "acceptanceConclusion": "公開 instance 不更新就是安全邊界破洞，升級不是只有新功能。",
+  "officialSources": {
+    "chooseN8n": "https://docs.n8n.io/choose-n8n/",
+    "n8nCloud": "https://docs.n8n.io/choose-n8n/cloud/",
+    "cloudUpdates": "https://docs.n8n.io/manage-cloud/update-cloud-version/",
+    "dockerSelfHost": "https://docs.n8n.io/hosting/installation/docker/",
+    "selfHostedUpdating": "https://docs.n8n.io/hosting/installation/updating/",
+    "securingOverview": "https://docs.n8n.io/hosting/securing/overview/",
+    "userManagement": "https://docs.n8n.io/user-management/",
+    "selfHostedUserManagement": "https://docs.n8n.io/hosting/configuration/user-management-self-hosted/",
+    "securityEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/security/",
+    "ssrfProtection": "https://docs.n8n.io/hosting/configuration/environment-variables/ssrf-protection/",
+    "nodesEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/nodes/",
+    "externalSecrets": "https://docs.n8n.io/external-secrets/"
+  },
+  "hostingModels": [
+    {
+      "id": "cloud",
+      "label": "n8n Cloud",
+      "platformOwned": [
+        "Hosted infrastructure",
+        "Continual uptime monitoring",
+        "Managed OAuth",
+        "One-click upgrade path",
+        "Automatic update policy for outdated Cloud instances"
+      ],
+      "userOwned": [
+        "Workflow design and data handling",
+        "User access and account lifecycle",
+        "2FA and SSO configuration where available",
+        "Credential hygiene and project ownership",
+        "Release notes review and update timing",
+        "Execution data retention decisions"
+      ],
+      "hardeningFocus": [
+        "Enable 2FA or SSO",
+        "Review users and projects",
+        "Reduce execution data retention for sensitive workflows",
+        "Test Cloud version updates before production workflow windows"
+      ],
+      "misconceptionToAvoid": "Cloud removes much infrastructure work but does not make workflow data handling, credentials, users, and update decisions disappear."
+    },
+    {
+      "id": "local",
+      "label": "local only",
+      "platformOwned": [
+        "No public ingress by default",
+        "Local Docker or npm runtime isolation"
+      ],
+      "userOwned": [
+        "Local operating system security",
+        "Docker Desktop or runtime updates",
+        "n8n volume and .env protection",
+        "N8N_ENCRYPTION_KEY backup",
+        "n8n image updates",
+        "Local backup and restore"
+      ],
+      "hardeningFocus": [
+        "Keep local Docker and n8n current",
+        "Protect local files and volumes",
+        "Do not treat local credentials as disposable"
+      ],
+      "misconceptionToAvoid": "Local only lowers public exposure but does not remove secrets, credentials, backup, or update responsibility."
+    },
+    {
+      "id": "tunnel",
+      "label": "local tunnel",
+      "platformOwned": [
+        "Temporary public URL forwarding"
+      ],
+      "userOwned": [
+        "All n8n application security",
+        "Webhook path safety",
+        "Credential and execution data handling",
+        "Stopping the tunnel after testing",
+        "Version updates",
+        "Logs and incident review"
+      ],
+      "hardeningFocus": [
+        "Use only for local development or testing",
+        "Avoid production credentials where possible",
+        "Remove public exposure after the test"
+      ],
+      "misconceptionToAvoid": "The tunnel is not a production boundary; n8n docs identify tunnel use as unsafe for production."
+    },
+    {
+      "id": "vps",
+      "label": "VPS + Docker Compose + Caddy",
+      "platformOwned": [
+        "Virtual machine availability",
+        "Base network connectivity",
+        "Provider-level disk and network primitives"
+      ],
+      "userOwned": [
+        "Operating system patching",
+        "Firewall ports and SSH security",
+        "Docker Engine and Compose updates",
+        "Caddy and HTTPS configuration",
+        "n8n image pinning and updates",
+        "PostgreSQL backup and restore",
+        "SMTP, users, 2FA, SSO, secrets, audit, monitoring"
+      ],
+      "hardeningFocus": [
+        "HTTPS-only",
+        "Secure cookies",
+        "MFA",
+        "Disable unused API surface",
+        "SSRF protection",
+        "Risky node exclusions",
+        "Aggressive patch cadence"
+      ],
+      "misconceptionToAvoid": "Publishing 80 and 443 moves most of the security boundary to the operator."
+    },
+    {
+      "id": "paas",
+      "label": "PaaS",
+      "platformOwned": [
+        "Deployment workflow",
+        "TLS or custom domain flow",
+        "Logs UI",
+        "Secrets UI",
+        "Managed database option depending on provider"
+      ],
+      "userOwned": [
+        "Persistent state model",
+        "Database backup and restore",
+        "n8n version and image tag",
+        "Environment variables",
+        "User management",
+        "2FA or SSO",
+        "Webhook and editor URLs",
+        "Patch cadence"
+      ],
+      "hardeningFocus": [
+        "Persistent volume and managed database validation",
+        "Secret scope review",
+        "Update cadence for image-based deploys",
+        "User lifecycle and audit"
+      ],
+      "misconceptionToAvoid": "A service that starts successfully is not proof that state, security settings, and patch cadence are correct."
+    },
+    {
+      "id": "hyperscaler",
+      "label": "hyperscaler",
+      "platformOwned": [
+        "Managed database primitives",
+        "Secret manager primitives",
+        "IAM and service account primitives",
+        "Load balancing and logging primitives",
+        "Network control primitives"
+      ],
+      "userOwned": [
+        "Least privilege IAM",
+        "Security groups or network boundaries",
+        "Secret scope and rotation",
+        "Image pinning and rollout",
+        "Backup and restore drill",
+        "Patch cadence",
+        "Audit log ownership",
+        "Incident response"
+      ],
+      "hardeningFocus": [
+        "Service account separation",
+        "Secret manager scope",
+        "Private database access",
+        "Cloud logs and alerts",
+        "Rollback and restore"
+      ],
+      "misconceptionToAvoid": "Cloud building blocks are powerful, but wrong assembly creates a larger attack surface."
+    }
+  ],
+  "responsibilityCategories": [
+    "HTTPS-only",
+    "secure cookies",
+    "SMTP/user management",
+    "2FA",
+    "SSO",
+    "secrets",
+    "public API",
+    "SSRF protection",
+    "risky nodes",
+    "community nodes",
+    "backup and restore",
+    "monitoring and security audit",
+    "patch cadence"
+  ]
+}

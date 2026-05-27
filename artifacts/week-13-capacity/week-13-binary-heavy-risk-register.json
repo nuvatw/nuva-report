@@ -1,0 +1,239 @@
+{
+  "week": 13,
+  "title": "Week 13 binary-heavy workflow risk register",
+  "acceptanceConclusion": "Binary-heavy workflows must be planned around memory, disk, database, pruning, object storage, wait states, AI calls, browser automation, backup, and restore rather than only around CPU and RAM.",
+  "officialSources": {
+    "binaryData": "https://docs.n8n.io/hosting/scaling/binary-data/",
+    "binaryDataEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/binary-data/",
+    "externalStorage": "https://docs.n8n.io/hosting/scaling/external-storage/",
+    "executionData": "https://docs.n8n.io/hosting/scaling/execution-data/",
+    "executionsEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/executions/",
+    "queueMode": "https://docs.n8n.io/hosting/scaling/queue-mode/",
+    "waiting": "https://docs.n8n.io/flow-logic/waiting/",
+    "memoryErrors": "https://docs.n8n.io/hosting/scaling/memory-errors/",
+    "executeCommand": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.executecommand/"
+  },
+  "risks": [
+    {
+      "id": "memory-default-binary-mode",
+      "severity": "critical",
+      "risk": "Default memory binary mode can crash the process when large files or many simultaneous files are processed.",
+      "symptoms": [
+        "Memory RSS spikes during file steps",
+        "Container restarts or process exits",
+        "Large binary workflows fail before completion"
+      ],
+      "indicators": [
+        "memory_usage_percent",
+        "container_restart_count",
+        "failed_executions_by_workflow",
+        "binary_payload_size"
+      ],
+      "mitigation": [
+        "Set N8N_DEFAULT_BINARY_DATA_MODE=filesystem for single-instance production file workflows",
+        "Use database or S3 mode when queue mode or multi-worker architecture requires shared binary access",
+        "Limit file size at the trigger or upload layer"
+      ],
+      "verification": "Run a file-heavy test workflow and confirm memory stays under the configured alert threshold."
+    },
+    {
+      "id": "filesystem-disk-growth",
+      "severity": "high",
+      "risk": "Filesystem binary data moves pressure from memory to disk and can fill the persistent volume.",
+      "symptoms": [
+        "binaryData directory grows every day",
+        "Disk usage warning or host volume full",
+        "Backups become slower as binary files accumulate"
+      ],
+      "indicators": [
+        "filesystem_disk_used_percent",
+        "binary_storage_bytes",
+        "backup_duration_seconds",
+        "execution_prune_activity"
+      ],
+      "mitigation": [
+        "Use persistent storage rather than ephemeral filesystem",
+        "Alert on disk usage and binary storage growth",
+        "Tune execution pruning and retention windows"
+      ],
+      "verification": "Confirm pruning lowers active binary storage for the currently active binary data mode."
+    },
+    {
+      "id": "database-bloat",
+      "severity": "high",
+      "risk": "Database binary mode and saved execution data can expand PostgreSQL storage, backup windows, and restore time.",
+      "symptoms": [
+        "PostgreSQL storage grows faster than execution count explains",
+        "Backup duration grows week over week",
+        "Database I/O rises during normal file workflows"
+      ],
+      "indicators": [
+        "postgres_storage_bytes",
+        "postgres_io_wait",
+        "backup_duration_seconds",
+        "executions_saved_success_count"
+      ],
+      "mitigation": [
+        "Disable unnecessary success execution data saving",
+        "Set EXECUTIONS_DATA_MAX_AGE and EXECUTIONS_DATA_PRUNE_MAX_COUNT intentionally",
+        "Move large binary data to S3 when enterprise external storage is available"
+      ],
+      "verification": "Restore from backup into a test database and measure whether the restore time is acceptable for the stated RTO."
+    },
+    {
+      "id": "external-storage-drift",
+      "severity": "medium",
+      "risk": "Changing binary data modes can leave old objects in a previous storage location and make pruning expectations wrong.",
+      "symptoms": [
+        "S3 bucket grows even after execution pruning",
+        "Filesystem storage shrinks while object storage does not",
+        "Old executions reference binary objects in a mode that is no longer active"
+      ],
+      "indicators": [
+        "s3_object_count",
+        "s3_storage_bytes",
+        "binary_data_mode_changes",
+        "object_storage_errors"
+      ],
+      "mitigation": [
+        "Document the active binary data mode before and after migration",
+        "Apply bucket lifecycle policies that match retention requirements",
+        "Perform a mode migration checklist and object restore test"
+      ],
+      "verification": "Pick an older execution with binary data and confirm it can still retrieve the file after mode changes."
+    },
+    {
+      "id": "ai-document-processing",
+      "severity": "high",
+      "risk": "AI document workflows combine large input files, extraction, prompt payloads, model latency, retries, and large responses.",
+      "symptoms": [
+        "AI steps dominate execution duration",
+        "Rate-limit and retry errors increase",
+        "Worker memory grows during document extraction"
+      ],
+      "indicators": [
+        "ai_api_latency_p95",
+        "ai_api_error_rate",
+        "execution_duration_p95",
+        "worker_memory_percent"
+      ],
+      "mitigation": [
+        "Chunk documents before model calls",
+        "Set timeouts and retry backoff",
+        "Run AI-heavy workflows on dedicated workers"
+      ],
+      "verification": "Benchmark representative documents rather than tiny samples before declaring capacity sufficient."
+    },
+    {
+      "id": "browser-automation-processes",
+      "severity": "high",
+      "risk": "Browser automation can start heavyweight host or worker processes that consume CPU, memory, screenshots, downloads, and temp storage.",
+      "symptoms": [
+        "Worker memory spikes during browser steps",
+        "Long-running browser processes remain after execution",
+        "Download or screenshot directories grow unexpectedly"
+      ],
+      "indicators": [
+        "worker_memory_percent",
+        "worker_cpu_percent",
+        "browser_step_duration_seconds",
+        "temp_storage_bytes"
+      ],
+      "mitigation": [
+        "Run browser automation on a dedicated worker pool",
+        "Limit concurrency for browser workflows",
+        "Set process timeout and cleanup temp files after each execution"
+      ],
+      "verification": "Run concurrent browser jobs and confirm no process or temp file remains after completion."
+    },
+    {
+      "id": "wait-states-retention",
+      "severity": "medium",
+      "risk": "Waiting executions preserve state and are not eligible for normal pruning while waiting.",
+      "symptoms": [
+        "Waiting executions accumulate over days",
+        "Database and binary storage do not shrink after pruning",
+        "Old paused workflow payloads remain available"
+      ],
+      "indicators": [
+        "waiting_executions_count",
+        "oldest_waiting_execution_age_hours",
+        "postgres_storage_bytes",
+        "binary_storage_bytes"
+      ],
+      "mitigation": [
+        "Avoid carrying large binary data into long waits",
+        "Set explicit waiting workflow limits and review cadence",
+        "Move large files to external object storage and pass references through the wait"
+      ],
+      "verification": "List waiting executions and confirm their payload size and age are within policy."
+    },
+    {
+      "id": "large-webhook-payloads",
+      "severity": "high",
+      "risk": "Large webhook payloads create immediate memory and response-time pressure before downstream processing can be offloaded.",
+      "symptoms": [
+        "Webhook response p95 rises during file uploads",
+        "Provider retries increase",
+        "Queue backlog grows immediately after bursts"
+      ],
+      "indicators": [
+        "webhook_latency_p95",
+        "webhook_payload_bytes",
+        "queue_depth",
+        "http_timeout_count"
+      ],
+      "mitigation": [
+        "Use signed upload URLs or object storage references for large files",
+        "Respond quickly and process heavy work asynchronously",
+        "Set concurrency limits for production executions"
+      ],
+      "verification": "Load test realistic webhook payload sizes and confirm response time stays within provider timeout."
+    },
+    {
+      "id": "concurrency-burst",
+      "severity": "high",
+      "risk": "A safe file workflow can become unsafe when many executions run at the same time.",
+      "symptoms": [
+        "Failures appear only during bursts",
+        "CPU and memory rise together",
+        "Database connections spike"
+      ],
+      "indicators": [
+        "active_execution_count",
+        "concurrency_limit",
+        "postgres_connection_count",
+        "container_cpu_percent",
+        "container_memory_percent"
+      ],
+      "mitigation": [
+        "Set N8N_CONCURRENCY_PRODUCTION_LIMIT in regular mode",
+        "Use queue mode with Redis and workers for sustained concurrency",
+        "Separate heavy and light workload classes"
+      ],
+      "verification": "Run burst tests at the expected peak and confirm latency, memory, and database connections remain within policy."
+    },
+    {
+      "id": "backup-restore-window",
+      "severity": "critical",
+      "risk": "Large execution and binary data increase backup size and can make restore too slow for the business RTO.",
+      "symptoms": [
+        "Backup window overlaps business hours",
+        "Restore drill takes longer than accepted downtime",
+        "Object storage and database backups are not coordinated"
+      ],
+      "indicators": [
+        "backup_duration_seconds",
+        "backup_size_bytes",
+        "restore_duration_seconds",
+        "object_storage_retention_days"
+      ],
+      "mitigation": [
+        "Define RPO and RTO before increasing retention",
+        "Test restore with database and binary data together",
+        "Use retention and lifecycle policies to keep backup size predictable"
+      ],
+      "verification": "Complete a restore drill from the latest backup and document the measured restore duration."
+    }
+  ]
+}

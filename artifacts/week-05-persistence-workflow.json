@@ -1,0 +1,47 @@
+{
+  "id": "week05PersistenceProbe",
+  "name": "Week 05 Persistence Probe",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7e84e4b8-40b9-450c-a126-8083fdbd71c9",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { week: 5, purpose: 'Docker Desktop persistence verification', persisted: true, checkedDate: '2026-05-27' } }];"
+      },
+      "id": "6d34f1a3-59a5-4c2a-94d3-a9a93bdbb3d1",
+      "name": "Persistence Marker",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Persistence Marker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

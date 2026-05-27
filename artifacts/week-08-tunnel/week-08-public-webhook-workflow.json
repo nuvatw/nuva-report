@@ -1,0 +1,54 @@
+{
+  "id": "week08PublicWebhookProbe",
+  "name": "Week 08 Public Webhook Probe",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "week-08-public-post",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "c9375c19-9172-4a88-a840-7319e76dbe11",
+      "name": "Public POST Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "week-08-public-post"
+    },
+    {
+      "parameters": {
+        "jsCode": "const incoming = $input.first().json;\nreturn [{\n  json: {\n    ok: true,\n    week: 8,\n    probe: 'public-webhook',\n    tunnel: 'cloudflare-quick-tunnel',\n    receivedSource: incoming.body?.source ?? null,\n    receivedWeek: incoming.body?.week ?? null,\n    publicHost: incoming.headers?.host ?? null,\n    forwardedProto: incoming.headers?.['x-forwarded-proto'] ?? null,\n    checkedDate: '2026-05-27'\n  }\n}];"
+      },
+      "id": "d1b320d8-c251-4f99-a62a-97189b3e3f09",
+      "name": "Return Week 08 Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Public POST Webhook": {
+      "main": [
+        [
+          {
+            "node": "Return Week 08 Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

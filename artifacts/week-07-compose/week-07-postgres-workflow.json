@@ -1,0 +1,47 @@
+{
+  "id": "week07PostgresProbe",
+  "name": "Week 07 PostgreSQL Probe",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "42017b7f-4351-458d-bd48-85c64c3861b9",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { week: 7, database: 'postgresdb', compose: true, checkedDate: '2026-05-27' } }];"
+      },
+      "id": "aab086d1-c5ca-4657-a434-d465657197fd",
+      "name": "PostgreSQL Marker",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "PostgreSQL Marker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

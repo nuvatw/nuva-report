@@ -1,0 +1,135 @@
+{
+  "week": 15,
+  "title": "Week 15 patch cadence policy",
+  "effectiveDate": "2026-05-28",
+  "policyName": "Aggressively update public self-hosted n8n instances",
+  "acceptanceConclusion": "公開 instance 不更新就是安全邊界破洞，升級不是只有新功能。",
+  "officialSources": {
+    "selfHostedUpdating": "https://docs.n8n.io/hosting/installation/updating/",
+    "releaseNotes": "https://docs.n8n.io/release-notes/",
+    "cloudUpdates": "https://docs.n8n.io/manage-cloud/update-cloud-version/",
+    "securingOverview": "https://docs.n8n.io/hosting/securing/overview/",
+    "securityAudit": "https://docs.n8n.io/hosting/securing/security-audit/",
+    "disablePublicApi": "https://docs.n8n.io/hosting/securing/disable-public-api/",
+    "securityEnvironmentVariables": "https://docs.n8n.io/hosting/configuration/environment-variables/security/",
+    "ssrfProtection": "https://docs.n8n.io/hosting/configuration/environment-variables/ssrf-protection/",
+    "communityNodeRisks": "https://docs.n8n.io/integrations/community-nodes/risks/"
+  },
+  "principles": [
+    "A public n8n instance is an internet-facing application, not just an automation tool.",
+    "Updates include bug fixes, security hardening, dependency fixes, permission model changes, API changes, and node safety improvements.",
+    "The minimum routine update interval for public self-hosted instances is 30 days, with faster handling for security-relevant releases.",
+    "Every production update must reuse the Week 14 backup, restore drill, image pinning, smoke test, and rollback process.",
+    "Deferring an update requires an owner, mitigation, and next review date."
+  ],
+  "cadence": [
+    {
+      "severity": "critical",
+      "examples": [
+        "Public authentication bypass",
+        "Remote code execution",
+        "Credential leakage",
+        "SSRF to cloud metadata or private network",
+        "Actively exploited dependency CVE"
+      ],
+      "sla": "24-48 hours",
+      "requiredActions": [
+        "Declare emergency change window",
+        "Run Week 14 backup",
+        "Run restore drill or staging test with target image",
+        "Patch production with pinned image",
+        "Run smoke tests and security audit",
+        "Monitor and record outcome"
+      ]
+    },
+    {
+      "severity": "high",
+      "examples": [
+        "Webhook security fix",
+        "Public API hardening",
+        "Session or secure cookie fix",
+        "Risky node containment fix",
+        "Community package supply-chain mitigation"
+      ],
+      "sla": "7 days",
+      "requiredActions": [
+        "Review release notes",
+        "Test target version",
+        "Update production in scheduled window",
+        "Run smoke tests and n8n audit",
+        "Record evidence"
+      ]
+    },
+    {
+      "severity": "medium",
+      "examples": [
+        "Security policy improvement",
+        "New safe default",
+        "Identity management improvement",
+        "External secrets or project access improvement"
+      ],
+      "sla": "14 days",
+      "requiredActions": [
+        "Plan in weekly maintenance window",
+        "Update hardening checklist if new settings apply",
+        "Run backup and smoke tests"
+      ]
+    },
+    {
+      "severity": "routine",
+      "examples": [
+        "Stable feature release",
+        "Bug fixes",
+        "Performance improvements",
+        "Minor dependency updates"
+      ],
+      "sla": "30 days",
+      "requiredActions": [
+        "Avoid skipping too many versions",
+        "Update at least monthly or record deferral",
+        "Check release notes for breaking changes"
+      ]
+    },
+    {
+      "severity": "deferred",
+      "examples": [
+        "Update conflicts with a known breaking change",
+        "Target version fails restore drill",
+        "A dependency or custom node is not ready"
+      ],
+      "sla": "weekly re-review",
+      "requiredActions": [
+        "Record reason",
+        "Record owner",
+        "Record mitigation",
+        "Record next review date",
+        "Do not defer critical public exposure fixes without compensating controls"
+      ]
+    }
+  ],
+  "weeklyTriage": [
+    "Check n8n release notes for current stable, skipped versions, breaking changes, and security relevance.",
+    "Check Docker image tag and digest for the currently pinned version and target version.",
+    "Review VPS OS packages, Docker Engine, Docker Compose, Caddy, PostgreSQL, and platform runtime updates.",
+    "Run or schedule n8n audit and review credentials, database, filesystem, nodes, and instance findings.",
+    "Review public exposure checklist for drift in HTTPS, cookies, SMTP, MFA, SSO, secrets, API, SSRF, risky nodes, community nodes, backup, and monitoring."
+  ],
+  "preUpdateGate": [
+    "Release notes reviewed",
+    "Image tag pinned",
+    "Week 14 backup completed",
+    "Restore drill or staging test completed",
+    "Rollback path confirmed",
+    "Smoke test plan prepared"
+  ],
+  "postUpdateEvidence": [
+    "Version and image digest",
+    "Backup ID",
+    "Restore drill result",
+    "Smoke test result",
+    "n8n audit result",
+    "Monitoring window result",
+    "Rollback decision"
+  ],
+  "securityBoundaryStatement": "A public n8n instance exposes login, webhooks, APIs, OAuth callbacks, workflow data, credentials usage, and possibly user-installed code. If the instance is not updated, the public security boundary remains stuck at old assumptions while threats and fixes move on."
+}

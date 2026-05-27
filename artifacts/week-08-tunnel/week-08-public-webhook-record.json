@@ -1,0 +1,75 @@
+{
+  "week": 8,
+  "checkedAt": "2026-05-27T23:07:35+08:00",
+  "timezone": "Asia/Taipei",
+  "purpose": "Verify that a local PostgreSQL-backed n8n instance can receive an external POST through a learning-only quick tunnel, then clean the tunnel back down.",
+  "tunnel": {
+    "provider": "cloudflare_quick_tunnel",
+    "publicUrl": "https://gif-decent-pharmacies-eligibility.trycloudflare.com",
+    "command": "docker run --rm --name week8-cloudflared cloudflare/cloudflared:latest tunnel --no-autoupdate --url http://host.docker.internal:5687 --loglevel info",
+    "cloudflaredVersion": "2026.5.2",
+    "imageDigest": "cloudflare/cloudflared@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0",
+    "connectorId": "a13d0b46-97fb-4e4f-a2eb-2eebd90525ef",
+    "connectionLocation": "tpe01",
+    "classification": "learning_only"
+  },
+  "n8n": {
+    "composeProject": "n8n-week7",
+    "container": "n8n-week7-n8n-1",
+    "localUrl": "http://localhost:5687",
+    "version": "2.22.4",
+    "temporaryEnvironment": {
+      "WEBHOOK_URL": "https://gif-decent-pharmacies-eligibility.trycloudflare.com",
+      "N8N_EDITOR_BASE_URL": "https://gif-decent-pharmacies-eligibility.trycloudflare.com",
+      "N8N_PROXY_HOPS": "1"
+    }
+  },
+  "webhook": {
+    "workflowId": "week08PublicWebhookProbe",
+    "workflowName": "Week 08 Public Webhook Probe",
+    "nodeName": "Public POST Webhook",
+    "path": "/webhook/week-08-public-post",
+    "productionUrl": "https://gif-decent-pharmacies-eligibility.trycloudflare.com/webhook/week-08-public-post",
+    "publishedBeforeTest": true,
+    "databaseStateBeforeCleanup": "week08PublicWebhookProbe|Week 08 Public Webhook Probe|true",
+    "databaseStateAfterCleanup": "week08PublicWebhookProbe|Week 08 Public Webhook Probe|false"
+  },
+  "request": {
+    "method": "POST",
+    "contentType": "application/json",
+    "body": {
+      "source": "week08-external-post",
+      "week": 8,
+      "sentAt": "2026-05-27T23:06:45+08:00"
+    }
+  },
+  "response": {
+    "httpStatus": 200,
+    "cloudflareRay": "a025ed2379e9a339-TPE",
+    "contentType": "application/json; charset=utf-8",
+    "body": {
+      "ok": true,
+      "week": 8,
+      "probe": "public-webhook",
+      "tunnel": "cloudflare-quick-tunnel",
+      "receivedSource": "week08-external-post",
+      "receivedWeek": 8,
+      "publicHost": "gif-decent-pharmacies-eligibility.trycloudflare.com",
+      "forwardedProto": "https",
+      "checkedDate": "2026-05-27"
+    }
+  },
+  "cleanup": {
+    "workflowUnpublished": true,
+    "n8nRestartedAfterUnpublish": true,
+    "liveN8nRevertedToLocalOnly": true,
+    "localHttpStatusAfterCleanup": 200,
+    "trycloudflareEnvironmentRemovedFromLiveContainer": true,
+    "tunnelStopped": true,
+    "runningCloudflaredContainerCount": 0
+  },
+  "riskConclusion": {
+    "randomTunnelUrlRisk": "The trycloudflare.com URL is random, temporary, and not guaranteed for uptime. It must not be used as an OAuth callback, a permanent webhook target, or a production editor URL.",
+    "productionReadyAlternative": "Use a stable custom domain through a named tunnel, reverse proxy, ngrok reserved/custom domain, DDNS with TLS-aware proxy, or hosted deployment."
+  }
+}

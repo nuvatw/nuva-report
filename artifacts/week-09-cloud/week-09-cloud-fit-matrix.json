@@ -1,0 +1,101 @@
+{
+  "week": 9,
+  "checkedAt": "2026-05-27T23:25:00+08:00",
+  "timezone": "Asia/Taipei",
+  "purpose": "Create a low-maintenance n8n Cloud decision matrix that explains when the best deployment choice is not to self-host.",
+  "sourceSnapshot": {
+    "pricingUrl": "https://n8n.io/pricing/",
+    "executionQuotaUrl": "https://docs.n8n.io/workflows/executions/",
+    "cloudDataManagementUrl": "https://docs.n8n.io/manage-cloud/cloud-data-management/",
+    "cloudConcurrencyUrl": "https://docs.n8n.io/manage-cloud/concurrency/",
+    "cloudUpdateUrl": "https://docs.n8n.io/hosting/updating/cloud/",
+    "downloadWorkflowsUrl": "https://docs.n8n.io/manage-cloud/download-workflows/",
+    "projectsUrl": "https://docs.n8n.io/user-management/rbac/projects/"
+  },
+  "cloudPlanSnapshot": {
+    "starter": {
+      "hostedBy": "n8n",
+      "monthlyExecutionStartingPoint": 2500,
+      "concurrentProductionExecutions": 5,
+      "sharedProjects": 1,
+      "users": "unlimited",
+      "activeWorkflows": "unlimited",
+      "savedExecutions": 2500,
+      "executionLogRetentionDays": 7,
+      "memory": "320MiB RAM",
+      "cpu": "10 millicore CPU burstable",
+      "bestFit": "Beginner, founder, or non-engineering team validating stable production workflows with low to moderate event volume."
+    },
+    "pro": {
+      "hostedBy": "n8n",
+      "monthlyExecutionStartingPoint": 10000,
+      "concurrentProductionExecutions": 20,
+      "sharedProjects": 3,
+      "users": "unlimited",
+      "activeWorkflows": "unlimited",
+      "savedExecutions": 25000,
+      "executionLogRetentionDays": 30,
+      "memory": "640MiB RAM on Pro-1 at 10k executions; 1280MiB RAM on Pro-2 at 50k executions",
+      "cpu": "20 millicore CPU burstable on Pro-1; 80 millicore CPU burstable on Pro-2",
+      "bestFit": "Small team running production workflows that need execution search, global variables, more concurrency, and modest collaboration."
+    },
+    "enterprise": {
+      "hostedBy": "n8n or self-hosted",
+      "monthlyExecutionStartingPoint": "custom",
+      "concurrentProductionExecutions": "200+",
+      "sharedProjects": "unlimited",
+      "users": "unlimited",
+      "activeWorkflows": "unlimited",
+      "savedExecutions": 50000,
+      "executionLogRetentionDays": "unlimited according to Cloud data management docs",
+      "memory": "4096MiB RAM",
+      "cpu": "80 millicore CPU burstable",
+      "bestFit": "Compliance, governance, dedicated support, SSO, external secret store, log streaming, and scale requirements."
+    }
+  },
+  "workloadFitCards": [
+    {
+      "id": "cloud-first-beginner",
+      "decision": "Cloud first",
+      "scenario": "A beginner or non-engineering team needs stable webhooks, scheduled syncs, user collaboration, hosted upgrades, and fewer infrastructure choices.",
+      "why": "n8n owns the hosting layer, the public URL is stable, execution billing is easier to estimate than server operations, and the team can focus on workflow correctness.",
+      "watchouts": [
+        "Stay inside monthly production execution quota.",
+        "Avoid large binary or memory-heavy runs on low Cloud tiers.",
+        "Turn off successful execution saving after workflows are stable."
+      ]
+    },
+    {
+      "id": "cloud-with-plan-upgrade",
+      "decision": "Cloud with quota review",
+      "scenario": "A small team has many schedule or webhook workflows but does not need custom nodes, CLI, bash, or host-level control.",
+      "why": "Execution volume and concurrency may require Pro or Enterprise, but managed hosting still removes database, TLS, backup, and patch chores.",
+      "watchouts": [
+        "Calculate monthly executions before launch.",
+        "Check peak concurrency, not only monthly totals.",
+        "Split memory-heavy workflows into smaller batches."
+      ]
+    },
+    {
+      "id": "self-host-needed",
+      "decision": "Self-host candidate",
+      "scenario": "The workflow needs custom nodes, direct CLI access, bash scripts, host-level packages, private network routing, special binary storage, or strict data residency controls that Cloud cannot satisfy.",
+      "why": "The team needs infrastructure control more than low-maintenance convenience.",
+      "watchouts": [
+        "Self-hosting shifts responsibility for database, backups, encryption key, TLS, patching, monitoring, and incident response to the team.",
+        "Queue mode, workers, external storage, and multi-main architecture need operational maturity.",
+        "Public URL and OAuth callback stability still have to be designed."
+      ]
+    }
+  ],
+  "acceptanceConclusion": {
+    "beginnerRecommendation": "For a beginner or non-engineering team, start with n8n Cloud unless a hard requirement forces self-hosting.",
+    "cloudPriorityReasons": [
+      "Stable hosted public URL without local tunnel or VPS reverse proxy work.",
+      "No direct responsibility for PostgreSQL, host patching, TLS certificate renewal, or base infrastructure uptime.",
+      "Production executions can be estimated from schedules, webhooks, and chatbot usage.",
+      "Manual executions do not count toward the paid execution quota, which keeps learning and testing less risky.",
+      "The team can postpone self-hosting until custom nodes, CLI, bash, host-level control, data residency, or heavy scaling requirements are real."
+    ]
+  }
+}
