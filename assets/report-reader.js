@@ -378,22 +378,6 @@
         white-space: normal;
       }
 
-      .reader-link-main {
-        display: grid;
-        gap: 2px;
-        min-width: 0;
-      }
-
-      .reader-code {
-        display: block;
-        color: var(--reader-blue);
-        font-family: "Archivo", sans-serif;
-        font-size: 10px;
-        font-style: normal;
-        font-weight: 900;
-        line-height: 1;
-      }
-
       .reader-page {
         flex: 0 0 auto;
         align-self: center;
@@ -888,10 +872,7 @@
         <div class="reader-list">
           ${items.map((item) => `
             <a class="reader-link" href="#${escapeHtml(item.id)}" data-reader-id="${escapeHtml(item.id)}">
-              <span class="reader-link-main">
-                ${item.code ? `<em class="reader-code">${escapeHtml(item.code)}</em>` : ''}
-                <span>${escapeHtml(item.title)}</span>
-              </span>
+              <span>${escapeHtml(item.title)}</span>
               ${item.page ? `<b class="reader-page">${escapeHtml(item.page)}</b>` : ''}
             </a>
           `).join('')}
