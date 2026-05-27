@@ -39,6 +39,28 @@ npm run release:check
 - 是否已有正式 PDF 可填入 metadata.pdf，讓報告頁按鈕直接下載。
 - 是否有報告該轉為 internal 或 private。
 
+## 背景設定
+
+首頁登入後可以調整全站背景。
+
+可調整項目：
+
+- 紋路：格線、點陣、橫線、無紋路。
+- 底色：色票或自訂顏色。
+- 透明度：紋路深淺。
+- 亮度：背景亮暗。
+- 密度：紋路間距。
+
+設定會存在目前瀏覽器的 `localStorage`，key 為：
+
+```text
+nuva-report-background-settings
+```
+
+登入狀態仍使用 `sessionStorage`，關閉頁面後需重新登入；背景偏好不會因登出而清掉。
+
+若背景設定異常，可登入首頁後按「重設背景」，或清除上述 localStorage key。
+
 ## 可見性規則
 
 `visibility` 是資料標籤，不是權限。

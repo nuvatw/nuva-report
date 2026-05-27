@@ -9,6 +9,266 @@
     page: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>',
     close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>'
   };
+  const adminStorageKey = 'nuva-report-admin-auth';
+  const visibilityStorageKey = 'nuva-report-visibility-overrides';
+  const guestPinStorageKey = 'nuva-report-guest-pins';
+  const guestUnlockStorageKey = 'nuva-report-guest-unlocks';
+
+  function readSessionValue(key) {
+    try {
+      return window.sessionStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function writeSessionValue(key, value) {
+    try {
+      window.sessionStorage.setItem(key, value);
+    } catch {
+      // 靜態瀏覽或隱私模式可能停用 sessionStorage，忽略即可。
+    }
+  }
+
+  function readVisibilityOverrides() {
+    try {
+      const raw = window.localStorage.getItem(visibilityStorageKey);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function readCookieValue(key) {
+    const prefix = `${encodeURIComponent(key)}=`;
+    return String(document.cookie || '')
+      .split(';')
+      .map((part) => part.trim())
+      .find((part) => part.startsWith(prefix))
+      ?.slice(prefix.length) || '';
+  }
+
+  function readWindowNameValue(key) {
+    const prefix = `${key}:`;
+    const current = String(window.name || '');
+    return current.startsWith(prefix) ? decodeURIComponent(current.slice(prefix.length)) : '';
+  }
+
+  function readGuestPins() {
+    function parse(raw) {
+      const parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    }
+
+    try {
+      const sessionPins = parse(window.sessionStorage.getItem(guestPinStorageKey));
+      const cookiePins = parse(decodeURIComponent(readCookieValue(guestPinStorageKey) || ''));
+      const windowPins = parse(readWindowNameValue(guestPinStorageKey));
+      const localPins = parse(window.localStorage.getItem(guestPinStorageKey));
+      return { ...localPins, ...cookiePins, ...sessionPins, ...windowPins };
+    } catch {
+      try {
+        const sessionPins = parse(window.sessionStorage.getItem(guestPinStorageKey));
+        const cookiePins = parse(decodeURIComponent(readCookieValue(guestPinStorageKey) || ''));
+        const windowPins = parse(readWindowNameValue(guestPinStorageKey));
+        return { ...cookiePins, ...sessionPins, ...windowPins };
+      } catch {
+        try {
+          const cookiePins = parse(decodeURIComponent(readCookieValue(guestPinStorageKey) || ''));
+          const windowPins = parse(readWindowNameValue(guestPinStorageKey));
+          return { ...cookiePins, ...windowPins };
+        } catch {
+          return {};
+        }
+      }
+    }
+  }
+
+  function readGuestUnlocks() {
+    try {
+      const raw = window.sessionStorage.getItem(guestUnlockStorageKey);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveGuestUnlock(reportId) {
+    const unlocks = readGuestUnlocks();
+    unlocks[reportId] = true;
+    writeSessionValue(guestUnlockStorageKey, JSON.stringify(unlocks));
+  }
+
+  function normalizePin(value) {
+    return String(value || '').replace(/\D/g, '').slice(0, 4);
+  }
+
+  function reportIdFromLocation() {
+    const fileName = decodeURIComponent(window.location.pathname.split('/').pop() || '');
+    return fileName.replace(/\.html$/i, '');
+  }
+
+  function readReportMeta() {
+    const walker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT);
+    while (walker.nextNode()) {
+      const value = walker.currentNode.nodeValue || '';
+      if (!/report-meta/i.test(value)) continue;
+      try {
+        return JSON.parse(value.replace(/^\s*report-meta/i, '').trim());
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  }
+
+  function reportAccessState() {
+    const meta = readReportMeta();
+    const reportId = reportIdFromLocation();
+    const overrides = readVisibilityOverrides();
+    const visibility = overrides[reportId] || meta.visibility || 'public';
+    const pinOverrides = readGuestPins();
+    const guestPin = normalizePin(
+      Object.prototype.hasOwnProperty.call(pinOverrides, reportId)
+        ? pinOverrides[reportId]
+        : meta.guestPin || meta.guestPassword || ''
+    );
+    const isAdmin = readSessionValue(adminStorageKey) === 'true';
+    const unlocked = Boolean(readGuestUnlocks()[reportId]);
+
+    return {
+      reportId,
+      title: meta.title || document.title || 'report',
+      visibility,
+      guestPin,
+      shouldPrompt: visibility !== 'public' && guestPin.length === 4 && !isAdmin && !unlocked
+    };
+  }
+
+  function applyVisitorLock(access) {
+    if (!access.shouldPrompt || document.getElementById('visitor-pin-lock')) return false;
+
+    let value = '';
+    const overlay = document.createElement('section');
+    overlay.className = 'visitor-pin-lock';
+    overlay.id = 'visitor-pin-lock';
+    overlay.setAttribute('aria-label', '訪客密碼');
+    overlay.innerHTML = `
+      <div class="visitor-pin-card" role="dialog" aria-modal="true" aria-labelledby="visitor-pin-title">
+        <p class="visitor-pin-kicker">不公開連結</p>
+        <h1 id="visitor-pin-title">輸入訪客密碼</h1>
+        <p class="visitor-pin-copy">這份 report 未列在首頁。請輸入四位數字後繼續閱讀。</p>
+        <div class="visitor-pin-digits" aria-label="四位數字密碼">
+          ${Array.from({ length: 4 }, () => '<span class="visitor-pin-box">數</span>').join('')}
+        </div>
+        <p class="visitor-pin-error" aria-live="polite"></p>
+        <div class="visitor-pin-pad" aria-label="數字鍵盤">
+          ${['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((number) => `<button type="button" class="visitor-pin-key" data-pin-key="${number}">${number}</button>`).join('')}
+          <button type="button" class="visitor-pin-key is-secondary" data-pin-key="clear">清除</button>
+          <button type="button" class="visitor-pin-key" data-pin-key="0">0</button>
+          <button type="button" class="visitor-pin-key is-secondary" data-pin-key="back">退格</button>
+        </div>
+      </div>
+    `;
+
+    function boxes() {
+      return [...overlay.querySelectorAll('.visitor-pin-box')];
+    }
+
+    function renderValue() {
+      boxes().forEach((box, index) => {
+        const filled = index < value.length;
+        box.classList.toggle('is-filled', filled);
+        box.textContent = filled ? '●' : '數';
+      });
+    }
+
+    function error(message) {
+      const node = overlay.querySelector('.visitor-pin-error');
+      if (node) node.textContent = message;
+    }
+
+    function pulseKey(key) {
+      const button = overlay.querySelector(`[data-pin-key="${CSS.escape(key)}"]`);
+      if (!button) return;
+      button.classList.remove('is-pressed');
+      void button.offsetWidth;
+      button.classList.add('is-pressed');
+      window.setTimeout(() => button.classList.remove('is-pressed'), 140);
+    }
+
+    function unlock() {
+      saveGuestUnlock(access.reportId);
+      document.body.classList.remove('nuva-report-locked');
+      overlay.remove();
+      document.removeEventListener('keydown', handleKeydown);
+    }
+
+    function submitIfReady() {
+      if (value.length !== 4) return;
+      if (value === access.guestPin) {
+        unlock();
+        return;
+      }
+      error('密碼不正確，請重新輸入。');
+      overlay.querySelector('.visitor-pin-card')?.classList.add('is-shaking');
+      window.setTimeout(() => overlay.querySelector('.visitor-pin-card')?.classList.remove('is-shaking'), 260);
+      value = '';
+      renderValue();
+    }
+
+    function inputKey(key) {
+      if (/^\d$/.test(key)) {
+        if (value.length >= 4) return;
+        value += key;
+        error('');
+        renderValue();
+        pulseKey(key);
+        submitIfReady();
+        return;
+      }
+      if (key === 'back') {
+        value = value.slice(0, -1);
+        renderValue();
+        pulseKey(key);
+        return;
+      }
+      if (key === 'clear') {
+        value = '';
+        error('');
+        renderValue();
+        pulseKey(key);
+      }
+    }
+
+    function handleKeydown(event) {
+      if (/^\d$/.test(event.key)) {
+        event.preventDefault();
+        inputKey(event.key);
+      } else if (event.key === 'Backspace') {
+        event.preventDefault();
+        inputKey('back');
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        inputKey('clear');
+      }
+    }
+
+    overlay.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-pin-key]');
+      if (!button) return;
+      inputKey(button.dataset.pinKey);
+    });
+
+    document.body.classList.add('nuva-report-locked');
+    document.body.appendChild(overlay);
+    document.addEventListener('keydown', handleKeydown);
+    overlay.querySelector('[data-pin-key="1"]')?.focus();
+    renderValue();
+    return true;
+  }
 
   function injectStyle() {
     if (document.getElementById(styleId)) return;
@@ -17,13 +277,16 @@
     style.id = styleId;
     style.textContent = `
       .report-reader {
+        --reader-ink: var(--report-ink, var(--ink, #162024));
+        --reader-blue: var(--report-blue, var(--blue, #1d4ed8));
+        --reader-paper: var(--report-paper, var(--paper, #fff));
         position: fixed;
         left: max(18px, calc((100vw - 1180px) / 2 - 138px));
         top: 18px;
         z-index: 900;
         width: 238px;
         overflow: visible;
-        color: var(--ink, #162024);
+        color: var(--reader-ink);
         font-family: "Noto Sans TC", sans-serif;
       }
 
@@ -43,7 +306,7 @@
         border: 0;
         border-radius: 8px;
         background: transparent;
-        color: rgba(22, 32, 36, .58);
+        color: color-mix(in srgb, var(--reader-ink) 58%, transparent);
         padding: 0 10px;
         text-align: left;
         text-decoration: none;
@@ -59,8 +322,8 @@
       .reader-link:hover,
       .reader-link:focus-visible,
       .reader-link.is-active {
-        background: rgba(255, 255, 255, .64);
-        color: var(--ink, #162024);
+        background: color-mix(in srgb, var(--reader-paper) 72%, transparent);
+        color: var(--reader-ink);
         outline: none;
       }
 
@@ -79,7 +342,7 @@
         min-height: 34px;
         margin-top: 5px;
         padding: 0 10px;
-        color: var(--ink, #162024);
+        color: var(--reader-ink);
         font-size: 14px;
         font-weight: 900;
       }
@@ -87,13 +350,13 @@
       .reader-section-label svg {
         width: 18px;
         height: 18px;
-        color: var(--blue, #1d4ed8);
+        color: var(--reader-blue);
       }
 
       .reader-list {
         margin-left: 19px;
         padding: 4px 0 6px 14px;
-        border-left: 1px solid rgba(22, 32, 36, .16);
+        border-left: 1px solid color-mix(in srgb, var(--reader-ink) 16%, transparent);
       }
 
       .reader-link {
@@ -101,7 +364,7 @@
         align-items: center;
         gap: 10px;
         padding: 6px 10px;
-        color: rgba(22, 32, 36, .42);
+        color: color-mix(in srgb, var(--reader-ink) 42%, transparent);
         font-size: 13px;
         font-weight: 700;
         line-height: 1.35;
@@ -115,16 +378,170 @@
         white-space: normal;
       }
 
+      .reader-link-main {
+        display: grid;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .reader-code {
+        display: block;
+        color: var(--reader-blue);
+        font-family: "Archivo", sans-serif;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 900;
+        line-height: 1;
+      }
+
       .reader-page {
         flex: 0 0 auto;
         align-self: center;
         margin-left: auto;
         padding-top: 0;
-        color: rgba(22, 32, 36, .34);
+        color: color-mix(in srgb, var(--reader-ink) 34%, transparent);
         font-family: "Archivo", sans-serif;
         font-size: 11px;
         font-weight: 800;
         line-height: 1;
+      }
+
+      body.nuva-report-locked {
+        overflow: hidden;
+      }
+
+      body.nuva-report-locked > :not(.visitor-pin-lock):not(script):not(style) {
+        filter: blur(12px);
+        opacity: .48;
+        pointer-events: none;
+        user-select: none;
+        transition: filter .22s ease, opacity .22s ease;
+      }
+
+      .visitor-pin-lock {
+        position: fixed;
+        inset: 0;
+        z-index: 2200;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          linear-gradient(135deg, rgba(21, 34, 63, .32), rgba(21, 34, 63, .12)),
+          rgba(238, 243, 253, .54);
+        backdrop-filter: blur(5px);
+        color: var(--report-ink, var(--ink, #15223f));
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .visitor-pin-card {
+        width: min(430px, 100%);
+        border: 2px solid var(--report-ink, var(--ink, #15223f));
+        border-radius: 12px;
+        background: var(--report-paper, var(--paper, #fff));
+        padding: 26px;
+        box-shadow: 12px 14px 0 rgba(21, 34, 63, .16);
+      }
+
+      .visitor-pin-card.is-shaking {
+        animation: visitorPinShake .26s ease;
+      }
+
+      .visitor-pin-kicker {
+        margin: 0 0 9px;
+        color: var(--report-blue, var(--blue, #1d4ed8));
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: .08em;
+      }
+
+      .visitor-pin-card h1 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 900;
+        line-height: 1.25;
+      }
+
+      .visitor-pin-copy {
+        margin: 12px 0 0;
+        color: var(--muted, var(--ink-s, #454f6b));
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      .visitor-pin-digits {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .visitor-pin-box {
+        display: grid;
+        place-items: center;
+        height: 58px;
+        border: 1px solid color-mix(in srgb, var(--report-ink, var(--ink, #15223f)) 36%, transparent);
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--report-paper, var(--paper, #fff)) 86%, transparent);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #15223f)) 28%, transparent);
+        font-size: 13px;
+        font-weight: 900;
+        transition: border-color .16s ease, box-shadow .16s ease, color .16s ease, transform .16s ease;
+      }
+
+      .visitor-pin-box.is-filled {
+        border-color: var(--report-blue, var(--blue, #1d4ed8));
+        color: var(--report-ink, var(--ink, #15223f));
+        box-shadow: inset 0 -4px 0 color-mix(in srgb, var(--report-blue, var(--blue, #1d4ed8)) 18%, transparent);
+        transform: translateY(-1px);
+      }
+
+      .visitor-pin-error {
+        min-height: 24px;
+        margin: 10px 0 0;
+        color: #b3261e;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .visitor-pin-pad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 9px;
+        margin-top: 6px;
+      }
+
+      .visitor-pin-key {
+        min-height: 52px;
+        border: 1px solid color-mix(in srgb, var(--report-ink, var(--ink, #15223f)) 42%, transparent);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--report-ink, var(--ink, #15223f));
+        cursor: pointer;
+        font-size: 19px;
+        font-weight: 900;
+        transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+      }
+
+      .visitor-pin-key:hover,
+      .visitor-pin-key:focus-visible,
+      .visitor-pin-key.is-pressed {
+        background: var(--report-blue, var(--blue, #1d4ed8));
+        color: #fff;
+        outline: none;
+        transform: translateY(2px);
+        box-shadow: inset 0 3px 0 rgba(0, 0, 0, .16);
+      }
+
+      .visitor-pin-key.is-secondary {
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #15223f)) 58%, transparent);
+        font-size: 14px;
+      }
+
+      @keyframes visitorPinShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        50% { transform: translateX(7px); }
+        75% { transform: translateX(-4px); }
       }
 
       .reader-search-popover {
@@ -136,11 +553,11 @@
         max-height: min(760px, calc(100vh - 80px));
         display: none;
         transform: translateX(-50%);
-        border: 1px solid rgba(22, 32, 36, .08);
+        border: 1px solid color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 8%, transparent);
         border-radius: 18px;
-        background: rgba(255, 255, 255, .98);
+        background: color-mix(in srgb, var(--report-paper, var(--paper, #fff)) 98%, transparent);
         box-shadow: 0 28px 70px rgba(22, 32, 36, .24);
-        color: var(--ink, #162024);
+        color: var(--report-ink, var(--ink, #162024));
         font-family: "Noto Sans TC", sans-serif;
         overflow: hidden;
       }
@@ -156,13 +573,13 @@
         gap: 13px;
         min-height: 68px;
         padding: 0 22px;
-        border-bottom: 1px solid rgba(22, 32, 36, .08);
+        border-bottom: 1px solid color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 8%, transparent);
       }
 
       .reader-search-head svg {
         width: 22px;
         height: 22px;
-        color: rgba(22, 32, 36, .72);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 72%, transparent);
       }
 
       .reader-search-input {
@@ -171,7 +588,7 @@
         border: 0;
         outline: none;
         background: transparent;
-        color: var(--ink, #162024);
+        color: var(--report-ink, var(--ink, #162024));
         font-size: 20px;
         font-weight: 800;
       }
@@ -184,14 +601,14 @@
         border: 0;
         border-radius: 8px;
         background: transparent;
-        color: rgba(22, 32, 36, .48);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 48%, transparent);
         cursor: pointer;
       }
 
       .reader-search-close:hover,
       .reader-search-close:focus-visible {
-        background: rgba(22, 32, 36, .06);
-        color: var(--ink, #162024);
+        background: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 6%, transparent);
+        color: var(--report-ink, var(--ink, #162024));
         outline: none;
       }
 
@@ -205,7 +622,7 @@
         justify-content: space-between;
         gap: 16px;
         padding: 14px 24px 6px;
-        color: rgba(22, 32, 36, .54);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 54%, transparent);
         font-size: 14px;
         font-weight: 800;
       }
@@ -225,7 +642,7 @@
         border: 0;
         border-radius: 14px;
         background: transparent;
-        color: var(--ink, #162024);
+        color: var(--report-ink, var(--ink, #162024));
         padding: 12px 14px;
         text-align: left;
         cursor: pointer;
@@ -234,7 +651,7 @@
       .reader-result:hover,
       .reader-result:focus-visible,
       .reader-result.is-active {
-        background: rgba(22, 32, 36, .07);
+        background: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 7%, transparent);
         outline: none;
       }
 
@@ -242,7 +659,7 @@
         width: 20px;
         height: 20px;
         margin-top: 2px;
-        color: rgba(22, 32, 36, .54);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 54%, transparent);
       }
 
       .reader-result-title {
@@ -250,7 +667,7 @@
         flex-wrap: wrap;
         gap: 8px;
         align-items: center;
-        color: var(--ink, #162024);
+        color: var(--report-ink, var(--ink, #162024));
         font-size: 17px;
         font-weight: 900;
         line-height: 1.3;
@@ -259,14 +676,14 @@
       .reader-result-path,
       .reader-result-excerpt {
         margin-top: 5px;
-        color: rgba(22, 32, 36, .48);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 48%, transparent);
         font-size: 13px;
         font-weight: 700;
         line-height: 1.5;
       }
 
       .reader-result-page {
-        color: rgba(22, 32, 36, .44);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 44%, transparent);
         font-family: "Archivo", sans-serif;
         font-size: 12px;
         font-weight: 900;
@@ -275,7 +692,7 @@
 
       .reader-empty {
         padding: 28px 20px 38px;
-        color: rgba(22, 32, 36, .52);
+        color: color-mix(in srgb, var(--report-ink, var(--ink, #162024)) 52%, transparent);
         font-size: 15px;
         font-weight: 700;
         text-align: center;
@@ -306,8 +723,8 @@
         .reader-button {
           width: auto;
           min-height: 40px;
-          background: rgba(255, 255, 255, .9);
-          border: 1px solid rgba(22, 32, 36, .12);
+          background: color-mix(in srgb, var(--reader-paper) 90%, transparent);
+          border: 1px solid color-mix(in srgb, var(--reader-ink) 12%, transparent);
           box-shadow: 0 8px 22px rgba(22, 32, 36, .12);
         }
       }
@@ -367,7 +784,12 @@
         const target = id ? document.getElementById(id) : null;
         if (!target) return null;
 
-        const title = cleanText(link.querySelector('.ts-t')?.textContent || link.textContent);
+        const titleNode = link.querySelector('.ts-t');
+        const title = cleanText(titleNode?.textContent || (() => {
+          const clone = link.cloneNode(true);
+          clone.querySelectorAll('.ts-c, .ts-p').forEach((node) => node.remove());
+          return clone.textContent;
+        })());
         const code = cleanText(link.querySelector('.ts-c')?.textContent || '').replace(/\s*\/\s*$/, '');
         const page = cleanText(link.querySelector('.ts-p')?.textContent || target.querySelector('.pgn')?.textContent);
         const body = cleanText(target.querySelector('.lead, .bd, p')?.textContent || '');
@@ -466,7 +888,10 @@
         <div class="reader-list">
           ${items.map((item) => `
             <a class="reader-link" href="#${escapeHtml(item.id)}" data-reader-id="${escapeHtml(item.id)}">
-              <span>${escapeHtml(item.title)}</span>
+              <span class="reader-link-main">
+                ${item.code ? `<em class="reader-code">${escapeHtml(item.code)}</em>` : ''}
+                <span>${escapeHtml(item.title)}</span>
+              </span>
               ${item.page ? `<b class="reader-page">${escapeHtml(item.page)}</b>` : ''}
             </a>
           `).join('')}
@@ -666,9 +1091,11 @@
   }
 
   function init() {
+    injectStyle();
+    applyVisitorLock(reportAccessState());
+
     items = collectItems();
     if (!items.length) return;
-    injectStyle();
     createSidebar();
     createSearch();
     observeActiveSection();

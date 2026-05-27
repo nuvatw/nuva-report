@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登入｜成果報告時間軸</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --surface: #f8fbff;
+      --paper: #ffffff;
+      --ink: #162024;
+      --muted: #687271;
+      --line: rgba(22, 32, 36, .34);
+      --teal: #224a8f;
+      --red: #1d4ed8;
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
+      color: var(--ink);
+      font-family: "Noto Sans TC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .login-shell {
+      width: min(560px, calc(100vw - 48px));
+    }
+
+    .login-card {
+      border: 1px solid rgba(22, 32, 36, .18);
+      border-top: 4px solid var(--ink);
+      background: rgba(255, 255, 255, .78);
+      box-shadow: 0 18px 50px rgba(22, 32, 36, .055);
+      padding: 32px 34px 30px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: .9rem;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Noto Serif TC", serif;
+      font-size: clamp(3rem, 12vw, 5rem);
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    label {
+      display: block;
+      min-width: 0;
+    }
+
+    input {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 0 14px;
+      outline: none;
+      font-weight: 700;
+    }
+
+    input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, .16);
+    }
+
+    button {
+      min-height: 52px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0 20px;
+      cursor: pointer;
+      font-weight: 900;
+      transition: transform .16s ease, background .16s ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      transform: translateY(-2px);
+      background: var(--teal);
+      outline: none;
+    }
+
+    .message {
+      min-height: 24px;
+      margin: 12px 0 0;
+      color: var(--red);
+      font-size: .92rem;
+      font-weight: 900;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 520px) {
+      .login-shell {
+        width: min(100% - 28px, 420px);
+      }
+
+      .login-card {
+        padding: 26px 20px 24px;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+  <script src="assets/report-theme.js"></script>
+</head>
+
+<body>
+  <main class="login-shell">
+    <section class="login-card" aria-label="登入">
+      <a class="back-link" href="index.html">回首頁</a>
+      <h1>登入</h1>
+      <form id="login-form">
+        <label>
+          <span class="sr-only">密碼</span>
+          <input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="輸入密碼" autofocus>
+        </label>
+        <button type="submit">登入</button>
+      </form>
+      <p class="message" id="message" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script>
+    const adminStorageKey = 'nuva-report-admin-auth';
+    const adminPassword = '0812';
+    const nodes = {
+      form: document.querySelector('#login-form'),
+      password: document.querySelector('#password'),
+      message: document.querySelector('#message')
+    };
+
+    function readSessionValue(key) {
+      try {
+        return window.sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    }
+
+    function writeSessionValue(key, value) {
+      try {
+        window.sessionStorage.setItem(key, value);
+      } catch {
+        // 若瀏覽器停用 sessionStorage，仍讓這次頁面流程繼續走完。
+      }
+    }
+
+    function returnTarget() {
+      const fallback = 'index.html';
+      const rawTarget = new URLSearchParams(window.location.search).get('return');
+      if (!rawTarget) return fallback;
+
+      try {
+        const target = new URL(rawTarget, window.location.href);
+        if (target.origin === window.location.origin) {
+          return `${target.pathname}${target.search}${target.hash}`;
+        }
+      } catch {
+        // 解析失敗時回到預設首頁。
+      }
+
+      return fallback;
+    }
+
+    if (readSessionValue(adminStorageKey) === 'true') {
+      window.location.replace(returnTarget());
+    }
+
+    nodes.form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if (nodes.password.value.trim() === adminPassword) {
+        writeSessionValue(adminStorageKey, 'true');
+        window.location.assign(returnTarget());
+        return;
+      }
+
+      nodes.password.value = '';
+      nodes.message.textContent = '密碼不正確，請再試一次。';
+      nodes.password.focus();
+    });
+  </script>
+</body>
+
+</html>

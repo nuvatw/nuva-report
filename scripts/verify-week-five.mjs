@@ -36,7 +36,6 @@ const requiredFiles = [
   'docs/week-5-handoff.md',
   'templates/report-template.html',
   'assets/favicon.svg',
-  'assets/site-auth.js',
   'assets/report-reader.js',
   'assets/report-actions.js'
 ];
@@ -91,8 +90,8 @@ async function verifyReportActions() {
   for (const file of reportFiles) {
     const html = await fs.readFile(path.join(root, 'reports', file), 'utf8');
     assert(
-      html.includes('../assets/site-auth.js'),
-      `${file} missing shared site auth script`
+      !html.includes('../assets/site-auth.js'),
+      `${file} should not include the retired site auth script`
     );
     assert(
       html.includes('../assets/report-reader.js'),

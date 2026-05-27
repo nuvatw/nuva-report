@@ -7,7 +7,6 @@ const REPORTS_DIR = 'reports';
 const DATA_DIR = 'data';
 const JSON_FILE = 'reports.json';
 const JS_FILE = 'reports.js';
-const SITE_AUTH_SCRIPT = '../assets/site-auth.js';
 const REPORT_READER_SCRIPT = '../assets/report-reader.js';
 const REPORT_ACTIONS_SCRIPT = '../assets/report-actions.js';
 
@@ -118,20 +117,6 @@ function hasReportReaderScript(html) {
   return /<script\b[^>]+\bsrc=["'][^"']*assets\/report-reader\.js[^"']*["'][^>]*>/i.test(html);
 }
 
-function hasSiteAuthScript(html) {
-  return /<script\b[^>]+\bsrc=["'][^"']*assets\/site-auth\.js[^"']*["'][^>]*>/i.test(html);
-}
-
-function injectSiteAuthScript(html) {
-  if (hasSiteAuthScript(html)) return html;
-
-  const scriptTag = `<script src="${SITE_AUTH_SCRIPT}"></script>\n`;
-  if (/<body[^>]*>/i.test(html)) {
-    return html.replace(/<body([^>]*)>/i, `<body$1>\n${scriptTag}`);
-  }
-  return `${scriptTag}${html}`;
-}
-
 function injectReportActionsScript(html) {
   if (hasReportActionsScript(html)) return html;
 
@@ -159,7 +144,7 @@ function injectReportReaderScript(html) {
 async function ensureReportActionsScript(root, fileName) {
   const filePath = path.join(root, REPORTS_DIR, fileName);
   const html = await fs.readFile(filePath, 'utf8');
-  const nextHtml = injectReportActionsScript(injectReportReaderScript(injectSiteAuthScript(html)));
+  const nextHtml = injectReportActionsScript(injectReportReaderScript(html));
   if (nextHtml !== html) await fs.writeFile(filePath, nextHtml, 'utf8');
 }
 
@@ -191,6 +176,7 @@ async function buildReport(root, fileName) {
     thumbnail: meta.thumbnail || '',
     pdf: meta.pdf || '',
     visibility: meta.visibility || 'public',
+    guestPin: String(meta.guestPin || meta.guestPassword || '').replace(/\D/g, '').slice(0, 4),
     pages,
     updatedAt: stat.mtime.toISOString(),
     sizeKb: Math.max(1, Math.round(stat.size / 1024))

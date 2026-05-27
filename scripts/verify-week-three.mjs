@@ -96,7 +96,8 @@ async function verifyGeneratedData() {
   assert(categories.size >= 2, 'Homepage category filter needs at least two categories in current data');
   assert(years.has('2026'), 'Homepage year filter should include 2026');
   assert(months.has('2026.05'), 'Homepage month filter should include 2026.05');
-  assert(payload.reports[0]?.id === '2026-05-22-itri-n8n-lv1', 'Latest report should be the 2026-05-22 report');
+  const latestByDate = [...payload.reports].sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0];
+  assert(payload.reports[0]?.id === latestByDate?.id, 'Latest report should match date-descending report order');
   assert(payload.reports.every((report) => report.search.includes(report.category.toLowerCase())), 'Search text should include category');
 }
 

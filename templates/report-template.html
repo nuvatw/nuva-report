@@ -28,14 +28,18 @@
   <style>
     :root {
       --paper: #ffffff;
-      --desk: #e7ebe4;
+      --desk: #f8fbff;
       --ink: #182124;
       --muted: #64706d;
       --line: rgba(24, 33, 36, .16);
       --line-strong: rgba(24, 33, 36, .42);
-      --red: #b94636;
-      --teal: #1e7374;
-      --gold: #e7bd42;
+      --red: #1d4ed8;
+      --teal: #224a8f;
+      --gold: #dbeafe;
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
     }
 
     * {
@@ -51,10 +55,10 @@
     body {
       min-height: 100vh;
       background:
-        linear-gradient(90deg, rgba(24, 33, 36, .045) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(24, 33, 36, .035) 1px, transparent 1px),
-        var(--desk);
-      background-size: 42px 42px;
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
       color: var(--ink);
       font-family: "Noto Sans TC", sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -78,7 +82,7 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(90deg, transparent 23mm, rgba(185, 70, 54, .14) 23mm, rgba(185, 70, 54, .14) calc(23mm + 1px), transparent calc(23mm + 1px));
+        linear-gradient(90deg, transparent 23mm, rgba(29, 78, 216, .12) 23mm, rgba(29, 78, 216, .12) calc(23mm + 1px), transparent calc(23mm + 1px));
     }
 
     .page > * {
@@ -324,10 +328,10 @@
       }
     }
   </style>
+  <script src="../assets/report-theme.js"></script>
 </head>
 
 <body>
-  <script src="../assets/site-auth.js"></script>
   <section class="page" id="cover">
     <div class="rh"><span>00 / 成果報告</span><span>2026.06.01</span></div>
     <div class="cover">
@@ -425,7 +429,7 @@
     </div>
     <div class="pgn">02</div>
   </section>
-  <script src="../assets/report-reader.js" defer></script>
+  <script src="../assets/report-reader.js?v=20260527-numbering" defer></script>
   <script src="../assets/report-actions.js" defer></script>
 </body>
 

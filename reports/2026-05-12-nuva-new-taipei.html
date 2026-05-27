@@ -26,7 +26,7 @@
   :root{
     --paper:#ffffff;
     --paper-edge:#eef2fb;
-    --desk:#dbe3f0;
+    --desk:#f8fbff;
     --ink:#15223f;
     --ink-s:#454f6b;
     --ink-faint:#8a93a8;
@@ -35,11 +35,19 @@
     --blue-tint:#eef3fd;
     --rule:rgba(21,34,63,.16);
     --rule-soft:rgba(21,34,63,.085);
+    --report-bg-base:#f8fbff;
+    --report-bg-line:rgba(29,78,216,.034);
+    --report-bg-line-strong:rgba(29,78,216,.046);
+    --report-bg-size:42px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
   body{
-    background:var(--desk);
+    background:
+      linear-gradient(90deg,var(--report-bg-line-strong) 1px,transparent 1px),
+      linear-gradient(0deg,var(--report-bg-line) 1px,transparent 1px),
+      var(--report-bg-base);
+    background-size:var(--report-bg-size) var(--report-bg-size);
     font-family:'Noto Sans TC',sans-serif;
     font-weight:400;
     color:var(--ink);
@@ -497,11 +505,9 @@
       margin-bottom:calc(-297mm * 0.38 + 18px);}
   }
 </style>
+<script src="../assets/report-theme.js"></script>
 </head>
 <body>
-<script src="../assets/site-auth.js"></script>
-
-
 <!-- ============================ COVER ============================ -->
 <div class="page cover" id="cover">
   <div class="ctop">
@@ -1212,7 +1218,7 @@
     <div class="ref"><span class="rn">12</span><span class="rl"><b>MSN 新聞</b> — AI 浪潮席捲校園，元智攜手 nuva 打造未來職涯新視野。</span><a href="https://www.msn.com/zh-tw/news/other/ar-AA23aiPH" target="_blank" rel="noopener">連結 ↗</a></div>
     <div class="ref"><span class="rn">13</span><span class="rl"><b>焦點新聞</b> — AI 校園巡迴與青年人才培育報導。</span><a href="https://focusnews.com.tw/2026/05/701028/" target="_blank" rel="noopener">連結 ↗</a></div>
     <div class="ref"><span class="rn">14</span><span class="rl"><b>Yahoo 新聞</b> — 桃園青年局攜手 AI 教育品牌，助學子深化軟實力。</span><a href="https://tw.news.yahoo.com/%E6%A1%83%E5%9C%92%E9%9D%92%E5%B9%B4%E5%B1%80%E6%94%9C%E6%89%8Bai%E6%95%99%E8%82%B2%E5%93%81%E7%89%8C-%E5%8A%A9%E5%AD%B8%E5%AD%90%E6%B7%B1%E5%8C%96%E8%BB%9F%E5%AF%A6%E5%8A%9B%E5%9B%A0%E6%87%89%E6%9C%AA%E4%BE%86%E6%8C%91%E6%88%B0-040133771.html" target="_blank" rel="noopener">連結 ↗</a></div>
-    <div class="ref"><span class="rn">15</span><span class="rl"><b>Yahoo 新聞</b> — 高雄市青年局舉辦人工智慧校園祭，跨界對談深入解析。</span><a href="https://tw.news.yahoo.com/%E9%AB%98%E9%9B%84%E5%B8%82%E9%9D%92%E5%B9%B4%E5%B1%80%E8%88%89%E8%BE%A6-%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7%E6%A0%A1%E5%9C%92%E7%A5%AD-%E8%B7%A8%E7%95%8C%E5%B0%8D%E8%AB%87%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-100733608.html" target="_blank" rel="noopener">連結 ↗</a></div>
+    <div class="ref"><span class="rn">15</span><span class="rl"><b>Yahoo 新聞</b> — 高雄市青年局舉辦 AI 校園祭，跨界對談深入解析。</span><a href="https://tw.news.yahoo.com/%E9%AB%98%E9%9B%84%E5%B8%82%E9%9D%92%E5%B9%B4%E5%B1%80%E8%88%89%E8%BE%A6-%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7%E6%A0%A1%E5%9C%92%E7%A5%AD-%E8%B7%A8%E7%95%8C%E5%B0%8D%E8%AB%87%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-100733608.html" target="_blank" rel="noopener">連結 ↗</a></div>
     <div class="ref"><span class="rn">16</span><span class="rl"><b>Yahoo 新聞</b> — AI 浪潮重塑職場，高市青年局攜手產學前進校園。</span><a href="https://tw.news.yahoo.com/ai%E6%B5%AA%E6%BD%AE%E9%87%8D%E5%A1%91%E8%81%B7%E5%A0%B4-%E9%AB%98%E5%B8%82%E9%9D%92%E5%B9%B4%E5%B1%80%E6%94%9C%E6%89%8B%E7%94%A2%E5%AD%B8%E5%89%8D%E9%80%B2%E6%A0%A1%E5%9C%92%E8%AB%87%E9%9D%92%E5%B9%B4%E7%AB%B6%E7%88%AD%E5%8A%9B-043940052.html" target="_blank" rel="noopener">連結 ↗</a></div>
     <div class="ref"><span class="rn">17</span><span class="rl"><b>三立新聞（臉書）</b> — AI 浪潮重塑全球各領域，青年職涯競爭力專題。</span><a href="https://www.facebook.com/setnews/posts/1580600567442910/" target="_blank" rel="noopener">連結 ↗</a></div>
   </div>
@@ -1275,7 +1281,7 @@
     <div class="ref"><span class="rn">03</span><span class="rl"><b>Accupass 全國巡演活動頁</b> — 確認巡演期間、城市、活動主題與「AI 判讀力」核心訴求。</span><a href="https://www.accupass.com" target="_blank" rel="noopener">連結 ↗</a></div>
     <div class="ref"><span class="rn">04</span><span class="rl"><b>新住民全球新聞網報導</b> — 補充 AI 提問、答案判讀、職涯探索與資訊查證脈絡。</span><a href="https://nchn.news/archives/153744" target="_blank" rel="noopener">連結 ↗</a></div>
     <div class="ref"><span class="rn">05</span><span class="rl"><b>聯合國永續發展目標第 4 項（優質教育）</b> — 對接優質教育、終身學習與青年技能培育的國際參考。</span><a href="https://sdgs.un.org/goals/goal4" target="_blank" rel="noopener">連結 ↗</a></div>
-    <div class="ref"><span class="rn">06</span><span class="rl"><b>聯合國教科文組織《學生人工智慧能力框架》</b> — 連結 AI 素養、人本思維、倫理與負責任使用。</span><a href="https://www.unesco.org/en/digital-education/ai-future-learning" target="_blank" rel="noopener">連結 ↗</a></div>
+    <div class="ref"><span class="rn">06</span><span class="rl"><b>聯合國教科文組織《學生 AI 能力框架》</b> — 連結 AI 素養、人本思維、倫理與負責任使用。</span><a href="https://www.unesco.org/en/digital-education/ai-future-learning" target="_blank" rel="noopener">連結 ↗</a></div>
   </div>
 
   <div class="sign">
@@ -1313,7 +1319,7 @@
 
   <div class="pgn">18</div>
 </div>
-  <script src="../assets/report-reader.js" defer></script>
+  <script src="../assets/report-reader.js?v=20260527-guest-pin" defer></script>
 
 
   <script src="../assets/report-actions.js" defer></script>

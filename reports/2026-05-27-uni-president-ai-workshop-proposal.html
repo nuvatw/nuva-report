@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<!-- report-meta
+{
+  "title": "統一超商商場事業部 AI 工作坊提案",
+  "subtitle": "從商場巡檢、餐飲櫃位管理到 AI 自動化思維",
+  "date": "2026-05-27",
+  "period": "2026/09/09 下午",
+  "category": "課程提案",
+  "client": "統一超商股份有限公司",
+  "clientGroup": "零售、商場與餐飲營運",
+  "timeline": "2026 九月",
+  "tags": ["AI Agent 流程", "自動化", "商場營運", "餐飲管理", "食安巡檢", "AI 自動化"],
+  "thumbnail": "",
+  "visibility": "private"
+}
+-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>統一超商商場事業部 AI 工作坊提案</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --paper-edge: #eef2fb;
+      --desk: #f8fbff;
+      --ink: #15223f;
+      --muted: #454f6b;
+      --ink-faint: #8a93a8;
+      --line: rgba(21, 34, 63, .16);
+      --line-strong: rgba(21, 34, 63, .42);
+      --green: #1d4ed8;
+      --green-deep: #12286a;
+      --red: #1d4ed8;
+      --gold: #dbeafe;
+      --blue: #1d4ed8;
+      --blue-deep: #12286a;
+      --blue-tint: #eef3fd;
+      --cream: #eef3fd;
+      --shadow: rgba(20, 40, 90, .18);
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
+      color: var(--ink);
+      font-family: "Noto Sans TC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 34px 0;
+    }
+
+    .page {
+      position: relative;
+      width: min(210mm, calc(100vw - 28px));
+      min-height: 297mm;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 10px 36px var(--shadow);
+      padding: 21mm 19mm 16mm;
+    }
+
+    .page > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .rh,
+    .kicker,
+    .meta,
+    .stat-k,
+    .pgn,
+    .eyebrow,
+    .tag,
+    .time,
+    .quote-label,
+    .mini-label {
+      font-family: "Space Mono", "Noto Sans TC", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .rh {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--ink);
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .pgn {
+      position: absolute;
+      right: 19mm;
+      bottom: 13mm;
+      color: var(--ink);
+      font-size: 11px;
+    }
+
+    .cover {
+      display: grid;
+      grid-template-rows: auto auto auto;
+      align-content: start;
+      gap: 22px;
+      min-height: 252mm;
+    }
+
+    .page.cover {
+      min-height: 297mm;
+    }
+
+    .cover-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: start;
+      padding-top: 10mm;
+    }
+
+    .kicker {
+      color: var(--green);
+      font-size: 12px;
+    }
+
+    h1 {
+      max-width: 154mm;
+      margin-top: 14px;
+      font-family: "Noto Sans TC", sans-serif;
+      font-size: 55px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: .01em;
+    }
+
+    h1 span {
+      display: block;
+    }
+
+    .subtitle {
+      max-width: 144mm;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .tagline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .tag {
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--ink);
+      font-size: 10px;
+      padding: 6px 9px;
+    }
+
+    .cover-board {
+      display: grid;
+      grid-template-columns: 1.04fr .96fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+
+    .signal {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 14px;
+      align-items: start;
+      border-top: 2px solid var(--ink);
+      padding-top: 14px;
+    }
+
+    .signal + .signal {
+      margin-top: 18px;
+    }
+
+    .signal-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      background: var(--green-deep);
+      color: #fff;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .signal h3,
+    .flow-node h3,
+    .role h3,
+    .deliverable h3 {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .signal p,
+    .flow-node p,
+    .role p,
+    .deliverable p,
+    .quote-note,
+    .body {
+      color: var(--muted);
+      font-size: 12.7px;
+      line-height: 1.9;
+    }
+
+    .operation-map {
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+      gap: 9px;
+      border: 2px solid var(--ink);
+      background: #fff;
+      padding: 12px;
+      box-shadow: 8px 8px 0 rgba(0, 122, 77, .12);
+    }
+
+    .map-row {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 10px;
+      min-height: 36px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    .map-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .map-dot {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      background: var(--cream);
+      color: var(--green-deep);
+      font-size: 11px;
+      font-weight: 900;
+      border: 1px solid var(--line-strong);
+    }
+
+    .map-row strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .map-row span {
+      display: block;
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.5;
+    }
+
+    .cover-grid,
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 2px solid var(--ink);
+      background: #fff;
+    }
+
+    .cover-grid > div,
+    .stats > div {
+      min-height: 29mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 15px 16px;
+      border-right: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .cover-grid > div:last-child,
+    .stats > div:last-child {
+      border-right: 0;
+    }
+
+    .meta {
+      margin-bottom: 8px;
+      color: var(--red);
+      font-size: 9px;
+    }
+
+    .value {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .sec {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 18px;
+      margin: 44px 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .sec:first-of-type {
+      margin-top: 34px;
+    }
+
+    .sec-num {
+      color: var(--red);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 38px;
+      font-weight: 900;
+      line-height: .9;
+    }
+
+    h2 {
+      font-family: "Noto Sans TC", sans-serif;
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 154mm;
+      border-left: 4px solid var(--green);
+      padding-left: 18px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.9;
+      text-wrap: pretty;
+    }
+
+    .keep-together {
+      white-space: nowrap;
+    }
+
+    .stats {
+      margin: 20px 0 18px;
+    }
+
+    .stat-k {
+      color: var(--green);
+      font-size: 10px;
+    }
+
+    .stat-v {
+      margin-top: 6px;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .stat-s {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .roles {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .role,
+    .deliverable,
+    .principle,
+    .case-note,
+    .quote-box {
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      padding: 16px;
+    }
+
+    .role h3 {
+      min-height: 44px;
+    }
+
+    .role p {
+      margin-top: 8px;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .principle {
+      border-top: 6px solid var(--green);
+    }
+
+    .principle.alt {
+      border-top-color: var(--blue);
+    }
+
+    .principle h3 {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .principle p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .quote-strip {
+      margin-top: 18px;
+      border: 2px solid var(--ink);
+      background:
+        linear-gradient(90deg, rgba(216, 170, 40, .22), transparent 48%),
+        #fff;
+      padding: 18px 20px;
+    }
+
+    .quote-strip strong {
+      display: block;
+      color: var(--red);
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .quote-strip p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.9;
+    }
+
+    .journey {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 20px;
+      border: 2px solid var(--ink);
+      background: #fff;
+    }
+
+    .journey-step {
+      min-height: 118px;
+      padding: 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .journey-step:last-child {
+      border-right: 0;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--green);
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
+
+    .journey-step h3 {
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .journey-step p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.75;
+    }
+
+    .agenda {
+      margin-top: 16px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .agenda-row {
+      display: grid;
+      grid-template-columns: 33mm 1fr 40mm;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: start;
+    }
+
+    .time {
+      color: var(--green);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .agenda-main h3 {
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .agenda-main p,
+    .agenda-side {
+      color: var(--muted);
+      font-size: 12.1px;
+      line-height: 1.75;
+    }
+
+    .agenda-main p {
+      margin-top: 5px;
+    }
+
+    .agenda-side {
+      border-left: 3px solid var(--gold);
+      padding-left: 10px;
+    }
+
+    .demo-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    .flow {
+      border: 2px solid var(--ink);
+      background: #fff;
+      padding: 14px;
+    }
+
+    .flow-node {
+      position: relative;
+      padding: 13px 13px 13px 48px;
+      border-bottom: 1px solid var(--line);
+      min-height: 68px;
+    }
+
+    .flow-node:last-child {
+      border-bottom: 0;
+    }
+
+    .flow-node::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      top: 14px;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      background: var(--green-deep);
+      color: #fff;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .case-note {
+      border-left: 6px solid var(--red);
+    }
+
+    .case-note h3 {
+      color: var(--red);
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .case-note p,
+    .case-note li {
+      color: var(--muted);
+      font-size: 12.7px;
+      line-height: 1.85;
+    }
+
+    .case-note p {
+      margin-top: 10px;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .check-list {
+      margin-top: 12px;
+    }
+
+    .check-list li {
+      position: relative;
+      padding-left: 18px;
+      margin-top: 7px;
+    }
+
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .72em;
+      width: 8px;
+      height: 2px;
+      background: var(--green);
+    }
+
+    .canvas {
+      margin-top: 18px;
+      border: 2px solid var(--ink);
+      background: #fff;
+    }
+
+    .canvas-head {
+      display: grid;
+      grid-template-columns: 30mm 1fr;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .canvas-head > div {
+      padding: 12px 14px;
+    }
+
+    .canvas-head > div:first-child {
+      background: var(--green-deep);
+      color: #fff;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .canvas-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .canvas-cell {
+      min-height: 88px;
+      padding: 14px;
+      border-right: 1px solid var(--line);
+    }
+
+    .canvas-cell:last-child {
+      border-right: 0;
+    }
+
+    .canvas-cell h3 {
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .canvas-cell p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .deliverables {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .deliverable {
+      min-height: 126px;
+      border-top: 5px solid var(--green);
+    }
+
+    .deliverable:nth-child(2),
+    .deliverable:nth-child(5) {
+      border-top-color: var(--gold);
+    }
+
+    .deliverable:nth-child(3),
+    .deliverable:nth-child(6) {
+      border-top-color: var(--blue);
+    }
+
+    .quote-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+      align-items: stretch;
+    }
+
+    .quote-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 150px;
+      border: 2px solid var(--ink);
+    }
+
+    .quote-box > .quote-label:last-child {
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .quote-label {
+      color: var(--green);
+      font-size: 10px;
+    }
+
+    .quote-number {
+      margin-top: 8px;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .quote-number span {
+      display: block;
+    }
+
+    .quote-note {
+      margin-top: 10px;
+    }
+
+    .calc-table {
+      border: 2px solid var(--ink);
+      background: #fff;
+    }
+
+    .calc-row {
+      display: grid;
+      grid-template-columns: 1fr 38mm;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+
+    .calc-row:last-child {
+      border-bottom: 0;
+    }
+
+    .calc-row strong {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .calc-row span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: right;
+    }
+
+    .calc-row.total {
+      background: var(--green-deep);
+      color: #fff;
+    }
+
+    .calc-row.total span {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .terms {
+      margin-top: 18px;
+      border-top: 2px solid var(--ink);
+      padding-top: 16px;
+    }
+
+    .terms li {
+      position: relative;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.85;
+      margin-top: 6px;
+      text-wrap: pretty;
+    }
+
+    .terms li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .8em;
+      width: 10px;
+      height: 2px;
+      background: var(--red);
+    }
+
+    .closing {
+      margin-top: 22px;
+      border: 2px solid var(--ink);
+      background:
+        linear-gradient(90deg, rgba(0, 122, 77, .12), transparent 56%),
+        #fff;
+      padding: 18px 20px;
+    }
+
+    .closing strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.6;
+      text-wrap: pretty;
+    }
+
+    .closing p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.85;
+      text-wrap: pretty;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        break-after: page;
+      }
+    }
+
+    @media (max-width: 780px) {
+      body {
+        padding: 12px 0;
+      }
+
+      .page {
+        width: calc(100vw - 18px);
+        min-height: auto;
+        padding: 30px 22px 42px;
+        margin-bottom: 14px;
+      }
+
+      .pgn {
+        right: 22px;
+        bottom: 18px;
+      }
+
+      .cover {
+        min-height: auto;
+      }
+
+      .page.cover {
+        min-height: auto;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
+      .cover-board,
+      .demo-layout,
+      .quote-grid,
+      .principles,
+      .deliverables,
+      .roles,
+      .stats,
+      .cover-grid,
+      .journey {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-grid > div,
+      .stats > div,
+      .journey-step {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .cover-grid > div:last-child,
+      .stats > div:last-child,
+      .journey-step:last-child {
+        border-bottom: 0;
+      }
+
+      .sec {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .agenda-row {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      .agenda-side {
+        border-left: 0;
+        border-top: 3px solid var(--gold);
+        padding: 8px 0 0;
+      }
+
+      .canvas-head,
+      .canvas-grid,
+      .calc-row {
+        grid-template-columns: 1fr;
+      }
+
+      .canvas-cell {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .canvas-cell:last-child {
+        border-bottom: 0;
+      }
+
+      .calc-row span {
+        text-align: left;
+      }
+    }
+  </style>
+  <script src="../assets/report-theme.js"></script>
+</head>
+
+<body>
+  <section class="page cover">
+    <div class="rh">
+      <span>nuva AI 工作坊提案</span>
+      <span>統一超商股份有限公司｜商場事業部｜2026-05-27</span>
+    </div>
+
+    <div class="cover-main">
+      <div>
+        <div class="kicker">2026 課程提案</div>
+        <h1><span>統一超商商場事業部</span><span>AI 工作坊提案</span></h1>
+        <p class="subtitle">從商場巡檢、餐飲櫃位管理、食安職安表單到宣導溝通，建立同仁能帶回工作現場的 AI 自動化思維。</p>
+        <div class="tagline">
+          <span class="tag">AI 不是取代人，而是放大人</span>
+          <span class="tag">不需攜帶電腦</span>
+          <span class="tag">紙本工作流程設計表</span>
+          <span class="tag">商場經理巡場 AI Agent 流程示範</span>
+        </div>
+
+        <div class="cover-board">
+          <div>
+            <div class="signal">
+              <div class="signal-mark">01</div>
+              <div>
+                <h3>從餐飲與商場現場出發</h3>
+                <p>課程以私廚精緻餐飲階段的 AI 應用經驗開場，銜接菜單、標準作業流程、食材採買、食譜翻譯與餐飲櫃位管理情境。</p>
+              </div>
+            </div>
+            <div class="signal">
+              <div class="signal-mark">02</div>
+              <div>
+                <h3>用 AI Agent 流程重新理解營運</h3>
+                <p>透過巡場、食安檢查、職安表格、宣導簽收與通訊群組溝通，讓同仁理解觸發條件、執行動作與人機協作。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="operation-map" aria-label="商場營運情境圖">
+            <div class="map-row">
+              <div class="map-dot">巡</div>
+              <div><strong>櫃位環境與服儀檢查</strong><span>現場描述、照片與備註彙整</span></div>
+            </div>
+            <div class="map-row">
+              <div class="map-dot">食</div>
+              <div><strong>食材、食安與廚房作業流程</strong><span>表單勾稽、異常紀錄、改善追蹤</span></div>
+            </div>
+            <div class="map-row">
+              <div class="map-dot">宣</div>
+              <div><strong>朝會與政策宣導</strong><span>宣導單、簽收回收、通訊群組提醒</span></div>
+            </div>
+            <div class="map-row">
+              <div class="map-dot">析</div>
+              <div><strong>週報與管理洞察</strong><span>把零散巡檢資訊整理成可判斷的管理報告</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-grid">
+      <div>
+        <div class="meta">提案對象</div>
+        <div class="value">統一超商股份有限公司<br>商場事業部</div>
+      </div>
+      <div>
+        <div class="meta">時間與地點</div>
+        <div class="value">2026/09/09 下午<br>新竹馬武督</div>
+      </div>
+      <div>
+        <div class="meta">課程形式</div>
+        <div class="value">2.5 小時分享<br>30 分鐘問答交流</div>
+      </div>
+    </div>
+    <div class="pgn">01</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>提案背景</span>
+      <span>商場經營與餐飲管理核心業務</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">01</div>
+      <div>
+        <h2>課程背景與提案目標</h2>
+      </div>
+    </div>
+
+    <p class="lead">商場事業部的工作高度依賴現場判斷、跨角色溝通與流程紀律。本次工作坊的核心不是讓同仁「多認識幾個 AI 工具」，而是讓大家看見 AI 如何貼近商場經營與餐飲管理的日常工作。</p>
+
+    <div class="stats">
+      <div>
+        <div class="stat-k">參與人數</div>
+        <div class="stat-v">約 100</div>
+        <div class="stat-s">預估參與人數，教材以 150 人份準備</div>
+      </div>
+      <div>
+        <div class="stat-k">課程時數</div>
+        <div class="stat-v">3 小時</div>
+        <div class="stat-s">2.5 小時主題分享與實作，30 分鐘互動問答</div>
+      </div>
+      <div>
+        <div class="stat-k">設備需求</div>
+        <div class="stat-v">不需攜帶電腦</div>
+        <div class="stat-s">以示範、討論與紙本教材為主</div>
+      </div>
+    </div>
+
+    <p class="body">本次年度特訓活動可作為商場事業部導入 AI 的第一個共同語言：先理解 AI 自動化與 AI 協作，再回到現場工作，辨識哪些流程可以被標準化、哪些資訊可以被結構化、哪些判斷仍需要人的領域知識與管理經驗。</p>
+
+    <div class="roles">
+      <div class="role">
+        <h3>商場經理與巡場管理者</h3>
+        <p>約 20 人。聚焦於巡場、櫃位環境、餐飲櫃位管理、食安職安檢查與異常回報。</p>
+      </div>
+      <div class="role">
+        <h3>後勤企劃與營運支援</h3>
+        <p>約 20 人。聚焦於宣導資料、政策推進、表單回收、跨場域資訊整理與分析報告。</p>
+      </div>
+      <div class="role">
+        <h3>店長、區長與場地管理角色</h3>
+        <p>協助把朝會、通訊群組、紙本簽收與現場任務串成更容易追蹤的工作流。</p>
+      </div>
+    </div>
+
+    <div class="quote-strip">
+      <strong>這堂課的成果，是讓同仁開始問出更好的問題：這個流程的觸發條件是什麼？AI 可以判斷哪一段？人應該在哪裡把關？</strong>
+      <p>當大家具備這樣的基本思維，後續不論是導入自動化平台、生成式 AI 工具、內部系統或其他工具，都比較不會停留在工具展示，而能回到真實營運問題。</p>
+    </div>
+
+    <div class="pgn">02</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>學習原則</span>
+      <span>AI 第一原則與持續建構</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">02</div>
+      <div>
+        <h2>課程核心觀念</h2>
+      </div>
+    </div>
+
+    <p class="lead">nuva 的核心思想是：AI 不是取代人，而是放大人。AI 能同時在「時間」與「精力」兩個維度提升效率，但前提是人仍然保有領域知識、判斷力與責任感。</p>
+
+    <div class="principles">
+      <div class="principle">
+        <h3>AI 自動化</h3>
+        <p>將低價值、重複性、流程化的任務交給 AI 或自動化流程處理，讓同仁把時間留給更重要的判斷、溝通與現場決策。</p>
+      </div>
+      <div class="principle alt">
+        <h3>AI 協作</h3>
+        <p>在高價值任務中與 AI 一起推進工作，例如整理巡檢紀錄、撰寫報告、拆解標準作業流程、生成宣導素材與分析異常趨勢。</p>
+      </div>
+    </div>
+
+    <div class="quote-strip">
+      <strong>這段課程會戳破「有了 AI 就可以打天下」的粉紅幻想泡泡。</strong>
+      <p>正因為商場與餐飲營運同仁具備現場經驗，才知道哪些流程能被標準化，哪些資訊要被追蹤，哪些結果看起來漂亮但其實不符合管理現場。</p>
+    </div>
+
+    <div class="pgn">03</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>學習旅程</span>
+      <span>吸收、創造與擴散</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">03</div>
+      <div>
+        <h2>最有效的 AI 學習旅程</h2>
+      </div>
+    </div>
+
+    <p class="body">nuva 過去進入南山人壽、國泰人壽、台北捷運、工業技術研究院等組織進行 AI 內訓時，我們觀察到最有效的學習通常會經歷三個階段：吸收、創造與擴散。真正有效的學習不是花大錢猛學各種 AI 工具，而是在初步理解 AI 技巧後，回到自己的工作情境，透過與真實世界互動的專題主動創造解法。</p>
+
+    <div class="journey">
+      <div class="journey-step">
+        <span class="eyebrow">一｜吸收</span>
+        <h3>吸收</h3>
+        <p>理解 AI 的能力邊界、常見工作型態與基本提示思維，建立共同語言。</p>
+      </div>
+      <div class="journey-step">
+        <span class="eyebrow">二｜創造</span>
+        <h3>創造</h3>
+        <p>從自己的工作問題出發，設計可被 AI 協作或自動化推進的工作流。</p>
+      </div>
+      <div class="journey-step">
+        <span class="eyebrow">三｜擴散</span>
+        <h3>擴散</h3>
+        <p>把個人解法變成團隊可以討論、修正、複製與延伸的內部素材。</p>
+      </div>
+    </div>
+
+    <div class="closing">
+      <strong>我們稱這個精神為持續建構。</strong>
+      <p>真正有力量的學習，不是記住標準答案，而是能夠創造自己的答案。這也是本次工作坊會安排現場流程設計練習與課後問答行動白皮書的原因。</p>
+    </div>
+
+    <div class="pgn">04</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>課程流程</span>
+      <span>2.5 小時分享＋30 分鐘問答</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">04</div>
+      <div>
+        <h2>建議課程流程</h2>
+      </div>
+    </div>
+
+    <p class="lead">整體設計採取「先讓同仁看懂 AI 怎麼靠近工作，再帶大家用自己的營運語言設計流程」的節奏。現場不需攜帶電腦，紙筆與講義由 nuva 準備。</p>
+
+    <div class="agenda">
+      <div class="agenda-row">
+        <div class="time">00:00<br>00:30</div>
+        <div class="agenda-main">
+          <h3>精緻餐飲私廚階段的 AI 應用案例</h3>
+          <p>分享講師如何在精緻餐飲私廚工作中應用 AI，包含開立菜單、思考標準作業流程、食材採買、翻譯食譜與餐飲流程整理。</p>
+        </div>
+        <div class="agenda-side">用餐飲現場切入，讓商場與餐飲管理同仁快速產生連結。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">00:30<br>00:50</div>
+        <div class="agenda-main">
+          <h3>AI 第一原則：自動化、協作與人的判斷力</h3>
+          <p>說明 AI 如何放大人的時間與精力，同時提醒企業不能把專業判斷外包給 AI。</p>
+        </div>
+        <div class="agenda-side">建立正確期待，避免把 AI 誤解為萬能工具。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">00:50<br>01:00</div>
+        <div class="agenda-main">
+          <h3>休息</h3>
+          <p>短暫休息與現場問題收集。</p>
+        </div>
+        <div class="agenda-side">可同步引導同仁提交匿名提問。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">01:00<br>01:30</div>
+        <div class="agenda-main">
+          <h3>最有效的 AI 學習旅程：吸收、創造、擴散</h3>
+          <p>結合 nuva 企業內訓經驗，說明專案式學習與持續建構如何把「我學了什麼」轉化成「我做了什麼」。</p>
+        </div>
+        <div class="agenda-side">讓同仁知道後續如何持續練習，而不是只停留在單次講座。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">01:30<br>01:50</div>
+        <div class="agenda-main">
+          <h3>商場經理巡場 AI Agent 流程現場示範</h3>
+          <p>示範巡場時以語音描述櫃位狀況，讓 AI 協助勾選檢查項目、整理備註，並輸出每週分析報告給管理者。</p>
+        </div>
+        <div class="agenda-side">把 AI Agent 流程直接放進巡場、食安、職安與餐飲櫃位管理場景。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">01:50<br>02:00</div>
+        <div class="agenda-main">
+          <h3>休息</h3>
+          <p>整理現場示範重點，準備進入紙本流程設計。</p>
+        </div>
+        <div class="agenda-side">講師整理提問與現場反應。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">02:00<br>02:30</div>
+        <div class="agenda-main">
+          <h3>現場實作：用門市自動門理解 AI 自動化</h3>
+          <p>從觸發條件、執行動作、條件判斷出發，帶同仁拆解流程，並思考如果在流程中加入 AI，可以協助判斷、提醒、紀錄或產出什麼。</p>
+        </div>
+        <div class="agenda-side">以紙本工作流程設計表建立 AI Agent 與自動化思維。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">02:30<br>03:00</div>
+        <div class="agenda-main">
+          <h3>現場交流與匿名問答</h3>
+          <p>開放匿名提問，針對商場巡檢、餐飲管理、宣導溝通、AI 學習方式與導入疑慮即時回饋。</p>
+        </div>
+        <div class="agenda-side">課後依問題整理問答行動白皮書。</div>
+      </div>
+    </div>
+
+    <div class="pgn">05</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>示範設計</span>
+      <span>商場經理巡場 AI Agent 流程</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">05</div>
+      <div>
+        <h2>現場示範設計</h2>
+      </div>
+    </div>
+
+    <p class="lead">現場示範會聚焦在商場經理與現場管理者最熟悉的巡場情境：檢查櫃位環境、服裝儀容、食材狀態、食安表格與職安表格，並把零散紀錄整理成每週可閱讀的管理摘要。</p>
+
+    <div class="demo-layout">
+      <div class="flow">
+        <div class="flow-node" data-step="01">
+          <h3>巡場時口述現況</h3>
+          <p>同仁以行動裝置語音描述某櫃位狀況，例如環境整潔、制服儀容、食材保存、待改善事項。</p>
+        </div>
+        <div class="flow-node" data-step="02">
+          <h3>AI 協助轉成檢查紀錄</h3>
+          <p>AI 將自然語言整理成檢查項目、勾選結果、異常備註與待追蹤事項。</p>
+        </div>
+        <div class="flow-node" data-step="03">
+          <h3>自動彙整週報</h3>
+          <p>依櫃位、問題類型、改善狀態與重複異常進行彙整，產出給管理者閱讀的週報。</p>
+        </div>
+        <div class="flow-node" data-step="04">
+          <h3>回到人的管理判斷</h3>
+          <p>AI 提供資訊整理與趨勢線索，最終判斷仍由具有現場經驗的管理者把關。</p>
+        </div>
+      </div>
+
+      <div class="case-note">
+        <h3>示範會刻意連到真實工作痛點</h3>
+        <p>目前商場人員的作業流程尚未系統性運用 AI，許多資訊仍分散在紙本宣導、簽名回收、食安職安表格、朝會口頭宣達與通訊群組中。</p>
+        <ul class="check-list">
+          <li>巡場紀錄是否能從口述轉成可追蹤欄位？</li>
+          <li>食安與職安檢查能否降低重複輸入？</li>
+          <li>朝會之外的宣導資訊，能否更容易確認是否已送達與回收？</li>
+          <li>每週管理報告能否從人工彙整改為 AI 協助初稿？</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pgn">06</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>現場實作</span>
+      <span>紙本 AI Agent 流程設計</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">06</div>
+      <div>
+        <h2>現場實作設計</h2>
+      </div>
+    </div>
+
+    <p class="body">本段不安排需要電腦操作的工具教學，而是用紙本教材帶大家建立 AI 自動化的底層思維。範例會從門市自動門切入：什麼是觸發條件？什麼是執行動作？中間是否有條件判斷？如果加入 AI，又能新增哪些判斷、提醒、紀錄或生成能力？</p>
+
+    <div class="canvas">
+      <div class="canvas-head">
+        <div>工作流程</div>
+        <div><strong>紙本 AI Agent 流程設計表</strong></div>
+      </div>
+      <div class="canvas-grid">
+        <div class="canvas-cell">
+          <h3>觸發條件</h3>
+          <p>什麼事件發生後，流程應該被啟動？例如巡場、異常、表單提交。</p>
+        </div>
+        <div class="canvas-cell">
+          <h3>資料輸入</h3>
+          <p>AI 需要讀取哪些資料？例如語音、照片、表單、通訊訊息或簽收紀錄。</p>
+        </div>
+        <div class="canvas-cell">
+          <h3>AI 判斷</h3>
+          <p>AI 可以分類、摘要、比對、提醒，但不取代人的最終判斷。</p>
+        </div>
+        <div class="canvas-cell">
+          <h3>執行動作</h3>
+          <p>流程最後要產生什麼結果？例如勾選表單、異常清單、週報或宣導追蹤。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pgn">07</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>服務內容</span>
+      <span>課前、課中、課後交付項目</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">07</div>
+      <div>
+        <h2>本次服務內容</h2>
+      </div>
+    </div>
+
+    <p class="lead">本提案採「完整工作坊支援」規格規劃。除 3 小時現場課程外，亦包含課前對焦、教材準備、交通與課後文件整理，方便商場事業部後續延伸內部推動。</p>
+
+    <div class="deliverables">
+      <div class="deliverable">
+        <span class="mini-label">課前準備一</span>
+        <h3>兩次 30 分鐘線上對焦會議</h3>
+        <p>課前確認活動目標、參與者結構、現場設備、示範情境與內部期待，讓課程更貼近商場事業部需求。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">課程教材</span>
+        <h3>150 人份課程教具</h3>
+        <p>包含紙本講義、工作流程設計表與筆，支援約 100 人現場參與，並預留備品。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">課程執行</span>
+        <h3>3 小時工作坊執行</h3>
+        <p>2.5 小時分享與現場實作，30 分鐘匿名提問與互動交流。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">現場示範</span>
+        <h3>商場經理巡場 AI Agent 流程示範</h3>
+        <p>以巡場、食安、職安、餐飲櫃位管理與週報產出為情境，示範 AI Agent 流程的工作方式。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">課後整理</span>
+        <h3>課後問答行動白皮書</h3>
+        <p>依現場匿名提問與交流內容，整理可延伸參考的應用說明書，作為後續內部推動素材。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">費用範圍</span>
+        <h3>交通與延伸費用</h3>
+        <p>本次新竹馬武督交通費與本提案範圍內所需之延伸額外費用，皆已納入報價。</p>
+      </div>
+    </div>
+
+    <div class="closing">
+      <strong>課後文件的目標不是做成漂亮紀錄，而是變成可行動的內部素材。</strong>
+      <p>我們會將現場問題整理成「情境、可嘗試作法、注意事項、下一步」的格式，讓團隊後續能接著討論哪些流程值得優先試做。</p>
+    </div>
+
+    <div class="pgn">08</div>
+  </section>
+
+  <section class="page">
+    <div class="rh">
+      <span>課程報價</span>
+      <span>報價與交付範圍</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">08</div>
+      <div>
+        <h2>課程報價</h2>
+      </div>
+    </div>
+
+    <p class="lead">本次以 nuva 工作坊培訓報價新臺幣 23,000 元／小時計算，<br>共 3 小時，含 <span class="keep-together">5% 營業稅</span>，總金額為新臺幣 72,450 元。</p>
+
+    <div class="quote-grid">
+      <div class="quote-box">
+        <div>
+          <div class="quote-label">含稅總金額</div>
+          <div class="quote-number"><span>新臺幣</span><span>72,450 元</span></div>
+        </div>
+        <div class="quote-label">報價有效至 2026/06/27</div>
+      </div>
+
+      <div class="calc-table">
+        <div class="calc-row">
+          <strong>工作坊培訓單價</strong>
+          <span>新臺幣 23,000 元／小時</span>
+        </div>
+        <div class="calc-row">
+          <strong>課程時數</strong>
+          <span>3 小時</span>
+        </div>
+        <div class="calc-row">
+          <strong>未稅小計</strong>
+          <span>新臺幣 69,000 元</span>
+        </div>
+        <div class="calc-row">
+          <strong>營業稅 5%</strong>
+          <span>新臺幣 3,450 元</span>
+        </div>
+        <div class="calc-row total">
+          <strong>含稅總計</strong>
+          <span>新臺幣 72,450 元</span>
+        </div>
+      </div>
+    </div>
+
+    <ul class="terms">
+      <li>本報價包含：工作坊前兩次 30 分鐘線上對焦會議、150 人份講義與筆、課後問答行動白皮書、本次交通費，以及本提案範圍內所需之延伸額外費用。</li>
+    </ul>
+
+    <div class="closing">
+      <strong>建議下一步：審閱提案資料與報價後，進行合約與正式報價單簽署。</strong>
+      <p>若統一超商股份有限公司商場事業部確認有意願推進，nuva 可開立正式報價單與合約供簽署；簽署完成後，我們會開始設計當天可示範的 AI Agent 流程，並補齊詳細課程資訊、示範腳本與教材內容。</p>
+    </div>
+
+    <div class="pgn">09</div>
+  </section>
+  <script src="../assets/report-reader.js?v=20260527-guest-pin" defer></script>
+  <script src="../assets/report-actions.js" defer></script>
+</body>
+
+</html>

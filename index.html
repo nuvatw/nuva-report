@@ -13,17 +13,21 @@
     rel="stylesheet">
   <style>
     :root {
-      --surface: #f4f6f2;
+      --surface: #f8fbff;
       --paper: #ffffff;
       --ink: #162024;
       --muted: #687271;
       --line: rgba(22, 32, 36, .16);
       --line-strong: rgba(22, 32, 36, .34);
-      --red: #bd3f30;
-      --teal: #1f6e72;
-      --yellow: #e5bc44;
+      --red: #1d4ed8;
+      --teal: #224a8f;
+      --yellow: #dbeafe;
       --blue: #224a8f;
       --shadow: rgba(22, 32, 36, .12);
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
     }
 
     * {
@@ -39,10 +43,10 @@
       min-height: 100vh;
       overflow-x: hidden;
       background:
-        linear-gradient(90deg, rgba(22, 32, 36, .045) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(22, 32, 36, .035) 1px, transparent 1px),
-        var(--surface);
-      background-size: 42px 42px;
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
       color: var(--ink);
       font-family: "Noto Sans TC", sans-serif;
       font-weight: 400;
@@ -146,7 +150,7 @@
       bottom: 4px;
       transform: rotate(-7deg);
       background:
-        linear-gradient(90deg, transparent 22%, rgba(189, 63, 48, .2) 22%, rgba(189, 63, 48, .2) 23%, transparent 23%),
+        linear-gradient(90deg, transparent 22%, rgba(29, 78, 216, .18) 22%, rgba(29, 78, 216, .18) 23%, transparent 23%),
         var(--paper);
     }
 
@@ -155,7 +159,7 @@
       bottom: 20px;
       transform: rotate(3deg);
       background:
-        linear-gradient(0deg, transparent 72%, rgba(31, 110, 114, .16) 72%, rgba(31, 110, 114, .16) 88%, transparent 88%),
+        linear-gradient(0deg, transparent 72%, rgba(29, 78, 216, .14) 72%, rgba(29, 78, 216, .14) 88%, transparent 88%),
         var(--paper);
     }
 
@@ -227,7 +231,7 @@
 
     .search:focus {
       border-color: var(--red);
-      box-shadow: 6px 7px 0 rgba(189, 63, 48, .16);
+      box-shadow: 6px 7px 0 rgba(29, 78, 216, .14);
     }
 
     .chips {
@@ -487,9 +491,22 @@
       transition: transform .16s ease, box-shadow .16s ease;
     }
 
+    .report-main-link {
+      display: contents;
+      color: inherit;
+      text-decoration: none;
+    }
+
     .report-card.is-latest {
       border-color: var(--red);
-      box-shadow: 8px 9px 0 rgba(189, 63, 48, .12);
+      box-shadow: 8px 9px 0 rgba(29, 78, 216, .12);
+    }
+
+    .report-card.is-private {
+      border-style: dashed;
+      background:
+        linear-gradient(90deg, rgba(22, 32, 36, .035), transparent 46%),
+        var(--paper);
     }
 
     .report-card:hover {
@@ -541,7 +558,7 @@
       min-height: 24px;
       border: 1px solid var(--red);
       border-radius: 999px;
-      background: rgba(189, 63, 48, .08);
+      background: rgba(29, 78, 216, .08);
       color: var(--red);
       padding: 0 8px;
       font-size: .68rem;
@@ -586,6 +603,213 @@
       white-space: nowrap;
     }
 
+    .visibility-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 0 8px;
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+    }
+
+    .visibility-badge.is-public {
+      border-color: rgba(29, 78, 216, .36);
+      background: rgba(29, 78, 216, .08);
+      color: var(--blue);
+    }
+
+    .visibility-badge.is-private {
+      border-color: rgba(104, 114, 113, .35);
+      background: rgba(104, 114, 113, .08);
+    }
+
+    .admin-controls {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      min-height: 52px;
+      border-top: 1px solid var(--line);
+      background: rgba(244, 246, 242, .72);
+      padding: 10px 18px;
+    }
+
+    .admin-status-text {
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 800;
+    }
+
+    .visibility-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 900;
+      padding: 4px 0;
+    }
+
+    .toggle-track {
+      position: relative;
+      width: 58px;
+      height: 32px;
+      border: 1px solid rgba(104, 114, 113, .44);
+      border-radius: 999px;
+      background: #d6ddda;
+      transition: background .18s ease, border-color .18s ease;
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(22, 32, 36, .18);
+      transition: transform .18s ease;
+    }
+
+    .visibility-toggle.is-public {
+      color: var(--blue);
+    }
+
+    .visibility-toggle.is-public .toggle-track {
+      border-color: rgba(29, 78, 216, .54);
+      background: var(--blue);
+    }
+
+    .visibility-toggle.is-public .toggle-knob {
+      transform: translateX(26px);
+    }
+
+    .visibility-toggle:focus-visible {
+      outline: 3px solid rgba(29, 78, 216, .22);
+      outline-offset: 4px;
+    }
+
+    .guest-pin-editor {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(160px, 1fr) auto auto;
+      align-items: center;
+      gap: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .guest-pin-copy {
+      display: grid;
+      gap: 3px;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.45;
+    }
+
+    .guest-pin-copy strong {
+      color: var(--ink);
+      font-size: .9rem;
+      font-weight: 900;
+    }
+
+    .guest-pin-input-wrap {
+      position: relative;
+      display: inline-grid;
+      align-items: center;
+    }
+
+    .guest-pin-field {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      opacity: 0;
+      cursor: text;
+    }
+
+    .guest-pin-digits {
+      display: grid;
+      grid-template-columns: repeat(4, 34px);
+      gap: 7px;
+      pointer-events: none;
+    }
+
+    .guest-pin-cell {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 38px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .8);
+      color: var(--ink-faint);
+      font-family: "Archivo", sans-serif;
+      font-size: .78rem;
+      font-weight: 900;
+      transition: border-color .16s ease, box-shadow .16s ease, color .16s ease;
+    }
+
+    .guest-pin-cell.is-filled {
+      border-color: var(--teal);
+      color: var(--ink);
+      box-shadow: inset 0 -3px 0 rgba(29, 78, 216, .14);
+    }
+
+    .guest-pin-input-wrap:focus-within .guest-pin-cell {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, .13);
+    }
+
+    .guest-pin-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .pin-save,
+    .pin-clear {
+      min-height: 38px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0 12px;
+      cursor: pointer;
+      font-weight: 900;
+      transition: transform .16s ease, background .16s ease, opacity .16s ease;
+    }
+
+    .pin-clear {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .pin-save:disabled {
+      cursor: not-allowed;
+      opacity: .42;
+    }
+
+    .pin-save:not(:disabled):hover,
+    .pin-save:not(:disabled):focus-visible,
+    .pin-clear:hover,
+    .pin-clear:focus-visible {
+      transform: translateY(-1px);
+      background: var(--teal);
+      color: var(--paper);
+      outline: none;
+    }
+
     .empty {
       border: 1px dashed var(--line-strong);
       border-radius: 8px;
@@ -608,6 +832,219 @@
       border-radius: 8px;
       color: var(--red);
       font-weight: 900;
+    }
+
+    .admin-login {
+      margin-top: 54px;
+      border-top: 4px solid var(--ink);
+      padding-top: 22px;
+    }
+
+    .admin-login-inner {
+      width: 100%;
+      display: grid;
+      gap: 18px;
+      border-bottom: 1px solid var(--line-strong);
+      padding-bottom: 26px;
+    }
+
+    .admin-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .admin-login-button,
+    .admin-logout {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0 18px;
+      cursor: pointer;
+      font-weight: 900;
+      text-decoration: none;
+      transition: transform .16s ease, background .16s ease;
+    }
+
+    .admin-login-button[hidden],
+    .admin-logout[hidden] {
+      display: none;
+    }
+
+    .admin-login-button:hover,
+    .admin-login-button:focus-visible,
+    .admin-logout:hover,
+    .admin-logout:focus-visible {
+      transform: translateY(-2px);
+      background: var(--teal);
+      outline: none;
+    }
+
+    .admin-logout {
+      justify-self: end;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .admin-logout:hover,
+    .admin-logout:focus-visible {
+      color: var(--paper);
+    }
+
+    .theme-panel {
+      display: grid;
+      grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
+      gap: 24px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .62);
+      padding: 18px;
+      box-shadow: 8px 9px 0 rgba(22, 32, 36, .08);
+    }
+
+    .theme-panel[hidden] {
+      display: none;
+    }
+
+    .theme-preview {
+      min-height: 168px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background-color: var(--report-bg-base);
+      background-image: var(--report-bg-image);
+      background-size: var(--report-bg-size) var(--report-bg-size-y, var(--report-bg-size));
+      display: grid;
+      align-content: end;
+      padding: 14px;
+    }
+
+    .theme-preview span {
+      width: max-content;
+      max-width: 100%;
+      border: 1px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 8px 10px;
+      font-size: .82rem;
+      font-weight: 900;
+    }
+
+    .theme-controls {
+      display: grid;
+      gap: 16px;
+    }
+
+    .theme-row {
+      display: grid;
+      grid-template-columns: 108px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+    }
+
+    .theme-label {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 900;
+    }
+
+    .theme-segmented,
+    .theme-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .theme-option,
+    .theme-reset {
+      min-height: 36px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      cursor: pointer;
+      padding: 0 12px;
+      font-weight: 900;
+      transition: background .16s ease, color .16s ease, border-color .16s ease, transform .16s ease;
+    }
+
+    .theme-option:hover,
+    .theme-option:focus-visible,
+    .theme-option.is-active,
+    .theme-reset:hover,
+    .theme-reset:focus-visible {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .theme-swatch {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--swatch);
+      cursor: pointer;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    .theme-swatch:hover,
+    .theme-swatch:focus-visible,
+    .theme-swatch.is-active {
+      border-color: var(--ink);
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .72);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .theme-color-input {
+      width: 44px;
+      height: 36px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--paper);
+      padding: 3px;
+      cursor: pointer;
+    }
+
+    .theme-range {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 54px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .theme-range input {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    .theme-range output,
+    .theme-status {
+      color: var(--muted);
+      font-family: "Archivo", sans-serif;
+      font-size: .75rem;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .theme-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .theme-reset {
+      background: transparent;
     }
 
     .sr-only {
@@ -697,6 +1134,18 @@
         min-width: 0;
         overflow-wrap: anywhere;
       }
+
+      .admin-login {
+        justify-content: flex-start;
+      }
+
+      .admin-toolbar {
+        justify-content: flex-start;
+      }
+
+      .theme-panel {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 560px) {
@@ -778,6 +1227,44 @@
         padding: 0 18px 18px;
       }
 
+      .admin-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .guest-pin-editor {
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+      }
+
+      .guest-pin-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .pin-save,
+      .pin-clear {
+        flex: 1 1 0;
+      }
+
+      .admin-login-button,
+      .admin-logout {
+        width: 100%;
+      }
+
+      .admin-toolbar,
+      .theme-footer {
+        flex-direction: column;
+      }
+
+      .theme-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .theme-preview {
+        min-height: 116px;
+      }
+
       .open-mark {
         flex: 0 0 auto;
       }
@@ -791,10 +1278,10 @@
       }
     }
   </style>
+  <script src="assets/report-theme.js"></script>
 </head>
 
 <body>
-  <script src="assets/site-auth.js"></script>
   <main class="shell">
     <header class="masthead">
       <div class="brandline">
@@ -864,6 +1351,66 @@
       </aside>
       <div class="timeline" id="timeline"></div>
     </section>
+
+    <section class="admin-login" id="admin-login" aria-label="登入">
+      <div class="admin-login-inner">
+        <div class="admin-toolbar">
+          <a class="admin-login-button" id="admin-login-link" href="login.html">登入</a>
+          <button class="admin-logout" id="admin-logout" type="button" hidden>登出</button>
+        </div>
+        <section class="theme-panel" id="theme-panel" aria-label="背景設定" hidden>
+          <div class="theme-preview" aria-hidden="true">
+            <span>背景預覽</span>
+          </div>
+          <div class="theme-controls">
+            <div class="theme-row">
+              <div class="theme-label">紋路</div>
+              <div class="theme-segmented" role="group" aria-label="背景紋路">
+                <button class="theme-option" type="button" data-theme-pattern="grid">格線</button>
+                <button class="theme-option" type="button" data-theme-pattern="dot">點陣</button>
+                <button class="theme-option" type="button" data-theme-pattern="ruled">橫線</button>
+                <button class="theme-option" type="button" data-theme-pattern="none">無</button>
+              </div>
+            </div>
+            <div class="theme-row">
+              <div class="theme-label">底色</div>
+              <div class="theme-swatches" aria-label="背景底色色票">
+                <button class="theme-swatch" type="button" data-theme-color="#ffffff" style="--swatch:#ffffff" aria-label="白色"></button>
+                <button class="theme-swatch" type="button" data-theme-color="#f8fbff" style="--swatch:#f8fbff" aria-label="冷白"></button>
+                <button class="theme-swatch" type="button" data-theme-color="#eff6ff" style="--swatch:#eff6ff" aria-label="淡藍白"></button>
+                <button class="theme-swatch" type="button" data-theme-color="#dbeafe" style="--swatch:#dbeafe" aria-label="淺藍"></button>
+                <input class="theme-color-input" id="theme-color" type="color" aria-label="自訂背景底色" value="#f8fbff">
+              </div>
+            </div>
+            <label class="theme-row" for="theme-opacity">
+              <span class="theme-label">透明度</span>
+              <span class="theme-range">
+                <input id="theme-opacity" type="range" min="0" max="0.12" step="0.004">
+                <output id="theme-opacity-value">3%</output>
+              </span>
+            </label>
+            <label class="theme-row" for="theme-brightness">
+              <span class="theme-label">亮度</span>
+              <span class="theme-range">
+                <input id="theme-brightness" type="range" min="0.88" max="1.12" step="0.01">
+                <output id="theme-brightness-value">104%</output>
+              </span>
+            </label>
+            <label class="theme-row" for="theme-size">
+              <span class="theme-label">密度</span>
+              <span class="theme-range">
+                <input id="theme-size" type="range" min="28" max="72" step="2">
+                <output id="theme-size-value">42px</output>
+              </span>
+            </label>
+            <div class="theme-footer">
+              <span class="theme-status" id="theme-status" aria-live="polite">已套用</span>
+              <button class="theme-reset" id="theme-reset" type="button">重設背景</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -878,13 +1425,27 @@
     const payload = window.REPORT_TIMELINE || { generatedAt: '', reports: [] };
     const reports = Array.isArray(payload.reports) ? payload.reports : [];
     const hasIndexLoadError = dataLoadState === 'error';
-    const latestReportId = reports[0]?.id || '';
+    const adminStorageKey = 'nuva-report-admin-auth';
+    const visibilityStorageKey = 'nuva-report-visibility-overrides';
+    const guestPinStorageKey = 'nuva-report-guest-pins';
+    const adminState = {
+      isAdmin: readSessionValue(adminStorageKey) === 'true',
+      visibilityOverrides: readVisibilityOverrides(),
+      guestPins: readGuestPins()
+    };
     const state = {
       query: '',
       category: '全部',
       year: '全部',
       month: '全部'
     };
+    const themePatternLabels = {
+      grid: '格線',
+      dot: '點陣',
+      ruled: '橫線',
+      none: '無'
+    };
+    let themeStatusTimer = 0;
 
     const nodes = {
       generatedAt: document.querySelector('#generated-at'),
@@ -899,8 +1460,232 @@
       timeline: document.querySelector('#timeline'),
       resultNote: document.querySelector('#result-note'),
       activeFilters: document.querySelector('#active-filters'),
-      clearFilters: document.querySelector('#clear-filters')
+      clearFilters: document.querySelector('#clear-filters'),
+      adminLogin: document.querySelector('#admin-login-link'),
+      adminLogout: document.querySelector('#admin-logout'),
+      themePanel: document.querySelector('#theme-panel'),
+      themePatternButtons: [...document.querySelectorAll('[data-theme-pattern]')],
+      themeSwatches: [...document.querySelectorAll('[data-theme-color]')],
+      themeColor: document.querySelector('#theme-color'),
+      themeOpacity: document.querySelector('#theme-opacity'),
+      themeOpacityValue: document.querySelector('#theme-opacity-value'),
+      themeBrightness: document.querySelector('#theme-brightness'),
+      themeBrightnessValue: document.querySelector('#theme-brightness-value'),
+      themeSize: document.querySelector('#theme-size'),
+      themeSizeValue: document.querySelector('#theme-size-value'),
+      themeStatus: document.querySelector('#theme-status'),
+      themeReset: document.querySelector('#theme-reset')
     };
+
+    function readSessionValue(key) {
+      try {
+        return window.sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    }
+
+    function writeSessionValue(key, value) {
+      try {
+        window.sessionStorage.setItem(key, value);
+      } catch {
+        // 靜態檔案或隱私模式可能停用 sessionStorage，畫面仍維持當次狀態。
+      }
+    }
+
+    function removeSessionValue(key) {
+      try {
+        window.sessionStorage.removeItem(key);
+      } catch {
+        // 同上，忽略儲存層錯誤。
+      }
+    }
+
+    function writeLocalValue(key, value) {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {
+        // 公開狀態切換只是本機偏好，儲存失敗時不阻擋頁面操作。
+      }
+    }
+
+    function readCookieValue(key) {
+      const prefix = `${encodeURIComponent(key)}=`;
+      return String(document.cookie || '')
+        .split(';')
+        .map((part) => part.trim())
+        .find((part) => part.startsWith(prefix))
+        ?.slice(prefix.length) || '';
+    }
+
+    function writeCookieValue(key, value) {
+      try {
+        document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax`;
+      } catch {
+        // Cookie 只是跨路徑備援，失敗時仍保留其他儲存方式。
+      }
+    }
+
+    function readWindowNameValue(key) {
+      const prefix = `${key}:`;
+      const current = String(window.name || '');
+      return current.startsWith(prefix) ? decodeURIComponent(current.slice(prefix.length)) : '';
+    }
+
+    function writeWindowNameValue(key, value) {
+      try {
+        window.name = `${key}:${encodeURIComponent(value)}`;
+      } catch {
+        // 同上，window.name 是最後備援。
+      }
+    }
+
+    function readVisibilityOverrides() {
+      try {
+        const raw = window.localStorage.getItem(visibilityStorageKey);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveVisibilityOverrides() {
+      writeLocalValue(visibilityStorageKey, JSON.stringify(adminState.visibilityOverrides));
+    }
+
+    function normalizePin(value) {
+      return String(value || '').replace(/\D/g, '').slice(0, 4);
+    }
+
+    function readGuestPins() {
+      function parse(raw) {
+        const parsed = raw ? JSON.parse(raw) : {};
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+        return Object.fromEntries(
+          Object.entries(parsed)
+            .map(([id, pin]) => [id, normalizePin(pin)])
+            .filter(([, pin]) => pin.length === 0 || pin.length === 4)
+        );
+      }
+
+      try {
+        const raw = window.sessionStorage.getItem(guestPinStorageKey);
+        const sessionPins = parse(raw);
+        const cookiePins = parse(decodeURIComponent(readCookieValue(guestPinStorageKey) || ''));
+        const windowPins = parse(readWindowNameValue(guestPinStorageKey));
+        const localRaw = window.localStorage.getItem(guestPinStorageKey);
+        const localPins = parse(localRaw);
+        return { ...localPins, ...cookiePins, ...sessionPins, ...windowPins };
+      } catch {
+        try {
+          const raw = window.sessionStorage.getItem(guestPinStorageKey);
+          const sessionPins = parse(raw);
+          const cookiePins = parse(decodeURIComponent(readCookieValue(guestPinStorageKey) || ''));
+          const windowPins = parse(readWindowNameValue(guestPinStorageKey));
+          return { ...cookiePins, ...sessionPins, ...windowPins };
+        } catch {
+          try {
+            const cookiePins = parse(decodeURIComponent(readCookieValue(guestPinStorageKey) || ''));
+            const windowPins = parse(readWindowNameValue(guestPinStorageKey));
+            return { ...cookiePins, ...windowPins };
+          } catch {
+            return {};
+          }
+        }
+      }
+    }
+
+    function saveGuestPins() {
+      const value = JSON.stringify(adminState.guestPins);
+      writeLocalValue(guestPinStorageKey, value);
+      writeSessionValue(guestPinStorageKey, value);
+      writeCookieValue(guestPinStorageKey, value);
+      writeWindowNameValue(guestPinStorageKey, value);
+    }
+
+    function themeDefaults() {
+      return window.NUVA_REPORT_THEME?.defaults || {
+        pattern: 'grid',
+        color: '#f8fbff',
+        lineColor: '#1d4ed8',
+        opacity: 0.034,
+        brightness: 1.04,
+        contrast: 0.92,
+        size: 42
+      };
+    }
+
+    function readThemeSettings() {
+      if (window.NUVA_REPORT_THEME?.read) return window.NUVA_REPORT_THEME.read();
+      return { ...themeDefaults() };
+    }
+
+    function activeThemePattern() {
+      return nodes.themePanel?.dataset.themePattern || readThemeSettings().pattern || 'grid';
+    }
+
+    function themeFormSettings() {
+      const defaults = themeDefaults();
+      return {
+        pattern: activeThemePattern(),
+        color: nodes.themeColor?.value || defaults.color,
+        lineColor: defaults.lineColor,
+        opacity: Number(nodes.themeOpacity?.value ?? defaults.opacity),
+        brightness: Number(nodes.themeBrightness?.value ?? defaults.brightness),
+        contrast: defaults.contrast,
+        size: Number(nodes.themeSize?.value ?? defaults.size)
+      };
+    }
+
+    function formatPercent(value) {
+      return `${Math.round(Number(value) * 100)}%`;
+    }
+
+    function renderThemeControls(settings = readThemeSettings()) {
+      if (!nodes.themePanel) return;
+
+      nodes.themePanel.dataset.themePattern = settings.pattern;
+      nodes.themePatternButtons.forEach((button) => {
+        const active = button.dataset.themePattern === settings.pattern;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+
+      nodes.themeSwatches.forEach((button) => {
+        button.classList.toggle('is-active', button.dataset.themeColor?.toLowerCase() === settings.color.toLowerCase());
+      });
+
+      if (nodes.themeColor) nodes.themeColor.value = settings.color;
+      if (nodes.themeOpacity) nodes.themeOpacity.value = settings.opacity;
+      if (nodes.themeBrightness) nodes.themeBrightness.value = settings.brightness;
+      if (nodes.themeSize) nodes.themeSize.value = settings.size;
+      if (nodes.themeOpacityValue) nodes.themeOpacityValue.textContent = formatPercent(settings.opacity);
+      if (nodes.themeBrightnessValue) nodes.themeBrightnessValue.textContent = formatPercent(settings.brightness);
+      if (nodes.themeSizeValue) nodes.themeSizeValue.textContent = `${settings.size}px`;
+    }
+
+    function setThemeStatus(message) {
+      if (!nodes.themeStatus) return;
+      nodes.themeStatus.textContent = message;
+      window.clearTimeout(themeStatusTimer);
+      themeStatusTimer = window.setTimeout(() => {
+        nodes.themeStatus.textContent = '已套用';
+      }, 1400);
+    }
+
+    function saveThemeFromControls(message = '已套用') {
+      const settings = themeFormSettings();
+      const saved = window.NUVA_REPORT_THEME?.save
+        ? window.NUVA_REPORT_THEME.save(settings)
+        : settings;
+      renderThemeControls(saved);
+      setThemeStatus(message);
+    }
+
+    function loginReturnPath() {
+      return `${window.location.pathname}${window.location.search}${window.location.hash}` || 'index.html';
+    }
 
     function escapeHtml(value) {
       return String(value || '')
@@ -934,15 +1719,49 @@
       return `更新時間 ${date.toLocaleString('zh-TW', { hour12: false })}`;
     }
 
-    function categories() {
-      return [...new Set(reports.map((report) => report.category).filter(Boolean))];
+    function defaultVisibility(report) {
+      return report.visibility || 'public';
     }
 
-    function years() {
-      return [...new Set(reports.map(reportYear).filter(Boolean))];
+    function effectiveVisibility(report) {
+      return adminState.visibilityOverrides[report.id] || defaultVisibility(report);
     }
 
-    function months(items = reports) {
+    function defaultGuestPin(report) {
+      return normalizePin(report.guestPin || report.guestPassword || '');
+    }
+
+    function effectiveGuestPin(report) {
+      return Object.prototype.hasOwnProperty.call(adminState.guestPins, report.id)
+        ? normalizePin(adminState.guestPins[report.id])
+        : defaultGuestPin(report);
+    }
+
+    function isPublicReport(report) {
+      return effectiveVisibility(report) === 'public';
+    }
+
+    function availableReports() {
+      return adminState.isAdmin ? reports : reports.filter(isPublicReport);
+    }
+
+    function hiddenReportCount() {
+      return reports.filter((report) => !isPublicReport(report)).length;
+    }
+
+    function latestReportId() {
+      return availableReports()[0]?.id || '';
+    }
+
+    function categories(items = availableReports()) {
+      return [...new Set(items.map((report) => report.category).filter(Boolean))];
+    }
+
+    function years(items = availableReports()) {
+      return [...new Set(items.map(reportYear).filter(Boolean))];
+    }
+
+    function months(items = availableReports()) {
       return [...new Set(items.map((report) => report.month).filter(Boolean))];
     }
 
@@ -955,7 +1774,7 @@
     }
 
     function reportsForMonthNav() {
-      return reports.filter((report) => {
+      return availableReports().filter((report) => {
         const categoryMatch = state.category === '全部' || report.category === state.category;
         const yearMatch = state.year === '全部' || reportYear(report) === state.year;
         return categoryMatch && yearMatch;
@@ -964,7 +1783,7 @@
 
     function filteredReports() {
       const query = state.query.trim().toLowerCase();
-      return reports.filter((report) => {
+      return availableReports().filter((report) => {
         const categoryMatch = state.category === '全部' || report.category === state.category;
         const yearMatch = state.year === '全部' || reportYear(report) === state.year;
         const monthMatch = state.month === '全部' || report.month === state.month;
@@ -983,11 +1802,12 @@
     }
 
     function renderChips() {
-      const counts = countBy(reports, (report) => report.category);
+      const source = availableReports();
+      const counts = countBy(source, (report) => report.category);
       const values = ['全部', ...categories()];
       nodes.chips.innerHTML = values.map((category) => {
         const active = category === state.category ? ' is-active' : '';
-        const count = category === '全部' ? reports.length : counts[category] || 0;
+        const count = category === '全部' ? source.length : counts[category] || 0;
         return `
           <button class="chip${active}" type="button" data-category="${escapeHtml(category)}" aria-pressed="${category === state.category}">
             ${escapeHtml(category)}
@@ -998,12 +1818,13 @@
     }
 
     function renderYearChips() {
-      const counts = countBy(reports, reportYear);
+      const source = availableReports();
+      const counts = countBy(source, reportYear);
       const values = ['全部', ...years()];
       nodes.yearChips.innerHTML = values.map((year) => {
         const active = year === state.year ? ' is-active' : '';
         const label = year === '全部' ? '全部年度' : year;
-        const count = year === '全部' ? reports.length : counts[year] || 0;
+        const count = year === '全部' ? source.length : counts[year] || 0;
         return `
           <button class="chip${active}" type="button" data-year="${escapeHtml(year)}" aria-pressed="${year === state.year}">
             ${escapeHtml(label)}
@@ -1036,14 +1857,16 @@
     }
 
     function renderStats(items) {
+      const source = availableReports();
       nodes.generatedAt.textContent = formatGeneratedAt(payload.generatedAt);
-      nodes.totalCount.textContent = reports.length;
-      nodes.latestDate.textContent = reports[0] ? formatDate(reports[0].date) : '--';
-      nodes.categoryCount.textContent = categories().length;
-      nodes.monthCount.textContent = months().length;
-      nodes.resultNote.textContent = items.length === reports.length
-        ? '目前顯示全部報告。'
-        : `目前顯示 ${items.length} / ${reports.length} 份報告。`;
+      nodes.totalCount.textContent = source.length;
+      nodes.latestDate.textContent = source[0] ? formatDate(source[0].date) : '--';
+      nodes.categoryCount.textContent = categories(source).length;
+      nodes.monthCount.textContent = months(source).length;
+      const modeText = adminState.isAdmin ? '管理模式' : '公開模式';
+      nodes.resultNote.textContent = items.length === source.length
+        ? `目前以${modeText}顯示全部可見報告。`
+        : `目前顯示 ${items.length} / ${source.length} 份可見報告。`;
     }
 
     function activeFilterTokens() {
@@ -1070,35 +1893,105 @@
       renderAll();
     }
 
+    function normalizeFilterState() {
+      const source = availableReports();
+      if (state.category !== '全部' && !categories(source).includes(state.category)) state.category = '全部';
+      if (state.year !== '全部' && !years(source).includes(state.year)) state.year = '全部';
+      if (state.month !== '全部' && !months(source).includes(state.month)) state.month = '全部';
+    }
+
+    function pinCells(pin) {
+      return Array.from({ length: 4 }, (_, index) => {
+        const filled = index < pin.length;
+        return `<span class="guest-pin-cell${filled ? ' is-filled' : ''}">${filled ? '●' : '數'}</span>`;
+      }).join('');
+    }
+
+    function renderGuestPinEditor(report, isPublic) {
+      if (isPublic) return '';
+      const pin = effectiveGuestPin(report);
+      const hasPin = pin.length === 4;
+      return `
+        <div class="guest-pin-editor" data-guest-pin-editor data-report-id="${escapeHtml(report.id)}">
+          <div class="guest-pin-copy">
+            <strong>訪客密碼</strong>
+            <span>${hasPin ? '已設定四位數字。訪客開啟連結時會先看到模糊遮罩。' : '未設定密碼。此 report 不會出現在首頁，但連結可直接開啟。'}</span>
+          </div>
+          <label class="guest-pin-input-wrap">
+            <span class="sr-only">設定四位數字訪客密碼</span>
+            <input
+              class="guest-pin-field"
+              type="password"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="4"
+              autocomplete="off"
+              placeholder="四位數字"
+              value="${escapeHtml(pin)}"
+              data-guest-pin-input
+              data-report-id="${escapeHtml(report.id)}">
+            <span class="guest-pin-digits" aria-hidden="true">${pinCells(pin)}</span>
+          </label>
+          <div class="guest-pin-actions">
+            <button class="pin-save" type="button" data-save-guest-pin data-report-id="${escapeHtml(report.id)}" ${hasPin ? '' : 'disabled'}>儲存</button>
+            <button class="pin-clear" type="button" data-clear-guest-pin data-report-id="${escapeHtml(report.id)}">清除</button>
+          </div>
+        </div>
+      `;
+    }
+
     function renderReport(report) {
       const parts = dateParts(report.date);
-      const isLatest = report.id === latestReportId;
+      const isLatest = report.id === latestReportId();
+      const visibility = effectiveVisibility(report);
+      const isPublic = visibility === 'public';
+      const visibilityLabel = isPublic ? '公開' : '不公開';
       const sideText = [
         report.client,
         report.pages ? `${report.pages} 頁` : '',
         report.sizeKb ? `${report.sizeKb} KB` : ''
       ].filter(Boolean).join(' / ');
+      const adminControls = adminState.isAdmin ? `
+        <div class="admin-controls">
+          <span class="admin-status-text">目前狀態：${escapeHtml(visibilityLabel)}</span>
+          <button
+            class="visibility-toggle${isPublic ? ' is-public' : ''}"
+            type="button"
+            role="switch"
+            aria-checked="${isPublic}"
+            data-visibility-toggle
+            data-report-id="${escapeHtml(report.id)}">
+            <span class="toggle-track" aria-hidden="true"><span class="toggle-knob"></span></span>
+            <span>${escapeHtml(visibilityLabel)}</span>
+          </button>
+          ${renderGuestPinEditor(report, isPublic)}
+        </div>
+      ` : '';
 
       return `
-        <a class="report-card${isLatest ? ' is-latest' : ''}" href="${escapeHtml(report.file)}">
-          <div class="date-block">
-            <span class="date-day">${escapeHtml(parts.day)}</span>
-            <span class="date-month">${escapeHtml(parts.year)}.${escapeHtml(parts.month)}</span>
-          </div>
-          <div class="report-body">
-            <div class="meta">
-              <span>${escapeHtml(report.category)}</span>
-              <span>${escapeHtml(report.period || report.date)}</span>
-              ${isLatest ? '<span class="latest-badge">最新</span>' : ''}
+        <article class="report-card${isLatest ? ' is-latest' : ''}${isPublic ? '' : ' is-private'}">
+          <a class="report-main-link" href="${escapeHtml(report.file)}" aria-label="開啟${escapeHtml(report.title)}">
+            <div class="date-block">
+              <span class="date-day">${escapeHtml(parts.day)}</span>
+              <span class="date-month">${escapeHtml(parts.year)}.${escapeHtml(parts.month)}</span>
             </div>
-            <h2 class="report-title">${escapeHtml(report.title)}</h2>
-            <p class="report-subtitle">${escapeHtml(report.subtitle)}</p>
-          </div>
-          <div class="report-side">
-            <span>${escapeHtml(sideText)}</span>
-            <span class="open-mark">開啟報告</span>
-          </div>
-        </a>
+            <div class="report-body">
+              <div class="meta">
+                <span>${escapeHtml(report.category)}</span>
+                <span>${escapeHtml(report.period || report.date)}</span>
+                ${isLatest ? '<span class="latest-badge">最新</span>' : ''}
+                ${adminState.isAdmin ? `<span class="visibility-badge ${isPublic ? 'is-public' : 'is-private'}">${escapeHtml(visibilityLabel)}</span>` : ''}
+              </div>
+              <h2 class="report-title">${escapeHtml(report.title)}</h2>
+              <p class="report-subtitle">${escapeHtml(report.subtitle)}</p>
+            </div>
+            <div class="report-side">
+              <span>${escapeHtml(sideText)}</span>
+              <span class="open-mark">開啟報告</span>
+            </div>
+          </a>
+          ${adminControls}
+        </article>
       `;
     }
 
@@ -1108,7 +2001,9 @@
     }
 
     function renderTimeline() {
+      normalizeFilterState();
       const items = filteredReports();
+      const source = availableReports();
       renderMonthNav();
       renderStats(items);
       renderActiveFilters();
@@ -1119,7 +2014,7 @@
         return;
       }
 
-      if (!reports.length) {
+      if (!source.length) {
         nodes.timeline.innerHTML = emptyState('目前沒有成果報告', '將 HTML 放進 reports/ 後執行 npm run build。');
         nodes.resultNote.textContent = '目前沒有可顯示的報告。';
         return;
@@ -1139,10 +2034,77 @@
       `).join('');
     }
 
+    function renderAdminPanel() {
+      nodes.adminLogin.href = `login.html?return=${encodeURIComponent(loginReturnPath())}`;
+      nodes.adminLogin.hidden = adminState.isAdmin;
+      nodes.adminLogout.hidden = !adminState.isAdmin;
+      if (nodes.themePanel) {
+        nodes.themePanel.hidden = !adminState.isAdmin;
+        if (adminState.isAdmin) renderThemeControls();
+      }
+    }
+
+    function setAdminMode(isAdmin) {
+      adminState.isAdmin = isAdmin;
+      if (isAdmin) {
+        writeSessionValue(adminStorageKey, 'true');
+      } else {
+        removeSessionValue(adminStorageKey);
+      }
+      renderAll();
+    }
+
+    function setReportVisibility(reportId, visibility) {
+      const report = reports.find((item) => item.id === reportId);
+      if (!report) return;
+
+      if (visibility === defaultVisibility(report)) {
+        delete adminState.visibilityOverrides[reportId];
+      } else {
+        adminState.visibilityOverrides[reportId] = visibility;
+      }
+
+      saveVisibilityOverrides();
+      renderAll();
+    }
+
+    function setReportGuestPin(reportId, pin) {
+      const report = reports.find((item) => item.id === reportId);
+      if (!report) return;
+      const normalized = normalizePin(pin);
+      const defaultPin = defaultGuestPin(report);
+
+      if (!normalized && !defaultPin) {
+        delete adminState.guestPins[reportId];
+      } else if (normalized === defaultPin) {
+        delete adminState.guestPins[reportId];
+      } else {
+        adminState.guestPins[reportId] = normalized;
+      }
+
+      saveGuestPins();
+      renderAll();
+    }
+
+    function refreshPinInput(input) {
+      const pin = normalizePin(input.value);
+      input.value = pin;
+      const editor = input.closest('[data-guest-pin-editor]');
+      if (!editor) return;
+
+      const digits = editor.querySelector('.guest-pin-digits');
+      if (digits) digits.innerHTML = pinCells(pin);
+
+      const saveButton = editor.querySelector('[data-save-guest-pin]');
+      if (saveButton) saveButton.disabled = pin.length !== 4;
+    }
+
     function renderAll() {
+      normalizeFilterState();
       renderYearChips();
       renderChips();
       renderTimeline();
+      renderAdminPanel();
     }
 
     nodes.search.addEventListener('input', (event) => {
@@ -1173,9 +2135,83 @@
 
     nodes.clearFilters.addEventListener('click', resetFilters);
 
+    nodes.timeline.addEventListener('input', (event) => {
+      const input = event.target.closest('[data-guest-pin-input]');
+      if (!input) return;
+      refreshPinInput(input);
+    });
+
     nodes.timeline.addEventListener('click', (event) => {
+      const savePinButton = event.target.closest('[data-save-guest-pin]');
+      if (savePinButton) {
+        event.preventDefault();
+        const editor = savePinButton.closest('[data-guest-pin-editor]');
+        const input = editor?.querySelector('[data-guest-pin-input]');
+        const pin = normalizePin(input?.value);
+        if (pin.length !== 4) {
+          if (input) {
+            input.value = pin;
+            refreshPinInput(input);
+            input.focus();
+          }
+          return;
+        }
+        setReportGuestPin(savePinButton.dataset.reportId, pin);
+        return;
+      }
+
+      const clearPinButton = event.target.closest('[data-clear-guest-pin]');
+      if (clearPinButton) {
+        event.preventDefault();
+        setReportGuestPin(clearPinButton.dataset.reportId, '');
+        return;
+      }
+
+      const visibilityButton = event.target.closest('[data-visibility-toggle]');
+      if (visibilityButton) {
+        event.preventDefault();
+        const report = reports.find((item) => item.id === visibilityButton.dataset.reportId);
+        if (!report) return;
+        setReportVisibility(report.id, isPublicReport(report) ? 'private' : 'public');
+        return;
+      }
+
       if (!event.target.closest('[data-clear-filters]')) return;
       resetFilters();
+    });
+
+    nodes.themePatternButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        nodes.themePanel.dataset.themePattern = button.dataset.themePattern;
+        saveThemeFromControls(`已套用${themePatternLabels[button.dataset.themePattern] || '背景'}`);
+      });
+    });
+
+    nodes.themeSwatches.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (nodes.themeColor) nodes.themeColor.value = button.dataset.themeColor;
+        saveThemeFromControls('已套用底色');
+      });
+    });
+
+    [nodes.themeColor, nodes.themeOpacity, nodes.themeBrightness, nodes.themeSize]
+      .filter(Boolean)
+      .forEach((control) => {
+        ['input', 'change'].forEach((eventName) => {
+          control.addEventListener(eventName, () => saveThemeFromControls());
+        });
+      });
+
+    nodes.themeReset?.addEventListener('click', () => {
+      const settings = window.NUVA_REPORT_THEME?.reset
+        ? window.NUVA_REPORT_THEME.reset()
+        : themeDefaults();
+      renderThemeControls(settings);
+      setThemeStatus('已重設');
+    });
+
+    nodes.adminLogout.addEventListener('click', () => {
+      setAdminMode(false);
     });
 
     renderAll();

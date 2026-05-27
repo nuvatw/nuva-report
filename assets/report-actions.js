@@ -36,7 +36,7 @@
         gap: 9px;
         border: 1px solid rgba(255, 255, 255, .2);
         border-radius: 0;
-        background: var(--blue, #1d4ed8);
+        background: var(--report-blue, var(--blue, #1d4ed8));
         color: #fff;
         cursor: pointer;
         font-family: 'Space Mono', 'Archivo', 'Noto Sans TC', sans-serif;
@@ -70,9 +70,9 @@
       }
 
       .report-action--learn {
-        border-color: rgba(29, 78, 216, .26);
-        background: #fff;
-        color: var(--blue, #1d4ed8);
+        border-color: color-mix(in srgb, var(--report-blue, var(--blue, #1d4ed8)) 28%, transparent);
+        background: var(--report-paper, #fff);
+        color: var(--report-blue, var(--blue, #1d4ed8));
         box-shadow: 0 8px 22px rgba(21, 34, 63, .14);
       }
 
@@ -153,8 +153,8 @@
     const pdfUrl = readPdfUrlFromMeta();
     const pdf = document.createElement(pdfUrl ? 'a' : 'button');
     pdf.className = 'report-action report-action--pdf';
-    pdf.setAttribute('aria-label', '下載 PDF');
-    pdf.innerHTML = `${icons.pdf}<span>下載 PDF</span>`;
+    pdf.setAttribute('aria-label', pdfUrl ? '下載文件' : '列印文件');
+    pdf.innerHTML = `${icons.pdf}<span>${pdfUrl ? '下載文件' : '列印文件'}</span>`;
 
     if (pdfUrl) {
       pdf.href = pdfUrl;
@@ -169,6 +169,7 @@
   }
 
   function init() {
+    if (window.NUVA_REPORT_ACCESS_BLOCKED) return;
     injectStyle();
     removeLegacyPrintButton();
     createActionBar();

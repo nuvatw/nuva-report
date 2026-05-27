@@ -1,22 +1,43 @@
 {
-  "generatedAt": "2026-05-26T08:29:08.294Z",
-  "reportCount": 2,
+  "generatedAt": "2026-05-27T05:29:42.184Z",
+  "reportCount": 5,
   "clientGroups": {
     "政府與公共部門": 1,
-    "企業與研究機構": 1
+    "企業與研究機構": 1,
+    "AI 教育與內容製作": 1,
+    "媒體、科技論壇與職場學習": 1,
+    "零售、商場與餐飲營運": 1
   },
   "visibility": {
-    "public": 2
+    "public": 3,
+    "private": 2
   },
   "tags": [
+    "一人公司",
+    "工作流拆解",
     "生成式 AI",
     "自動化",
     "青年政策",
     "活動",
+    "食安巡檢",
     "校園巡迴",
+    "剪輯",
+    "商場營運",
     "課程",
+    "餐飲管理",
+    "AI 自動化",
+    "AI 協作",
+    "AI 音樂影像",
     "AI 素養",
-    "n8n"
+    "AI Agent",
+    "AI Agent 流程",
+    "AI TAIWAN",
+    "ChatGPT",
+    "Higgsfield",
+    "n8n",
+    "Project-Based Learning",
+    "Seedance 2.0",
+    "Suno"
   ],
   "pdfReadyCount": 0,
   "thumbnailReadyCount": 0

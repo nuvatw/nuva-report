@@ -1,0 +1,2318 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<!-- report-meta
+{
+  "title": "初學者的 AI 音樂影像（AI MV）製作路線圖",
+  "subtitle": "從故事、歌曲、分鏡到成片的 AI 音樂影像製作手冊",
+  "date": "2026-05-27",
+  "period": "2026/05/27",
+  "category": "課程成果",
+  "client": "努法有限公司",
+  "clientGroup": "AI 教育與內容製作",
+  "timeline": "2026 五月",
+  "tags": ["AI 音樂影像", "ChatGPT", "Suno", "Higgsfield", "Seedance 2.0", "剪輯", "生成式 AI"],
+  "thumbnail": "",
+  "visibility": "public"
+}
+-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>初學者的 AI 音樂影像（AI MV）製作路線圖 — AI 音樂影像製作手冊</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --desk: #f8fbff;
+      --ink: #172025;
+      --muted: #65716f;
+      --line: rgba(23, 32, 37, .15);
+      --line-strong: rgba(23, 32, 37, .38);
+      --red: #1d4ed8;
+      --teal: #224a8f;
+      --gold: #dbeafe;
+      --blue: #1d4ed8;
+      --blue-deep: #12286a;
+      --blue-tint: #eef3fd;
+      --success: #1d4ed8;
+      --success-tint: rgba(29, 78, 216, .1);
+      --shadow: rgba(23, 32, 37, .15);
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
+      color: var(--ink);
+      font-family: "Noto Sans TC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 34px 0;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    code {
+      color: var(--blue);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: .94em;
+      font-weight: 800;
+    }
+
+    .page {
+      position: relative;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 10px 36px var(--shadow);
+      padding: 21mm 19mm 16mm;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      display: none;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 22mm, rgba(29, 78, 216, .12) 22mm, rgba(29, 78, 216, .12) calc(22mm + 1px), transparent calc(22mm + 1px));
+    }
+
+    .page > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .rh,
+    .kicker,
+    .meta,
+    .stat-k,
+    .pgn,
+    .eyebrow,
+    .tag,
+    .toc-head,
+    .step-k,
+    .ref .rn,
+    .ref a,
+    .prompt-k {
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .rh {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--ink);
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .pgn {
+      position: absolute;
+      right: 19mm;
+      bottom: 13mm;
+      color: var(--ink);
+      font-size: 11px;
+    }
+
+    .pgn::before {
+      content: "— ";
+      color: var(--muted);
+    }
+
+    .cover {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+
+    .cover-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      align-items: start;
+      padding-top: 10mm;
+    }
+
+    .kicker {
+      color: var(--teal);
+      font-size: 12px;
+    }
+
+    h1 {
+      max-width: 150mm;
+      margin-top: 14px;
+      font-family: "Noto Serif TC", serif;
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 148mm;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .tagline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      border: 1px solid var(--line-strong);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Archivo", sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      padding: 2px 10px 0;
+      background: var(--paper);
+    }
+
+    .video-card {
+      align-self: stretch;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      border: 2px solid var(--ink);
+      background: var(--blue-deep);
+      color: #fff;
+      box-shadow: 9px 10px 0 rgba(18, 40, 106, .12);
+      min-height: auto;
+    }
+
+    .video-top,
+    .video-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 39px;
+      padding: 0 13px;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      color: rgba(255, 255, 255, .76);
+    }
+
+    .video-top span,
+    .video-bottom span {
+      transform: translateY(1px);
+    }
+
+    .video-frame {
+      align-self: center;
+      width: calc(100% - 24px);
+      aspect-ratio: 16 / 9;
+      margin: 0 auto;
+      border: 1px solid rgba(255, 255, 255, .22);
+      background: #081427;
+      overflow: hidden;
+    }
+
+    .video-frame iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-bottom a {
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, .65);
+    }
+
+    .cover-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 2px solid var(--ink);
+    }
+
+    .cover-grid > div {
+      min-height: 29mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 15px 16px;
+      border-right: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .cover-grid > div:last-child {
+      border-right: 0;
+    }
+
+    .meta {
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 9px;
+    }
+
+    .value {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .value small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    .toc-head {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 11px;
+      color: var(--blue);
+      font-size: 11px;
+    }
+
+    .toc {
+      margin-top: 58px;
+    }
+
+    .toc-row {
+      display: grid;
+      grid-template-columns: 242px 1fr;
+      gap: 24px;
+      margin-bottom: 25px;
+    }
+
+    .toc-l {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 13px;
+    }
+
+    .toc-l .tn {
+      color: var(--red);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .toc-l .tt {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .toc-r {
+      display: grid;
+      gap: 0;
+    }
+
+    .toc-sub {
+      display: grid;
+      grid-template-columns: 68px 1fr 34px;
+      gap: 10px;
+      align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      padding: 9px 0;
+      color: var(--ink);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: background-color .16s ease, padding-left .16s ease;
+    }
+
+    .toc-sub:hover {
+      padding-left: 8px;
+      background: var(--blue-tint);
+    }
+
+    .toc-sub .ts-c {
+      color: var(--blue);
+    }
+
+    .toc-sub .ts-p {
+      text-align: right;
+      color: var(--muted);
+    }
+
+    .sec {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 18px;
+      margin: 48px 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .sec-num {
+      color: var(--red);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 38px;
+      font-weight: 900;
+      line-height: .9;
+    }
+
+    h2 {
+      font-family: "Noto Serif TC", serif;
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .eyebrow {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .lead {
+      max-width: 154mm;
+      border-left: 4px solid var(--blue);
+      padding-left: 18px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.9;
+    }
+
+    .body {
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.95;
+    }
+
+    .body strong,
+    .lead strong {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 26px;
+      border: 2px solid var(--ink);
+    }
+
+    .stat {
+      min-height: 36mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 16px;
+      border-right: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .stat:last-child {
+      border-right: 0;
+    }
+
+    .stat-k {
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .stat-v {
+      margin-top: 8px;
+      color: var(--blue);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .stat-v small {
+      color: var(--ink);
+      font-family: "Noto Sans TC", sans-serif;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .stat-p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .flow {
+      margin-top: 24px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 58px 1fr 1fr;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .flow-no {
+      display: grid;
+      place-items: center;
+      padding: 17px 0;
+      color: var(--blue);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 33px;
+      font-weight: 900;
+      line-height: 1;
+      border-right: 1px solid var(--line);
+    }
+
+    .flow-cell {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 17px 20px;
+      border-right: 1px solid var(--line);
+    }
+
+    .flow-cell:last-child {
+      border-right: 0;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .tool-title-nowrap {
+      font-size: 14px;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .flow-cell p,
+    .tool p,
+    .check p,
+    .prompt p {
+      color: var(--muted);
+      font-size: 11.8px;
+      line-height: 1.78;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      margin-top: 23px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .tool {
+      min-height: 38mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 18px 20px 15px 0;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tool:nth-child(2n) {
+      padding-left: 20px;
+      border-right: 0;
+    }
+
+    .tool-k {
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .callout {
+      margin-top: 25px;
+      background: var(--blue-deep);
+      color: var(--paper);
+      padding: 22px 24px;
+    }
+
+    .callout .call-k {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: rgba(255, 255, 255, .76);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .callout .call-k::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, .24);
+    }
+
+    .callout p {
+      color: rgba(255, 255, 255, .84);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.85;
+    }
+
+    .callout strong {
+      color: #fff;
+    }
+
+    .steps {
+      margin-top: 24px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 22px;
+      padding: 19px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .step-k {
+      color: var(--blue);
+      font-size: 10px;
+    }
+
+    .step h3 {
+      font-size: 16px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.82;
+    }
+
+    .matrix {
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 18px;
+      border: 2px solid var(--ink);
+    }
+
+    .matrix-row {
+      display: grid;
+      grid-template-columns: 24mm 64mm 64mm;
+      min-height: 24mm;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .matrix-row:last-child {
+      border-bottom: 0;
+    }
+
+    .matrix-head {
+      background: var(--ink);
+      color: #fff;
+      min-height: auto;
+    }
+
+    .matrix-row > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10px 13px;
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.58;
+    }
+
+    .matrix-row > div:last-child {
+      border-right: 0;
+    }
+
+    .matrix-head > div {
+      color: #fff;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-weight: 900;
+    }
+
+    .matrix b {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      margin-top: 24px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .check {
+      min-height: 48mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 18px 20px 16px 0;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .check:nth-child(2n) {
+      padding-left: 20px;
+      border-right: 0;
+    }
+
+    .check ul {
+      list-style: none;
+      display: grid;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .check li {
+      padding-left: 0;
+      color: var(--muted);
+      font-size: 11.6px;
+      line-height: 1.55;
+    }
+
+    .check li::before {
+      content: none;
+    }
+
+    .check h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: color .18s ease;
+    }
+
+    .check-progress {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      min-height: 22px;
+      border: 1px solid var(--line-strong);
+      color: var(--muted);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      transition: background .18s ease, border-color .18s ease, color .18s ease;
+    }
+
+    .check-task {
+      position: relative;
+      min-height: 28px;
+      display: grid;
+      grid-template-columns: 13px minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 5px 7px;
+      cursor: pointer;
+      transition: background .18s ease, border-color .18s ease, color .18s ease;
+    }
+
+    .check-task input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .check-box {
+      position: relative;
+      width: 11px;
+      height: 11px;
+      border: 1px solid var(--success);
+      background: var(--paper);
+      transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .check-box::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 0;
+      width: 3px;
+      height: 7px;
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      opacity: 0;
+      transform: rotate(45deg);
+    }
+
+    .check-text {
+      color: var(--muted);
+      transition: color .18s ease;
+    }
+
+    .check-task:hover,
+    .check-task:focus-within {
+      border-color: rgba(29, 78, 216, .32);
+      background: rgba(29, 78, 216, .05);
+    }
+
+    .check-task.is-done {
+      border-color: rgba(29, 78, 216, .36);
+      background: var(--success-tint);
+    }
+
+    .check-task.is-done .check-box {
+      border-color: var(--success);
+      background: var(--success);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18);
+    }
+
+    .check-task.is-done .check-box::after {
+      opacity: 1;
+    }
+
+    .check-task.is-done .check-text,
+    .check.is-complete h3 {
+      color: var(--success);
+    }
+
+    .check.is-complete .check-progress {
+      border-color: var(--success);
+      background: var(--success);
+      color: #fff;
+    }
+
+    .prompt-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      margin-top: 24px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .prompt {
+      min-height: 39mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 18px 20px 16px 0;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .prompt:nth-child(2n) {
+      padding-left: 20px;
+      border-right: 0;
+    }
+
+    .prompt-k {
+      margin-bottom: 7px;
+      color: var(--blue);
+      font-size: 10px;
+    }
+
+    .prompt-lab {
+      display: grid;
+      grid-template-columns: 178px 1fr;
+      margin-top: 22px;
+      border: 2px solid var(--ink);
+      background: #fff;
+    }
+
+    .prompt-side {
+      display: grid;
+      align-content: start;
+      border-right: 1px solid var(--line);
+      background: var(--blue-tint);
+    }
+
+    .prompt-tab {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 9px;
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: "Noto Sans TC", sans-serif;
+      text-align: left;
+      padding: 10px 12px;
+      transition: background-color .16s ease, color .16s ease;
+    }
+
+    .prompt-tab:hover,
+    .prompt-tab:focus-visible,
+    .prompt-tab.is-active {
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .prompt-tab span {
+      color: var(--blue);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .prompt-tab b {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .prompt-tab small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .prompt-panel {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+    }
+
+    .prompt-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px 13px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .prompt-panel-head h3 {
+      margin-bottom: 6px;
+    }
+
+    .prompt-panel-head p {
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+
+    .prompt-actions {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 8px;
+    }
+
+    .prompt-action {
+      min-height: 30px;
+      border: 1px solid var(--blue);
+      background: #fff;
+      color: var(--blue);
+      cursor: pointer;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      padding: 0 10px;
+      transition: background-color .16s ease, color .16s ease;
+    }
+
+    .prompt-action:hover,
+    .prompt-action:focus-visible {
+      background: var(--blue);
+      color: #fff;
+      outline: none;
+    }
+
+    .prompt-editor {
+      width: 100%;
+      height: 100mm;
+      resize: none;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      background:
+        linear-gradient(0deg, rgba(23, 32, 37, .045) 1px, transparent 1px),
+        #fbfcfc;
+      background-size: 100% 24px;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+      font-size: 10.6px;
+      line-height: 1.7;
+      padding: 15px 18px;
+      outline: none;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      overflow: auto;
+    }
+
+    .prompt-editor:focus {
+      box-shadow: inset 0 0 0 2px rgba(29, 78, 216, .28);
+    }
+
+    .prompt-meta-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      min-height: 34px;
+      background: #fff;
+    }
+
+    .prompt-meta-row div {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 9.6px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .prompt-meta-row div:last-child {
+      border-right: 0;
+    }
+
+    .prompt-meta-row b {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .refs {
+      margin-top: 24px;
+      border-top: 2px solid var(--ink);
+      padding-top: 12px;
+    }
+
+    .ref {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ref .rn {
+      color: var(--blue);
+      font-size: 10px;
+    }
+
+    .ref .rl {
+      color: var(--muted);
+      font-size: 11.7px;
+      line-height: 1.55;
+    }
+
+    .ref .rl b {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .ref a {
+      border: 1px solid var(--blue);
+      color: var(--blue);
+      font-size: 9px;
+      padding: 4px 8px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color .16s ease, color .16s ease;
+    }
+
+    .ref a:hover {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .quote {
+      margin: 24px 0 18px;
+      font-family: "Noto Serif TC", serif;
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.65;
+    }
+
+    .quote em {
+      background: var(--blue-deep);
+      color: #fff;
+      font-style: normal;
+      padding: 1px 7px 3px;
+    }
+
+    *[id] {
+      scroll-margin-top: 24px;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        break-after: page;
+      }
+
+      .page:last-of-type {
+        break-after: auto;
+      }
+
+      .video-frame {
+        background: #111;
+      }
+
+      .flow-row,
+      .stat,
+      .tool,
+      .step,
+      .matrix,
+      .check,
+      .prompt,
+      .prompt-lab,
+      .ref,
+      .callout {
+        break-inside: avoid;
+      }
+
+      .prompt-actions {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 880px) {
+      body {
+        padding: 14px 0;
+      }
+
+      .page {
+        transform: scale(.62);
+        transform-origin: top center;
+        margin-bottom: calc(-297mm * 0.38 + 18px);
+      }
+    }
+
+    @media screen and (max-width: 680px) {
+      body {
+        padding: 10px 0;
+      }
+
+      .page {
+        width: calc(100% - 20px);
+        min-height: auto;
+        padding: 24px 18px 42px;
+        transform: none;
+        margin-bottom: 16px;
+      }
+
+      .page::before {
+        display: none;
+      }
+
+      .rh {
+        flex-wrap: wrap;
+        row-gap: 6px;
+      }
+
+      .cover-main,
+      .cover-grid,
+      .stats,
+      .tools,
+      .checklist,
+      .prompt-grid,
+      .prompt-lab,
+      .prompt-meta-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-main {
+        gap: 20px;
+        padding-top: 24px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .subtitle,
+      .lead {
+        max-width: none;
+      }
+
+      .video-card {
+        min-height: auto;
+      }
+
+      .video-frame {
+        width: calc(100% - 20px);
+      }
+
+      .cover-grid > div,
+      .stat,
+      .tool,
+      .check,
+      .prompt {
+        min-height: auto;
+        padding: 15px 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .cover-grid > div:last-child,
+      .stat:last-child,
+      .tool:last-child,
+      .check:last-child,
+      .prompt:last-child {
+        border-bottom: 0;
+      }
+
+      .tool:nth-child(2n),
+      .check:nth-child(2n),
+      .prompt:nth-child(2n) {
+        padding-left: 0;
+      }
+
+      .toc {
+        margin-top: 32px;
+      }
+
+      .toc-row,
+      .sec,
+      .step {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .toc-l {
+        grid-template-columns: 40px 1fr;
+      }
+
+      .toc-sub {
+        grid-template-columns: 54px 1fr 28px;
+        font-size: 10px;
+      }
+
+      .flow-row,
+      .matrix-row {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-no {
+        padding: 16px 0 0;
+      }
+
+      .flow-cell,
+      .flow-cell:last-child,
+      .matrix-row > div {
+        padding: 13px 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .flow-row .flow-cell:last-child,
+      .matrix-row > div:last-child {
+        border-bottom: 0;
+      }
+
+      .prompt-side {
+        grid-template-columns: repeat(2, 1fr);
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .prompt-tab {
+        min-height: 58px;
+        border-right: 1px solid var(--line);
+      }
+
+      .prompt-tab:nth-child(2n) {
+        border-right: 0;
+      }
+
+      .prompt-panel-head {
+        flex-direction: column;
+      }
+
+      .prompt-actions {
+        width: 100%;
+      }
+
+      .prompt-action {
+        flex: 1;
+      }
+
+      .prompt-editor {
+        height: 420px;
+      }
+
+      .prompt-meta-row div {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .prompt-meta-row div:last-child {
+        border-bottom: 0;
+      }
+
+      .pgn {
+        right: 18px;
+        bottom: 14px;
+      }
+    }
+  </style>
+  <script src="../assets/report-theme.js"></script>
+</head>
+
+<body>
+  <section class="page cover" id="cover">
+    <div class="rh"><span>00 / 製作路線圖</span><span>2026.05.27</span></div>
+
+    <div class="cover-main">
+      <div>
+        <div class="kicker">AI 音樂影像製作手冊</div>
+        <h1>初學者的 AI 音樂影像製作路線圖</h1>
+        <p class="subtitle">本報告整理初學者完成第一支 AI 音樂影像（AI MV）所需的工作路徑：從故事概念、歌曲企劃、分鏡設計、逐鏡生成到後期剪輯，將分散工具收束為一套可複製、可檢查、可交付的製作流程。</p>
+        <div class="tagline">
+          <span class="tag">ChatGPT</span>
+          <span class="tag">Suno</span>
+          <span class="tag">Higgsfield</span>
+          <span class="tag">Seedance 2.0</span>
+          <span class="tag">剪輯流程</span>
+        </div>
+      </div>
+
+      <div class="video-card" aria-label="首頁影片">
+        <div class="video-top"><span>示範影片</span><span>流程示範</span></div>
+        <div class="video-frame">
+          <iframe
+            src="https://www.youtube.com/embed/BlpDY5ORxEk?rel=0&amp;modestbranding=1"
+            title="初學者的 AI 音樂影像製作路線圖影片"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <div class="video-bottom">
+          <span>可於報告內直接播放</span>
+          <a href="https://youtu.be/BlpDY5ORxEk" target="_blank" rel="noopener">YouTube ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-grid">
+      <div>
+        <div class="meta">報告主題</div>
+        <div class="value">AI 音樂影像製作入門<small>從故事、歌曲、分鏡到成片</small></div>
+      </div>
+      <div>
+        <div class="meta">報告日期</div>
+        <div class="value">2026 / 05 / 27<small>製作流程整理</small></div>
+      </div>
+      <div>
+        <div class="meta">核心交付</div>
+        <div class="value">AI 音樂影像製作路線圖<small>流程、模板與檢查清單</small></div>
+      </div>
+    </div>
+    <div class="pgn">00</div>
+  </section>
+
+  <section class="page" id="toc">
+    <div class="toc-head"><span>00 / 目錄</span><span>目錄</span></div>
+    <div class="toc">
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">01</span><span class="tt">核心觀念</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#summary"><span class="ts-c">1.1 /</span><span class="ts-t">先把音樂影像拆成流程</span><span class="ts-p">02</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">02</span><span class="tt">全流程地圖</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#map"><span class="ts-c">2.1 /</span><span class="ts-t">一支 AI 音樂影像的五個交付物</span><span class="ts-p">03</span></a>
+          <a class="toc-sub" href="#toolkit"><span class="ts-c">2.2 /</span><span class="ts-t">工具角色與成本估算</span><span class="ts-p">04</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">03</span><span class="tt">製作準備</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#setup"><span class="ts-c">3.1 /</span><span class="ts-t">資料夾、命名與輸出規格</span><span class="ts-p">05</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">04</span><span class="tt">歌曲生成</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#song"><span class="ts-c">4.1 /</span><span class="ts-t">先把歌做對</span><span class="ts-p">06</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">05</span><span class="tt">視覺分鏡</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#storyboard"><span class="ts-c">5.1 /</span><span class="ts-t">視覺規格表與分鏡表</span><span class="ts-p">07</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">06</span><span class="tt">成片流程</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#generate"><span class="ts-c">6.1 /</span><span class="ts-t">逐鏡生成影片素材</span><span class="ts-p">08</span></a>
+          <a class="toc-sub" href="#edit"><span class="ts-c">6.2 /</span><span class="ts-t">把素材剪成一支音樂影像</span><span class="ts-p">09</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">07</span><span class="tt">提示詞工作台</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#prompts"><span class="ts-c">7.1 /</span><span class="ts-t">可編輯提示詞工作台</span><span class="ts-p">10</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">08</span><span class="tt">發布檢查</span></div>
+        <div class="toc-r">
+          <a class="toc-sub" href="#checklist"><span class="ts-c">8.1 /</span><span class="ts-t">發布前檢查清單</span><span class="ts-p">11</span></a>
+          <a class="toc-sub" href="#closing"><span class="ts-c">8.2 /</span><span class="ts-t">結語與參考依據</span><span class="ts-p">12</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="pgn">01</div>
+  </section>
+
+  <section class="page" id="summary">
+    <div class="rh"><span>01 / 核心觀念</span><span>1.1 / 先把音樂影像拆成流程</span></div>
+    <div class="sec">
+      <div class="sec-num">01</div>
+      <div>
+        <h2>先把音樂影像拆成流程</h2>
+        <div class="eyebrow">從一次性生成，轉向可控的製作方法</div>
+      </div>
+    </div>
+    <p class="lead">本報告整理 AI 音樂影像初學者完成第一支作品時最需要建立的流程觀念：<strong>AI 音樂影像不是一次生成一整支影片，而是先建立素材倉庫，再用剪輯把素材組成作品。</strong></p>
+    <p class="body">生成式 AI 已降低歌曲、影像與腳本製作的門檻，但初學者若直接把整首歌交給單一工具處理，往往會遇到角色不一致、鏡頭漂移、字幕無法使用、節奏難以剪輯等問題。本報告將製作任務拆解為歌曲企劃、音樂生成、視覺企劃、逐鏡生成與後期剪輯五個階段，使每一步都有明確交付物與檢查標準。</p>
+    <p class="body">整體方法的核心，是讓每個工具只處理最適合它的任務：ChatGPT 負責企劃、歌詞與分鏡邏輯；Suno 負責歌曲版本探索與定版；Higgsfield 作為整合多種影像模型的平台，負責在同一個工作頁面中選用 Seedance 2.0 等模型生成短鏡頭素材；剪輯軟體則負責把音樂、畫面、字幕與節奏整合成可發布的最終影片。</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-k">核心階段</div>
+        <div class="stat-v">5<small>段</small></div>
+        <p class="stat-p">從歌曲企劃到剪輯成片，建立可逐步檢查的完整路線。</p>
+      </div>
+      <div class="stat">
+        <div class="stat-k">最佳入門長度</div>
+        <div class="stat-v">60<small>秒</small></div>
+        <p class="stat-p">第一次建議從 45 到 60 秒開始，降低鏡頭數與修正成本。</p>
+      </div>
+      <div class="stat">
+        <div class="stat-k">分鏡策略</div>
+        <div class="stat-v">A/B/C</div>
+        <p class="stat-p">每句歌詞先提出敘事、象徵、表演三種方案，再進入影片生成。</p>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="call-k">本報告的使用方式</div>
+      <p>本報告可作為 AI 音樂影像入門課程、工作坊或自學專案的流程文件。建議先理解五階段製作架構，再依序完成專案資料夾、歌曲定版、視覺規格表、分鏡表、影片素材與剪輯輸出。</p>
+    </div>
+    <div class="pgn">02</div>
+  </section>
+
+  <section class="page" id="map">
+    <div class="rh"><span>02 / 全流程地圖</span><span>2.1 / 一支 AI 音樂影像的五個交付物</span></div>
+    <div class="sec">
+      <div class="sec-num">02</div>
+      <div>
+        <h2>一支 AI 音樂影像的五個交付物</h2>
+        <div class="eyebrow">每一階段都留下可檢查、可修改、可交接的產出</div>
+      </div>
+    </div>
+    <p class="lead">本流程將 AI 音樂影像製作拆成五個可交付階段，使每一次生成都有目的，也讓失敗成本被控制在單一鏡頭或單一版本內。</p>
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-no">01</div>
+        <div class="flow-cell"><h3>歌曲企劃</h3><p>確認歌曲主題、主角、敘事視角、情緒弧線、聲線、節奏、樂器與排除元素。</p></div>
+        <div class="flow-cell"><h3>成功標準</h3><p>能清楚說明歌曲在唱什麼、聽起來像什麼，以及副歌應被記住的核心句。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">02</div>
+        <div class="flow-cell"><h3>生成歌曲</h3><p>在 Suno 產出多個版本，先確認方向，再修副歌、結構與結尾，最後下載定版音訊。</p></div>
+        <div class="flow-cell"><h3>成功標準</h3><p>副歌有記憶點，情緒對，長度可剪，且授權符合發布或商用需求。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">03</div>
+        <div class="flow-cell"><h3>視覺企劃</h3><p>建立視覺規格表（Visual Bible），鎖定主角、服裝、場景、色彩、鏡頭語言與字幕安全區。</p></div>
+        <div class="flow-cell"><h3>成功標準</h3><p>每個鏡頭都能被辨識為同一支音樂影像，避免每句歌詞都切換成不同世界觀。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">04</div>
+        <div class="flow-cell"><h3>生成畫面</h3><p>將歌詞拆為短鏡頭，在 Higgsfield 平台同一個頁面中選用 Seedance 2.0 模型，逐鏡生成、挑選、命名與歸檔。</p></div>
+        <div class="flow-cell"><h3>成功標準</h3><p>角色穩、色調穩、動作清楚、字幕區乾淨，素材能直接進剪輯軟體。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">05</div>
+        <div class="flow-cell"><h3>剪輯成片</h3><p>鎖定音樂，建立標記點，依歌詞與節拍排入畫面，最後完成字幕、調色與輸出。</p></div>
+        <div class="flow-cell"><h3>成功標準</h3><p>畫面跟音樂節奏對上，副歌有最強視覺，橫式或直式版本能發布。</p></div>
+      </div>
+    </div>
+    <div class="pgn">03</div>
+  </section>
+
+  <section class="page" id="toolkit">
+    <div class="rh"><span>02 / 全流程地圖</span><span>2.2 / 工具角色與成本估算</span></div>
+    <div class="sec">
+      <div class="sec-num">02</div>
+      <div>
+        <h2>工具角色與成本估算</h2>
+        <div class="eyebrow">先確認每個工具負責什麼，再估算生成成本</div>
+      </div>
+    </div>
+    <p class="lead">AI 音樂影像的成本不只來自月費，而來自「可用歌曲」與「可用鏡頭」的實際產出率。初學者應先用小量素材測試流程，再決定工具方案。</p>
+    <div class="tools">
+      <div class="tool">
+        <div class="tool-k">文字企劃與分鏡</div>
+        <h3>ChatGPT 免費版或進階版</h3>
+        <p>可用於歌曲企劃、歌詞修整、視覺規格表、逐句分鏡與提示詞修復。若需要長對話與大量修改，進階版會更適合。</p>
+      </div>
+      <div class="tool">
+        <div class="tool-k">歌曲生成</div>
+        <h3>Suno 付費方案起跳</h3>
+        <p>負責歌曲版本探索與定版。若作品將用於 YouTube、品牌帳號、作品集或接案情境，需優先確認商用授權。</p>
+      </div>
+      <div class="tool">
+        <div class="tool-k">影片生成</div>
+        <h3>Higgsfield 平台，Seedance 2.0 模型</h3>
+        <p>Higgsfield 是整合不同影像模型的平台；本流程在平台內選用 Seedance 2.0 進行逐鏡生成。建議先用 3 到 5 個鏡頭測試角色、動作與色調穩定度，再估算完整片量。</p>
+      </div>
+      <div class="tool">
+        <div class="tool-k">剪輯輸出</div>
+        <h3 class="tool-title-nowrap">剪映、DaVinci Resolve 或 Premiere&nbsp;Pro</h3>
+        <p>負責音樂對位、字幕、調色與輸出。剪映適合快速入門，DaVinci Resolve 適合長期後期訓練，Premiere Pro 適合 Adobe 協作流程。</p>
+      </div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row matrix-head"><div>成本項</div><div>正確算法</div><div>新手提醒</div></div>
+      <div class="matrix-row"><div><b>歌曲</b></div><div>以月費除以最後能進入 MV 製作的定版歌曲數。</div><div>不應使用「最多可生成歌曲數」推估成本，因為多數版本只是探索。</div></div>
+      <div class="matrix-row"><div><b>影片</b></div><div>以分鏡數 × 平均嘗試次數 × 每次生成點數估算。</div><div>副歌主鏡頭可提高嘗試次數，普通過場應控制生成量。</div></div>
+      <div class="matrix-row"><div><b>時間</b></div><div>企劃、生成、挑選、命名、剪輯與修正都應列入。</div><div>AI 不是取消製作，而是把製作改成更快的迭代流程。</div></div>
+    </div>
+    <div class="pgn">04</div>
+  </section>
+
+  <section class="page" id="setup">
+    <div class="rh"><span>03 / 製作準備</span><span>3.1 / 資料夾、命名與輸出規格</span></div>
+    <div class="sec">
+      <div class="sec-num">03</div>
+      <div>
+        <h2>資料夾、命名與輸出規格</h2>
+        <div class="eyebrow">資料管理、命名規則與輸出規格決定後期效率</div>
+      </div>
+    </div>
+    <p class="lead">AI 音樂影像的製作量往往高於初學者預期。開始生成前先建立專案包，能讓後續重抽、替換、剪輯與交接都保持清楚。</p>
+    <div class="steps">
+      <div class="step">
+        <div><div class="step-k">資料夾 01</div><h3>建立固定資料夾</h3></div>
+        <p>建議分成 <code>01_music_brief</code>、<code>02_suno_versions</code>、<code>03_final_song</code>、<code>04_lyrics_and_timestamps</code>、<code>05_visual_bible</code>、<code>06_storyboard_table</code>、<code>09_generated_clips</code>、<code>10_editing_project</code> 與 <code>11_exports</code>。</p>
+      </div>
+      <div class="step">
+        <div><div class="step-k">命名 02</div><h3>檔名要能看懂鏡頭位置</h3></div>
+        <p>建議使用 <code>S01_L01_A_rooftop_closeup_v01.mp4</code> 這類格式，標出段落、歌詞行、分鏡方案、畫面簡稱與版本，避免剪輯時面對大量無法辨識的下載檔。</p>
+      </div>
+      <div class="step">
+        <div><div class="step-k">格式 03</div><h3>先決定比例</h3></div>
+        <p>YouTube 完整版建議 16:9；TikTok、Reels、Shorts 建議 9:16；網站橫幅可用 21:9 或 16:9。第一支作品應先鎖定一個主比例，降低構圖與字幕安全區的複雜度。</p>
+      </div>
+      <div class="step">
+        <div><div class="step-k">長度 04</div><h3>第一次先避開四分鐘完整版</h3></div>
+        <p>15 秒預告片適合測試風格；45 到 60 秒最適合第一次完整練習；90 秒可作為進階新手目標。三分鐘以上作品應等熟悉成本與剪輯節奏後再規劃。</p>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="call-k">製作前的原則</div>
+      <p>製作前應先鎖住少數常數：一個比例、一個主角描述、一套服裝錨點、一組色彩與一個字幕安全區。常數越穩定，後續生成越能被管理。</p>
+    </div>
+    <div class="pgn">05</div>
+  </section>
+
+  <section class="page" id="song">
+    <div class="rh"><span>04 / 歌曲生成</span><span>4.1 / 先把歌做對</span></div>
+    <div class="sec">
+      <div class="sec-num">04</div>
+      <div>
+        <h2>先把歌做對</h2>
+        <div class="eyebrow">先確認歌曲方向，再進入視覺生成</div>
+      </div>
+    </div>
+    <p class="lead">歌曲是音樂影像的地基。此階段的目標不是要求 ChatGPT 一次寫完所有內容，而是先把模糊感覺翻譯成可被 Suno 執行的音樂語言。</p>
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-no">01</div>
+        <div class="flow-cell"><h3>訪談歌曲企劃</h3><p>由 ChatGPT 逐步確認主題、主角、視角、情緒弧線、風格、節奏、樂器、聲線、禁用元素與用途。</p></div>
+        <div class="flow-cell"><h3>輸出格式</h3><p>整理為創作摘要（Creative Brief）、Suno 風格欄位（Styles）、排除欄位（Exclude）、聲線方向、段落建議與歌名選項。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">02</div>
+        <div class="flow-cell"><h3>Suno 分欄貼入</h3><p>歌詞欄位（Lyrics）放歌詞與段落標籤；風格欄位（Styles）放音樂風格；排除欄位（Exclude）放明確排除元素；歌名欄位（Title）放歌名。</p></div>
+        <div class="flow-cell"><h3>欄位分工</h3><p>故事、風格、歌詞與排除條件不應全部放入歌詞欄位，避免模型將指令誤判為歌詞內容。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">03</div>
+        <div class="flow-cell"><h3>四輪迭代</h3><p>第一輪確認方向，第二輪強化副歌，第三輪調整結構，第四輪定版與匯出。</p></div>
+        <div class="flow-cell"><h3>評估標準</h3><p>重點在情緒是否準確、副歌是否有記憶點、聲線是否符合主角、節奏是否利於剪輯。</p></div>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="call-k">Suno 提示詞的口訣</div>
+      <p>Suno 提示詞不宜只停留在 <strong>流行、悲傷、電影感</strong> 這類抽象詞。較穩定的寫法，應包含語言、曲風、聲線、樂器、段落推進、製作質感與最後情緒，例如：中文電影感合成器流行、親密女聲、主歌稀疏鋼琴、副歌逐步打開、結尾帶有希望感。</p>
+    </div>
+    <div class="pgn">06</div>
+  </section>
+
+  <section class="page" id="storyboard">
+    <div class="rh"><span>05 / 視覺分鏡</span><span>5.1 / 視覺規格表與分鏡表</span></div>
+    <div class="sec">
+      <div class="sec-num">05</div>
+      <div>
+        <h2>視覺規格表與分鏡表</h2>
+        <div class="eyebrow">先鎖定世界觀，再決定每一句歌詞的畫面任務</div>
+      </div>
+    </div>
+    <p class="lead">歌曲定版後，不應立即進入影片生成。此階段應先建立視覺規格表（Visual Bible），確保整支音樂影像發生在同一個角色、場景、色彩與鏡頭語言之中。</p>
+    <div class="tools">
+      <div class="tool">
+        <div class="tool-k">視覺規格表</div>
+        <h3>先定義世界</h3>
+        <p>定義一句話概念、故事主線、主角設定、服裝髮型、場景、色彩、鏡頭語言、字幕安全區、重複意象與禁止事項。</p>
+      </div>
+      <div class="tool">
+        <div class="tool-k">分鏡表</div>
+        <h3>再拆每句歌詞</h3>
+        <p>將每句歌詞轉為故事任務、視覺 A/B/C、Seedance 2.0 提示詞 A/B/C 與連續性備註。</p>
+      </div>
+      <div class="tool">
+        <div class="tool-k">視覺 A</div>
+        <h3>直覺敘事版</h3>
+        <p>直覺敘事版，負責讓觀眾理解故事正在發生什麼，適合推進情節。</p>
+      </div>
+      <div class="tool">
+        <div class="tool-k">視覺 B / C</div>
+        <h3>象徵版與表演版</h3>
+        <p>B 方案處理象徵與藝術感，C 方案處理表演與情緒近景。三種方案讓製作者先有選擇，再決定要投入生成點數的版本。</p>
+      </div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row matrix-head"><div>欄位</div><div>要寫什麼</div><div>為什麼重要</div></div>
+      <div class="matrix-row"><div><b>故事任務</b></div><div>說明這句歌詞在情緒或故事上推進了什麼。</div><div>避免畫面只有美感，卻沒有敘事功能。</div></div>
+      <div class="matrix-row"><div><b>提示詞</b></div><div>明確描述鏡頭、主體、動作、環境、光線、色彩、風格與限制。</div><div>讓影片模型收到可執行的攝影指令，而不是抽象詩句。</div></div>
+      <div class="matrix-row"><div><b>備註</b></div><div>角色、服裝、髮型、道具、字幕區與禁用元素。</div><div>降低角色漂移、服裝亂換、畫面文字亂碼與構圖太滿。</div></div>
+    </div>
+    <div class="pgn">07</div>
+  </section>
+
+  <section class="page" id="generate">
+    <div class="rh"><span>06 / 成片流程</span><span>6.1 / 逐鏡生成影片素材</span></div>
+    <div class="sec">
+      <div class="sec-num">06</div>
+      <div>
+        <h2>逐鏡生成影片素材</h2>
+        <div class="eyebrow">每一次生成都應對應一個清楚鏡頭任務</div>
+      </div>
+    </div>
+    <p class="lead">影片生成階段的第一個目標，不是立即完成第一句歌詞，而是確認角色一致性與視覺規格是否穩定。</p>
+    <div class="steps">
+      <div class="step">
+        <div><div class="step-k">測試 01</div><h3>建立角色參考圖</h3></div>
+        <p>先準備主角參考圖，最好包含清楚臉部、全身、服裝與髮型。文字描述提供方向，參考圖則能直接穩定角色辨識。</p>
+      </div>
+      <div class="step">
+        <div><div class="step-k">鏡頭 02</div><h3>每個提示詞只安排一個主要動作</h3></div>
+        <p>避免同時要求角色走路、轉身、哭、拿信、開門與看鏡頭。動作越單純，影片越容易穩定。</p>
+      </div>
+      <div class="step">
+        <div><div class="step-k">鎖定 03</div><h3>固定角色與色彩錨點</h3></div>
+        <p>每次生成都應重複「同一張臉、同一髮型、同一外套、同一色彩系統、下方字幕區保持乾淨」等限制。</p>
+      </div>
+      <div class="step">
+        <div><div class="step-k">修正 04</div><h3>一次只改一個變數</h3></div>
+        <p>若結果不佳，應一次只修正一個變數：先簡化動作，再補上「不要切鏡」，下一輪才調整光線。避免同時更換場景、角色、鏡頭與色彩。</p>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="call-k">標準鏡頭提示詞結構</div>
+      <p><strong>時長 / 鏡頭數 / 畫面比例</strong> → 鏡頭距離 → 主體 → 動作 → 環境 → 光線與色彩 → 風格與質感 → 連續性鎖定 → 限制事項。好的提示詞應像攝影通告，而不是形容詞堆疊。</p>
+    </div>
+    <div class="pgn">08</div>
+  </section>
+
+  <section class="page" id="edit">
+    <div class="rh"><span>06 / 成片流程</span><span>6.2 / 把素材剪成一支音樂影像</span></div>
+    <div class="sec">
+      <div class="sec-num">06</div>
+      <div>
+        <h2>把素材剪成一支音樂影像</h2>
+        <div class="eyebrow">先鎖定音樂，再讓畫面、字幕與調色回到同一條時間線</div>
+      </div>
+    </div>
+    <p class="lead">剪輯階段的任務，是把畫面放回歌詞位置，把情緒放在音樂爆發點，並將零散 AI 片段整理成完整敘事。</p>
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-no">01</div>
+        <div class="flow-cell"><h3>建立時間線</h3><p>設定比例與解析度，匯入定版歌曲，將音樂放置主軌並鎖定。</p></div>
+        <div class="flow-cell"><h3>避免反覆移動</h3><p>音樂位置確定後，所有標記點、字幕與畫面都應以它為基準。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">02</div>
+        <div class="flow-cell"><h3>加上標記點</h3><p>標記前奏、主歌、預副歌、副歌、橋段、最後副歌、尾奏與重要鼓點。</p></div>
+        <div class="flow-cell"><h3>讓剪輯有座標</h3><p>每句歌詞都應對應到明確時間點，避免只依直覺排列畫面。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">03</div>
+        <div class="flow-cell"><h3>安排節奏</h3><p>主歌少切，預副歌開始變密，副歌放最強畫面，橋段放慢，尾奏留餘韻。</p></div>
+        <div class="flow-cell"><h3>避免投影片感</h3><p>不是每句都硬切新畫面，而是讓視覺節奏與音樂情緒同步起伏。</p></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-no">04</div>
+        <div class="flow-cell"><h3>字幕與調色</h3><p>字幕應由剪輯軟體處理，放置於下方 15 到 20% 安全區。調色先統一亮度、色溫與對比。</p></div>
+        <div class="flow-cell"><h3>輸出版本</h3><p>YouTube 建議 16:9，短影音建議 9:16。橫式與直式版本應分開輸出，避免直接硬裁。</p></div>
+      </div>
+    </div>
+    <div class="pgn">09</div>
+  </section>
+
+  <section class="page" id="prompts">
+    <div class="rh"><span>07 / 提示詞工作台</span><span>7.1 / 可編輯提示詞工作台</span></div>
+    <div class="sec">
+      <div class="sec-num">07</div>
+      <div>
+        <h2>可編輯提示詞工作台</h2>
+        <div class="eyebrow">把讀者從理解流程，帶到可以直接貼進 ChatGPT 開工</div>
+      </div>
+    </div>
+    <p class="lead">這一頁改成實作工作台：先選情境，直接在文字區替換括號內資料，再複製貼到 ChatGPT。提示詞不是範例文案，而是課堂上可一路產出歌曲摘要、Suno 欄位、視覺規格表、逐句分鏡與 Seedance 2.0 修正稿的工作模板。</p>
+    <div class="prompt-lab" data-prompt-workbench>
+      <div class="prompt-side" role="tablist" aria-label="提示詞工作台">
+        <button class="prompt-tab is-active" type="button" data-prompt-id="song-brief"><span>01</span><b>歌曲企劃訪談</b><small>先問完，不先寫歌</small></button>
+        <button class="prompt-tab" type="button" data-prompt-id="lyrics"><span>02</span><b>歌詞共寫</b><small>先副歌，再整首</small></button>
+        <button class="prompt-tab" type="button" data-prompt-id="suno-package"><span>03</span><b>Suno 分欄</b><small>整理可貼欄位</small></button>
+        <button class="prompt-tab" type="button" data-prompt-id="visual-bible"><span>04</span><b>視覺規格表</b><small>鎖定角色與世界</small></button>
+        <button class="prompt-tab" type="button" data-prompt-id="shot-table"><span>05</span><b>逐句分鏡表</b><small>A/B/C 候選鏡頭</small></button>
+        <button class="prompt-tab" type="button" data-prompt-id="prompt-repair"><span>06</span><b>提示詞修復</b><small>壞片不重來</small></button>
+      </div>
+      <div class="prompt-panel">
+        <div class="prompt-panel-head">
+          <div>
+            <div class="prompt-k" data-prompt-stage>提示詞 01</div>
+            <h3 data-prompt-title>歌曲企劃訪談</h3>
+            <p data-prompt-note>讓 ChatGPT 先訪談你，再輸出能直接進 Suno 的歌曲企劃。</p>
+          </div>
+          <div class="prompt-actions">
+            <button class="prompt-action" type="button" data-copy-prompt>複製</button>
+            <button class="prompt-action" type="button" data-reset-prompt>重置</button>
+          </div>
+        </div>
+        <textarea class="prompt-editor" data-prompt-editor spellcheck="false" wrap="soft" aria-label="可編輯提示詞"></textarea>
+        <div class="prompt-meta-row">
+          <div><span>貼到</span><b data-prompt-target>ChatGPT</b></div>
+          <div><span>輸入</span><b data-prompt-input>音樂影像主題、用途、風格偏好</b></div>
+          <div><span>產出</span><b data-prompt-output>創作摘要 / 風格欄位 / 排除欄位</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="call-k">提示詞的好壞差異</div>
+      <p>真正可用的提示詞會逼自己交代輸入資料、輸出格式、下一步用途與限制條件。做 Suno 時要拆成歌詞欄位、風格欄位、排除欄位；做 Seedance 2.0 時要寫清楚鏡頭距離、主體、動作、場景、光線、色彩、角色鎖定與限制。</p>
+    </div>
+    <div class="pgn">10</div>
+  </section>
+
+  <section class="page" id="checklist">
+    <div class="rh"><span>08 / 發布檢查</span><span>8.1 / 發布前檢查清單</span></div>
+    <div class="sec">
+      <div class="sec-num">08</div>
+      <div>
+        <h2>發布前檢查清單</h2>
+        <div class="eyebrow">將創作成果轉為可公開、可交付、可追溯的作品</div>
+      </div>
+    </div>
+    <p class="lead">AI 音樂影像的品質不只取決於生成結果，也取決於最後一輪檢查。許多交付問題不是創意不足，而是素材管理、授權紀錄、字幕可讀性與輸出規格沒有完成。</p>
+    <div class="checklist" data-task-checklist>
+      <div class="check" data-check-group="music">
+        <h3><span>音樂檢查</span><span class="check-progress" data-check-progress>（0/4）</span></h3>
+        <ul>
+          <li><label class="check-task"><input type="checkbox" data-check-item="music-license"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認歌曲是否由可商用方案生成。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="music-lyrics"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認歌詞為自有創作或已取得使用權。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="music-records"><span class="check-box" aria-hidden="true"></span><span class="check-text">保存主音訊、最終歌詞與生成紀錄。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="music-title"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認歌名不與既有品牌或作品混淆。</span></label></li>
+        </ul>
+      </div>
+      <div class="check" data-check-group="visual">
+        <h3><span>畫面檢查</span><span class="check-progress" data-check-progress>（0/4）</span></h3>
+        <ul>
+          <li><label class="check-task"><input type="checkbox" data-check-item="visual-character"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認主角、服裝、髮型與色調一致。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="visual-artifacts"><span class="check-box" aria-hidden="true"></span><span class="check-text">檢查是否出現異常文字、商標圖樣或多餘角色。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="visual-anatomy"><span class="check-box" aria-hidden="true"></span><span class="check-text">檢查手、臉、眼睛是否有嚴重變形。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="visual-subtitle-safe"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認字幕安全區保持乾淨。</span></label></li>
+        </ul>
+      </div>
+      <div class="check" data-check-group="edit">
+        <h3><span>剪輯檢查</span><span class="check-progress" data-check-progress>（0/4）</span></h3>
+        <ul>
+          <li><label class="check-task"><input type="checkbox" data-check-item="edit-audio-lock"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認音樂已鎖定，標記點已對準。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="edit-chorus-shot"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認副歌使用最具辨識度的畫面。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="edit-mobile-subtitle"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認字幕在手機上仍可清楚閱讀。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="edit-exports"><span class="check-box" aria-hidden="true"></span><span class="check-text">確認橫式與直式版本分開輸出。</span></label></li>
+        </ul>
+      </div>
+      <div class="check" data-check-group="rights">
+        <h3><span>權利檢查</span><span class="check-progress" data-check-progress>（0/4）</span></h3>
+        <ul>
+          <li><label class="check-task"><input type="checkbox" data-check-item="rights-voice"><span class="check-box" aria-hidden="true"></span><span class="check-text">避免模仿未授權真實歌手聲音。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="rights-portrait"><span class="check-box" aria-hidden="true"></span><span class="check-text">避免使用未授權名人肖像。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="rights-character"><span class="check-box" aria-hidden="true"></span><span class="check-text">避免使用受版權保護角色作為主角。</span></label></li>
+          <li><label class="check-task"><input type="checkbox" data-check-item="rights-records"><span class="check-box" aria-hidden="true"></span><span class="check-text">客戶案需保存生成與授權紀錄。</span></label></li>
+        </ul>
+      </div>
+    </div>
+    <div class="pgn">11</div>
+  </section>
+
+  <section class="page" id="closing">
+    <div class="rh"><span>08 / 發布檢查</span><span>8.2 / 結語與參考依據</span></div>
+    <div class="sec">
+      <div class="sec-num">08</div>
+      <div>
+        <h2>結語與參考依據</h2>
+        <div class="eyebrow">本報告的核心，不是單一提示詞，而是穩定拆解任務</div>
+      </div>
+    </div>
+    <p class="quote">AI 音樂影像製作的關鍵，不是要求 AI 一次完成整支影片，而是<em>把任務拆小、把角色鎖住、把風格鎖住，並讓每個鏡頭都有清楚任務。</em></p>
+    <p class="body">本報告將原始製作手冊濃縮為可被初學者理解與操作的製作路線圖。先以 ChatGPT 完成歌曲企劃與歌詞整理，再以 Suno 生成並定版歌曲；接著建立視覺規格表與逐句分鏡，將每一句歌詞轉為可生成的鏡頭任務；最後在 Higgsfield 平台中選用 Seedance 2.0 模型逐鏡生成素材，並在剪輯軟體中完成對位、字幕、調色與輸出。</p>
+    <p class="body">本版已將提示詞工具包改成可編輯工作台，讓初學者不只閱讀方法，也能直接替換自己的主題、歌詞、角色設定與生成問題，再複製到 ChatGPT 執行。若延伸成完整課程，可再把每一階段加上問答表單、素材命名規則與發布前檢查機制，讓讀者一路做到可交付作品。</p>
+    <div class="refs">
+      <div class="ref">
+        <span class="rn">01</span>
+        <span class="rl"><b>YouTube</b> — 本報告首頁嵌入影片，作為 AI 音樂影像製作示範素材。</span>
+        <a href="https://youtu.be/BlpDY5ORxEk" target="_blank" rel="noopener">查看 ↗</a>
+      </div>
+      <div class="ref">
+        <span class="rn">02</span>
+        <span class="rl"><b>Suno</b> — 歌曲生成方案、使用額度與商用授權參考資訊。</span>
+        <a href="https://suno.com/pricing" target="_blank" rel="noopener">查看 ↗</a>
+      </div>
+      <div class="ref">
+        <span class="rn">03</span>
+        <span class="rl"><b>Higgsfield</b> — 平台內影像模型整合、Seedance 2.0 模型與逐鏡生成流程說明。</span>
+        <a href="https://higgsfield.ai/seedance/2.0" target="_blank" rel="noopener">查看 ↗</a>
+      </div>
+      <div class="ref">
+        <span class="rn">04</span>
+        <span class="rl"><b>OpenAI</b> — 圖像與影片提示詞的結構化設計思路。</span>
+        <a href="https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide" target="_blank" rel="noopener">查看 ↗</a>
+      </div>
+      <div class="ref">
+        <span class="rn">05</span>
+        <span class="rl"><b>Blackmagic Design</b> — DaVinci Resolve 剪輯、調色與後期輸出工具。</span>
+        <a href="https://www.blackmagicdesign.com/products/davinciresolve" target="_blank" rel="noopener">查看 ↗</a>
+      </div>
+      <div class="ref">
+        <span class="rn">06</span>
+        <span class="rl"><b>Adobe</b> — Premiere Pro 影片剪輯工具資訊。</span>
+        <a href="https://www.adobe.com/products/premiere.html" target="_blank" rel="noopener">查看 ↗</a>
+      </div>
+    </div>
+    <div class="pgn">12</div>
+  </section>
+
+  <script>
+    (() => {
+      const root = document.querySelector('[data-prompt-workbench]');
+      if (!root) return;
+
+      const promptData = {
+        'song-brief': {
+          stage: '提示詞 01',
+          title: '歌曲企劃訪談',
+          note: '讓 ChatGPT 先問清楚，再把答案整理成可貼進 Suno 的企劃欄位。',
+          target: 'ChatGPT',
+          input: 'MV 主題、用途、風格偏好',
+          output: '創作摘要 / 風格欄位 / 排除欄位',
+          text: `你現在是我的唱片企劃、音樂製作人、音樂影像配樂策劃，以及 Suno 提示詞整理器。
+
+你的任務分成兩段：
+第一段先訪談我，不要急著寫歌，也不要急著寫完整歌詞。
+一次只問我 1 題；如果我回答太模糊，你要給我 3 個可選方向讓我選。
+等你問完所有必要問題，才進入第二段整理。
+
+你必須問到的資訊：
+- 這支音樂影像的一句話主題
+- 主角人設與視角
+- 情緒弧線
+- 主風格與副風格
+- 節奏體感與速度感
+- 樂器與聲音質地
+- 想要的聲線與唱法
+- 不能出現的元素
+- 成品長度與用途
+- 歌詞要多口語 / 多詩性 / 多直白
+
+當我回答完後，請輸出以下內容，使用繁體中文：
+
+### 創作摘要（Creative Brief）
+用 80-120 字寫出這首歌的完整企劃摘要。
+
+### Suno 風格欄位（Styles）
+給我 3 個可直接貼進 Suno「風格」欄位的版本。
+每個版本都要可唱、可生成、不能太空泛。
+
+### 排除欄位（Exclude）
+給我 2 個可直接貼進「排除」欄位的版本。
+要用具體元素，不要抽象形容詞。
+
+### 聲線方向
+給我 3 組聲線描述。
+例如：柔和男聲、獨唱女聲、貼近耳邊的親密唱法、疊加和聲。
+
+### 段落建議
+用 Suno 常見段落標籤排出最適合這首歌的結構，例如：
+[Intro]（前奏）[Verse 1]（第一段主歌）[Pre-Chorus]（預副歌）[Chorus]（副歌）[Verse 2]（第二段主歌）[Bridge]（橋段）[Final Chorus]（最後副歌）[Outro]（尾奏）。
+
+### 歌名選項
+給我 10 個歌名，分成「直白版」「文青版」「商業版」。
+
+規則：
+- 若資訊不足，可以提出合理假設，但要標記為「假設」。
+- 優先考慮能做成 AI 音樂影像的可用性。
+- 先不要寫完整歌詞，除非我輸入「開始寫詞」。
+
+我的初始想法：
+【在這裡貼上一句話主題、用途、參考歌、想避開的風格】`
+        },
+        lyrics: {
+          stage: '提示詞 02',
+          title: '完整歌詞協作',
+          note: '先把副歌記憶點選出來，再讓 ChatGPT 寫整首，避免一開始就產出一坨不好唱的歌詞。',
+          target: 'ChatGPT',
+          input: '創作摘要、風格、主題',
+          output: '副歌記憶點 / 結構草圖 / 完整歌詞',
+          text: `你現在是我的作詞搭檔。請根據下面這份歌曲摘要，和我一起完成一首適合 Suno 的歌詞。
+
+請遵守這個流程，不要跳步：
+
+第一步：
+先提出 3 個不同方向的副歌記憶點。
+每個方向都要包含：
+- 核心情緒
+- 一句最記得住的關鍵句
+- 適合的歌詞語氣（口語 / 詩性 / 商業流行）
+
+第二步：
+等我選定副歌記憶點後，再提出整首結構草圖。
+請使用 Suno 常見段落標籤，並在每個標籤旁用中文說明用途：
+[Intro]（前奏）
+[Verse 1]（第一段主歌）
+[Pre-Chorus]（預副歌）
+[Chorus]（副歌）
+[Verse 2]（第二段主歌）
+[Bridge]（橋段）
+[Final Chorus]（最後副歌）
+[Outro]（尾奏）
+
+第三步：
+根據我選的副歌記憶點與結構，寫出完整歌詞第一版。
+
+第四步：
+寫完後請你自我檢查並補一段「可唱性檢查」：
+- 哪些句子可能太拗口
+- 哪些地方可以更像副歌
+- 哪些詞適合重複
+- 哪些行可以再縮短
+
+輸出規則：
+- 使用繁體中文。
+- 每一段都要保留結構標籤。
+- 優先寫能唱、能記、能配音樂影像畫面的歌詞。
+- 不要過度堆砌抽象詞。
+- 如果你覺得副歌不夠強，先不要硬寫整首，先回來重做副歌記憶點。
+
+以下是歌曲摘要：
+【把創作摘要、Suno 風格欄位、聲線方向貼在這裡】`
+        },
+        'suno-package': {
+          stage: '提示詞 03',
+          title: 'Suno 分欄整理',
+          note: '把企劃和歌詞整理成 Suno 實際欄位，讓歌詞、風格、排除條件不互相混在一起。',
+          target: 'ChatGPT',
+          input: '歌曲摘要、歌詞草稿',
+          output: '風格欄位 / 排除欄位 / 歌詞欄位 / 歌名',
+          text: `請把下面這份歌曲摘要與歌詞草稿，整理成 Suno 可直接貼上的格式。
+
+輸出格式固定如下：
+
+### 風格欄位（Styles）
+【可直接貼到 Suno 風格欄位的一段完整文字】
+
+### 排除欄位（Exclude）
+【可直接貼到 Suno 排除欄位的一行文字，使用逗號分隔】
+
+### 歌詞欄位（Lyrics）
+【保留段落標籤的最終版歌詞】
+
+### 歌名欄位（Title）
+【5 個可選歌名】
+
+### 備用風格版本
+【2 個備用風格版本：偏穩一版、偏大膽一版】
+
+整理原則：
+- 風格欄位要具體，不要只寫流行、悲傷、電影感。
+- 風格欄位要包含語言、曲風、聲線、樂器、段落推進、製作質感與最後情緒。
+- 排除欄位只寫具體不要的元素，例如陷阱節奏帽鈸、電子舞曲大爆點、金屬吉他、合唱團、過度修音。
+- 歌詞欄位要可唱、可記、可配音樂影像。
+- 如果歌曲摘要中有視覺描述，請把它翻成音樂語言，而不是直接複製畫面形容詞。
+- 不要把製作說明混進歌詞欄位，避免 Suno 把指令誤判成歌詞。
+
+以下是歌曲摘要：
+【貼上創作摘要】
+
+以下是歌詞草稿：
+【貼上歌詞草稿】`
+        },
+        'visual-bible': {
+          stage: '提示詞 04',
+          title: '音樂影像視覺規格表',
+          note: '在生成畫面前，先鎖定角色、服裝、場景、色彩與字幕安全區，降低角色漂移。',
+          target: 'ChatGPT',
+          input: '定版歌詞、歌曲情緒、主角設定',
+          output: '角色鎖定 / 場景清單 / 鏡頭規則',
+          text: `你現在是我的 AI 音樂影像美術指導與分鏡導演。
+
+我要根據一首已定版的歌曲，建立一份可以拿去做 Higgsfield 平台內 Seedance 2.0 逐鏡生成的視覺規格表。
+
+請根據我提供的歌詞與歌曲設定，輸出一份實作導向的視覺規格表，不要寫空泛形容詞。
+
+請輸出以下欄位：
+
+### 1. 一句話視覺概念
+用一句話說明這支音樂影像的視覺概念。
+
+### 2. 故事主線
+用 5 個情節段落說明故事如何從開頭推進到結尾。
+
+### 3. 主角鎖定
+寫出主角固定描述，包含：
+- 年齡感
+- 髮型
+- 臉部氣質
+- 服裝錨點
+- 不能改變的特徵
+
+### 4. 服裝鎖定
+寫出 1 套主服裝與 1 套備用服裝。
+每套都要包含材質、顏色、輪廓與不能亂變的元素。
+
+### 5. 場景清單
+給我 3 個可重複使用的場景。
+每個場景都要包含地點、時間、光線、可出現道具。
+
+### 6. 色彩鎖定
+列出 4-5 個色彩錨點，並說明哪些顏色不能出現。
+
+### 7. 鏡頭語言
+列出這支音樂影像常用的鏡頭規則：
+- 近景 / 中景 / 遠景比例
+- 鏡頭運動
+- 景深
+- 副歌要不要更強烈
+
+### 8. 字幕安全區
+請設定字幕安全區，例如畫面下方三分之一需要乾淨、不要把主體放太低。
+
+### 9. 避免事項
+列出 Seedance 2.0 生成時要避開的畫面問題，例如多餘角色、服裝變化、臉部漂移、文字亂碼、過度轉場。
+
+### 10. 可重複使用的鎖定語句
+最後整理成 5 段可以複製到每個 Seedance 2.0 提示詞後面的固定語句：
+- 角色鎖定
+- 服裝鎖定
+- 色彩鎖定
+- 鏡頭鎖定
+- 限制事項
+
+歌曲設定：
+【貼上歌曲摘要】
+
+歌詞：
+【貼上定版歌詞】`
+        },
+        'shot-table': {
+          stage: '提示詞 05',
+          title: '逐句分鏡表',
+          note: '把每句歌詞轉成 A/B/C 三種可生成鏡頭，並直接產出 Seedance 2.0 提示詞。',
+          target: 'ChatGPT',
+          input: '視覺規格表、歌詞、比例',
+          output: '分鏡表 / Seedance 2.0 提示詞',
+          text: `你現在是我的 AI 音樂影像分鏡導演。
+
+任務：
+請把我的歌詞轉成適合初學者執行的分鏡表，並且可以直接拿去 Higgsfield 平台內選用 Seedance 2.0 模型做圖生影片。
+
+目標：
+針對每一句歌詞，提出 3 個候選畫面：
+- A = 直覺敘事版
+- B = 大膽象徵版
+- C = 情緒表演版
+
+要求：
+- 整首歌要保留一條清楚故事主線。
+- 可以大膽思考構圖、象徵與重複意象，但每個方案都要真的能生成。
+- 這些提示詞是給短影片鏡頭使用，不是要一次生成完整電影。
+- 每個方案只能有一個主要鏡頭設定、一個主體動作、一組光線設計。
+- 除非故事刻意改變，否則主角身份、服裝錨點與色彩邏輯都要一致。
+- 盡量保留下方字幕安全區。
+- 避免只寫「漂亮、電影感、夢幻」這類空泛詞，除非後面補上看得見的細節。
+- 每個 Seedance 2.0 提示詞都要簡潔、具體、可執行。
+
+輸出格式：
+請回傳表格格式，欄位固定如下：
+| 歌詞 | 故事任務 | 視覺 A | Seedance 2.0 提示詞 A | 視覺 B | Seedance 2.0 提示詞 B | 視覺 C | Seedance 2.0 提示詞 C | 連續性備註 |
+
+每一組 Seedance 2.0 提示詞都要按照這個順序寫：
+- 時長、鏡頭數、畫面比例
+- 鏡頭距離
+- 主體
+- 動作
+- 環境
+- 光線與色彩
+- 風格與質感
+- 連續性鎖定
+- 必要限制
+
+全片視覺規則：
+【貼上角色鎖定】
+【貼上服裝鎖定】
+【貼上色彩鎖定】
+【貼上場景鎖定】
+【貼上故事主線】
+
+歌詞：
+【貼上歌詞】`
+        },
+        'prompt-repair': {
+          stage: '提示詞 06',
+          title: '壞掉提示詞修復',
+          note: '當畫面已經接近但有漂移、亂切、動作不清楚時，用這段讓 ChatGPT 重寫而不是整段重來。',
+          target: 'ChatGPT',
+          input: '失敗提示詞、問題截圖描述',
+          output: '修正版 / 保守版 / 大膽版',
+          text: `你現在要幫我修復一段效果不好的 Seedance 2.0 圖生影片提示詞。
+
+我的問題：
+【描述生成結果哪裡壞掉。例如：臉變了、服裝變了、畫面太亂、鏡頭一直亂切、字幕區太滿、動作不明顯】
+
+目前提示詞：
+【貼上原本的 Seedance 2.0 提示詞】
+
+參考與連續性規則：
+【貼上角色鎖定、服裝鎖定、色彩鎖定、鏡頭鎖定】
+
+重寫規則：
+- 保留同一個場景概念。
+- 讓鏡頭更清楚、更容易被模型理解。
+- 強化鏡頭距離、動作與光線。
+- 移除互相衝突的描述。
+- 保留角色連續性。
+- 只有在必要時加入限制條件。
+- 不要加入超過一個主要動作。
+- 如果原本提示詞太像詩句，請改寫成製作指令。
+
+請回傳：
+1. 問題診斷
+   - 說明目前提示詞可能失敗的原因。
+
+2. 修正版提示詞
+   - 乾淨、具體、可直接貼到 Higgsfield 並選用 Seedance 2.0。
+
+3. 保守版
+   - 更穩定、動作更少、變數更少。
+
+4. 大膽版
+   - 更有表現力，但仍然可控。
+
+5. 下一輪測試建議
+   - 明確告訴我下一次生成只該改哪一個變數，哪些變數要保持鎖定。`
+        }
+      };
+
+      const tabs = [...root.querySelectorAll('[data-prompt-id]')];
+      const editor = root.querySelector('[data-prompt-editor]');
+      const copyButton = root.querySelector('[data-copy-prompt]');
+      const resetButton = root.querySelector('[data-reset-prompt]');
+      const stage = root.querySelector('[data-prompt-stage]');
+      const title = root.querySelector('[data-prompt-title]');
+      const note = root.querySelector('[data-prompt-note]');
+      const target = root.querySelector('[data-prompt-target]');
+      const input = root.querySelector('[data-prompt-input]');
+      const output = root.querySelector('[data-prompt-output]');
+      const edited = {};
+      let activeId = 'song-brief';
+
+      function loadPrompt(id) {
+        const item = promptData[id] || promptData['song-brief'];
+        if (activeId && editor.value) edited[activeId] = editor.value;
+        activeId = id;
+        tabs.forEach((tab) => {
+          const active = tab.dataset.promptId === id;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        stage.textContent = item.stage;
+        title.textContent = item.title;
+        note.textContent = item.note;
+        target.textContent = item.target;
+        input.textContent = item.input;
+        output.textContent = item.output;
+        editor.value = edited[id] || item.text;
+        copyButton.textContent = '複製';
+      }
+
+      async function copyPrompt() {
+        const text = editor.value;
+        try {
+          await navigator.clipboard.writeText(text);
+          copyButton.textContent = '已複製';
+        } catch {
+          editor.focus();
+          editor.select();
+          const ok = document.execCommand('copy');
+          copyButton.textContent = ok ? '已複製' : '複製失敗';
+        }
+        window.setTimeout(() => {
+          copyButton.textContent = '複製';
+        }, 1400);
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => loadPrompt(tab.dataset.promptId));
+      });
+
+      editor.addEventListener('input', () => {
+        edited[activeId] = editor.value;
+      });
+
+      copyButton.addEventListener('click', copyPrompt);
+      resetButton.addEventListener('click', () => {
+        edited[activeId] = promptData[activeId].text;
+        editor.value = promptData[activeId].text;
+        editor.focus();
+      });
+
+      loadPrompt(activeId);
+    })();
+
+    (() => {
+      const root = document.querySelector('[data-task-checklist]');
+      if (!root) return;
+
+      const storageKey = `ai-mv-checklist:${window.location.pathname}`;
+      const groups = [...root.querySelectorAll('[data-check-group]')];
+      let saved = {};
+
+      try {
+        saved = JSON.parse(window.localStorage.getItem(storageKey) || '{}');
+      } catch {
+        saved = {};
+      }
+
+      function save() {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(saved));
+        } catch {
+          // 檢查清單是本機使用狀態，儲存失敗時仍保留當頁互動。
+        }
+      }
+
+      function updateGroup(group) {
+        const boxes = [...group.querySelectorAll('[data-check-item]')];
+        const checked = boxes.filter((box) => box.checked).length;
+        const total = boxes.length;
+        const progress = group.querySelector('[data-check-progress]');
+
+        boxes.forEach((box) => {
+          box.closest('.check-task')?.classList.toggle('is-done', box.checked);
+        });
+
+        if (progress) progress.textContent = `（${checked}/${total}）`;
+        group.classList.toggle('is-complete', total > 0 && checked === total);
+      }
+
+      groups.forEach((group) => {
+        const boxes = [...group.querySelectorAll('[data-check-item]')];
+
+        boxes.forEach((box) => {
+          const itemId = box.dataset.checkItem;
+          box.checked = saved[itemId] === true;
+          box.addEventListener('change', () => {
+            saved[itemId] = box.checked;
+            save();
+            updateGroup(group);
+          });
+        });
+
+        updateGroup(group);
+      });
+    })();
+  </script>
+  <script src="../assets/report-reader.js?v=20260527-guest-pin" defer></script>
+  <script src="../assets/report-actions.js" defer></script>
+</body>
+
+</html>

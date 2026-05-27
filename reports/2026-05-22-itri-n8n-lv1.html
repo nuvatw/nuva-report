@@ -29,7 +29,7 @@
     :root {
       --paper: #ffffff;
       --paper-edge: #eef2fb;
-      --desk: #dbe3f0;
+      --desk: #f8fbff;
       --ink: #15223f;
       --ink-s: #454f6b;
       --ink-faint: #8a93a8;
@@ -38,6 +38,10 @@
       --blue-tint: #eef3fd;
       --rule: rgba(21, 34, 63, .16);
       --rule-soft: rgba(21, 34, 63, .085);
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
     }
 
     * {
@@ -51,7 +55,11 @@
     }
 
     body {
-      background: var(--desk);
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
       font-family: 'Noto Sans TC', sans-serif;
       font-weight: 400;
       color: var(--ink);
@@ -1046,12 +1054,10 @@
       }
     }
   </style>
+  <script src="../assets/report-theme.js"></script>
 </head>
 
 <body>
-<script src="../assets/site-auth.js"></script>
-
-
   <!-- ============================ PAGE 1 — COVER ============================ -->
   <div class="page cover" id="cover">
     <div class="ctop">
@@ -1745,7 +1751,7 @@
 
     <div class="pgn">10</div>
   </div>
-  <script src="../assets/report-reader.js" defer></script>
+  <script src="../assets/report-reader.js?v=20260527-guest-pin" defer></script>
 
 
   <script src="../assets/report-actions.js" defer></script>

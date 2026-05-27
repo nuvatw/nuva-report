@@ -30,7 +30,6 @@ const requiredFiles = [
   'docs/week-4-handoff.md',
   'templates/report-template.html',
   'assets/favicon.svg',
-  'assets/site-auth.js',
   'assets/report-reader.js',
   'assets/report-actions.js'
 ];
