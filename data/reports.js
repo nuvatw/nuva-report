@@ -1,5 +1,5 @@
 window.REPORT_TIMELINE = {
-  "generatedAt": "2026-05-27T06:55:16.554Z",
+  "generatedAt": "2026-05-27T09:05:05.932Z",
   "count": 6,
   "reports": [
     {
@@ -28,7 +28,7 @@ window.REPORT_TIMELINE = {
       "visibility": "public",
       "guestPin": "",
       "pages": 13,
-      "updatedAt": "2026-05-27T05:45:49.446Z",
+      "updatedAt": "2026-05-27T07:54:32.413Z",
       "sizeKb": 79,
       "search": "初學者的 ai 音樂影像（ai mv）製作路線圖 從故事、歌曲、分鏡到成片的 ai 音樂影像製作手冊 課程成果 努法有限公司 ai 教育與內容製作 2026/05/27 2026 五月 ai 音樂影像 chatgpt suno higgsfield seedance 2.0 剪輯 生成式 ai reports/2026-05-27-ai-experience-sharing.html"
     },
@@ -57,7 +57,7 @@ window.REPORT_TIMELINE = {
       "visibility": "private",
       "guestPin": "",
       "pages": 9,
-      "updatedAt": "2026-05-27T05:45:49.448Z",
+      "updatedAt": "2026-05-27T07:54:32.414Z",
       "sizeKb": 40,
       "search": "統一超商商場事業部 ai 工作坊提案 從商場巡檢、餐飲櫃位管理到 ai 自動化思維 課程提案 統一超商股份有限公司 零售、商場與餐飲營運 2026/09/09 下午 2026 九月 ai agent 流程 自動化 商場營運 餐飲管理 食安巡檢 ai 自動化 reports/2026-05-27-uni-president-ai-workshop-proposal.html"
     },
@@ -87,7 +87,7 @@ window.REPORT_TIMELINE = {
       "visibility": "private",
       "guestPin": "1234",
       "pages": 8,
-      "updatedAt": "2026-05-27T06:55:16.520Z",
+      "updatedAt": "2026-05-27T07:54:32.413Z",
       "sizeKb": 38,
       "search": "數位時代 ai taiwan 兩小時課程提案 從工作流拆解、精準協作到一人公司產能放大 課程提案 數位時代 ai taiwan 媒體、科技論壇與職場學習 2026/06/24（三）10:00-12:00｜花博爭艷館 學習講堂 2026 六月 ai taiwan ai 協作 ai 自動化 工作流拆解 一人公司 專案式學習 ai agent reports/2026-05-27-business-next-ai-taiwan-proposal.html"
     },
@@ -95,7 +95,7 @@ window.REPORT_TIMELINE = {
       "id": "2026-05-27-mova-ai-three-month-proposal",
       "file": "reports/2026-05-27-mova-ai-three-month-proposal.html",
       "title": "MOVA AI 三個月陪跑課程提案",
-      "subtitle": "以 nuvaClub 建立品牌、客服、數據、趨勢與營運自動化的內部 AI 作品機制",
+      "subtitle": "8/1-10/31，以 nuvaClub、作品牆與 Line 陪跑建立 MOVA 內部 AI 工作資產",
       "date": "2026-05-27",
       "month": "2026.05",
       "period": "2026/08/01-2026/10/31",
@@ -116,10 +116,10 @@ window.REPORT_TIMELINE = {
       "pdf": "",
       "visibility": "private",
       "guestPin": "",
-      "pages": 11,
-      "updatedAt": "2026-05-27T05:55:59.739Z",
-      "sizeKb": 64,
-      "search": "mova ai 三個月陪跑課程提案 以 nuvaclub 建立品牌、客服、數據、趨勢與營運自動化的內部 ai 作品機制 課程提案 mova 設計商品、跨境電商與品牌零售 2026/08/01-2026/10/31 2026 八月至十月 nuvaclub ai 陪跑 品牌 ai 說明書 客服 ai 數據分析 趨勢分析 流程自動化 reports/2026-05-27-mova-ai-three-month-proposal.html"
+      "pages": 13,
+      "updatedAt": "2026-05-27T09:01:16.625Z",
+      "sizeKb": 80,
+      "search": "mova ai 三個月陪跑課程提案 8/1-10/31，以 nuvaclub、作品牆與 line 陪跑建立 mova 內部 ai 工作資產 課程提案 mova 設計商品、跨境電商與品牌零售 2026/08/01-2026/10/31 2026 八月至十月 nuvaclub ai 陪跑 品牌 ai 說明書 客服 ai 數據分析 趨勢分析 流程自動化 reports/2026-05-27-mova-ai-three-month-proposal.html"
     },
     {
       "id": "2026-05-22-itri-n8n-lv1",
@@ -144,7 +144,7 @@ window.REPORT_TIMELINE = {
       "visibility": "public",
       "guestPin": "",
       "pages": 11,
-      "updatedAt": "2026-05-27T05:45:49.445Z",
+      "updatedAt": "2026-05-27T07:54:32.412Z",
       "sizeKb": 50,
       "search": "n8n 初階課程與生成式 ai 自動化 課程結案成果報告 課程成果 工研院 企業與研究機構 2026/05/20-21 2026 五月 n8n 生成式 ai 自動化 課程 reports/2026-05-22-itri-n8n-lv1.html"
     },
@@ -171,7 +171,7 @@ window.REPORT_TIMELINE = {
       "visibility": "public",
       "guestPin": "",
       "pages": 19,
-      "updatedAt": "2026-05-27T05:45:49.444Z",
+      "updatedAt": "2026-05-27T07:54:32.412Z",
       "sizeKb": 75,
       "search": "新北站《回到答案之前》 2026 全國公益露營車校園巡迴成果報告 活動成果 新北市政府青年局 x nuva 政府與公共部門 2026/05/12 2026 五月 ai 素養 青年政策 校園巡迴 活動 reports/2026-05-12-nuva-new-taipei.html"
     }
