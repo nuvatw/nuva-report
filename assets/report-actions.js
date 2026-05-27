@@ -83,18 +83,37 @@
         color: var(--blue-deep, #12286a);
       }
 
-      @media screen and (max-width: 560px) {
+      @media screen and (max-width: 760px) {
         .${actionsClass} {
-          right: 12px;
-          bottom: 12px;
-          width: min(148px, calc(100vw - 24px));
+          right: 10px;
+          bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+          left: 10px;
+          width: auto;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
           align-items: stretch;
         }
 
         .report-action {
-          min-height: 44px;
-          padding: 13px 12px;
+          min-width: 0;
+          min-height: 52px;
+          padding: 13px 10px;
+          font-size: 12px;
+          letter-spacing: .04em;
+          box-shadow: 0 8px 24px rgba(29, 78, 216, .24);
+        }
+
+        .report-action svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      @media screen and (max-width: 360px) {
+        .report-action {
           font-size: 11px;
+          padding-inline: 8px;
         }
       }
 
