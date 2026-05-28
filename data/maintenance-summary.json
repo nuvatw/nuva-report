@@ -1,16 +1,17 @@
 {
-  "generatedAt": "2026-05-27T06:54:07.659Z",
-  "reportCount": 6,
+  "generatedAt": "2026-05-28T04:13:02.180Z",
+  "reportCount": 7,
   "clientGroups": {
     "政府與公共部門": 1,
     "企業與研究機構": 1,
     "AI 教育與內容製作": 1,
     "媒體、科技論壇與職場學習": 1,
     "設計商品、跨境電商與品牌零售": 1,
-    "零售、商場與餐飲營運": 1
+    "零售、商場與餐飲營運": 1,
+    "內部課程與技術導入": 1
   },
   "visibility": {
-    "public": 3,
+    "public": 4,
     "private": 3
   },
   "tags": [
@@ -28,8 +29,10 @@
     "剪輯",
     "商場營運",
     "專案式學習",
+    "部署",
     "數據分析",
     "課程",
+    "課程成果",
     "餐飲管理",
     "趨勢分析",
     "AI 自動化",
@@ -40,10 +43,16 @@
     "AI Agent",
     "AI Agent 流程",
     "AI TAIWAN",
+    "AWS",
+    "Caddy",
     "ChatGPT",
+    "Docker",
     "Higgsfield",
     "n8n",
     "nuvaClub",
+    "PaaS",
+    "PostgreSQL",
+    "Runbook",
     "Seedance 2.0",
     "Suno"
   ],
