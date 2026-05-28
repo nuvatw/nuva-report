@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-28T08:14:20.488Z",
-  "count": 7,
+  "generatedAt": "2026-05-28T08:44:36.348Z",
+  "count": 8,
   "reports": [
     {
       "id": "2026-05-28-n8n-deployment-complete-guide",
@@ -33,6 +33,34 @@
       "updatedAt": "2026-05-28T07:42:14.701Z",
       "sizeKb": 990,
       "search": "[課程成果]搬家：n8n 部署全攻略 20 週逐步閱讀、製作與驗收的 n8n 部署課程成果報告 課程成果 nuva 內部課程與技術導入 2026/05/27-2026/05/28 2026 五月 n8n 部署 docker postgresql caddy paas aws runbook 課程成果 reports/2026-05-28-n8n-deployment-complete-guide.html"
+    },
+    {
+      "id": "2026-05-28-uni-president-ai-options-comparison",
+      "file": "reports/2026-05-28-uni-president-ai-options-comparison.html",
+      "title": "統一超商商場事業部 AI 課程兩方案比較",
+      "subtitle": "預算內講座與品牌案例合作工作坊的決策摘要",
+      "date": "2026-05-28",
+      "month": "2026.05",
+      "period": "2026/09/09 下午",
+      "category": "課程提案",
+      "client": "統一超商股份有限公司",
+      "clientGroup": "零售、商場與餐飲營運",
+      "timeline": "2026 九月",
+      "tags": [
+        "AI 講座",
+        "AI 工作坊",
+        "品牌案例合作",
+        "商場營運",
+        "方案比較"
+      ],
+      "thumbnail": "",
+      "pdf": "",
+      "visibility": "private",
+      "guestPin": "",
+      "pages": 1,
+      "updatedAt": "2026-05-28T08:44:09.165Z",
+      "sizeKb": 33,
+      "search": "統一超商商場事業部 ai 課程兩方案比較 預算內講座與品牌案例合作工作坊的決策摘要 課程提案 統一超商股份有限公司 零售、商場與餐飲營運 2026/09/09 下午 2026 九月 ai 講座 ai 工作坊 品牌案例合作 商場營運 方案比較 reports/2026-05-28-uni-president-ai-options-comparison.html"
     },
     {
       "id": "2026-05-27-ai-experience-sharing",
