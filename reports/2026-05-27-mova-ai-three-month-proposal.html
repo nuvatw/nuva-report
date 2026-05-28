@@ -1383,6 +1383,11 @@
       color: var(--teal);
     }
 
+    .mova-cover {
+      display: flex;
+      flex-direction: column;
+    }
+
     .mova-cover-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.14fr) minmax(0, .86fr);
@@ -1507,6 +1512,52 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.55;
+    }
+
+    .mova-cover-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: 18mm;
+      border: 2px solid var(--ink);
+      background: rgba(255, 255, 255, .9);
+    }
+
+    .mova-cover-meta > div {
+      min-height: 28mm;
+      padding: 14px 16px;
+      border-right: 1px solid var(--ink);
+    }
+
+    .mova-cover-meta > div:last-child {
+      border-right: 0;
+    }
+
+    .mova-cover-meta span,
+    .mova-cover-meta small {
+      display: block;
+      font-family: "Space Mono", "Noto Sans TC", sans-serif;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .mova-cover-meta span {
+      color: var(--teal);
+    }
+
+    .mova-cover-meta strong {
+      display: block;
+      margin-top: 14px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .mova-cover-meta small {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 10px;
     }
 
     .mova-chip-row {
@@ -2235,28 +2286,31 @@
     .mova-cover .mova-cover-grid {
       grid-template-columns: minmax(0, 1fr);
       gap: 0;
-      max-width: 124mm;
-      margin-top: 19mm;
+      flex: 1;
+      align-content: center;
+      max-width: 126mm;
+      margin-top: 0;
+      padding: 8mm 0 6mm;
     }
 
     .mova-cover .mova-title {
-      max-width: 124mm;
-      font-size: 60px;
-      line-height: .96;
+      max-width: 118mm;
+      font-size: 49px;
+      line-height: 1.02;
     }
 
     .mova-cover .mova-statement {
-      max-width: 121mm;
-      margin-top: 24px;
-      padding: 22px 23px;
+      max-width: 112mm;
+      margin-top: 19px;
+      padding: 16px 18px;
       background:
         linear-gradient(135deg, #0b255d 0%, #1e4fd6 62%, #6ab2ff 100%);
-      box-shadow: 10px 10px 0 rgba(37, 99, 235, .11);
+      box-shadow: 8px 8px 0 rgba(37, 99, 235, .1);
     }
 
     .mova-cover .mova-statement strong {
-      font-size: 21px;
-      line-height: 1.5;
+      font-size: 17px;
+      line-height: 1.55;
     }
 
     .mova-toc-page .mova-toc-hero {
@@ -2378,42 +2432,6 @@
       font-size: 9px;
       font-weight: 800;
       line-height: 1.7;
-    }
-
-    .mova-cover-route {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 58mm;
-    }
-
-    .mova-cover-route div {
-      min-height: 72px;
-      border-left: 5px solid var(--teal);
-      background: linear-gradient(180deg, #fff, #eef5ff);
-      padding: 13px 14px 15px;
-    }
-
-    .mova-cover-route b {
-      display: block;
-      color: rgba(37, 99, 235, .2);
-      font-family: "Archivo", "Noto Sans TC", sans-serif;
-      font-size: 36px;
-      line-height: .9;
-    }
-
-    .mova-cover-route strong {
-      display: block;
-      margin-top: 7px;
-      font-size: 16px;
-      line-height: 1.35;
-    }
-
-    .mova-cover-route p {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 11.4px;
-      line-height: 1.55;
     }
 
     .mova-page-question {
@@ -2992,7 +3010,6 @@
         grid-template-columns: 1fr;
       }
 
-      .mova-cover-route,
       .mova-month-board,
       .mova-toc-row,
       .mova-toc-l,
@@ -3054,6 +3071,21 @@
         border-bottom: 0;
       }
 
+      .mova-cover-meta {
+        grid-template-columns: 1fr;
+        margin-bottom: 12mm;
+      }
+
+      .mova-cover-meta > div {
+        min-height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--ink);
+      }
+
+      .mova-cover-meta > div:last-child {
+        border-bottom: 0;
+      }
+
       .mova-score {
         grid-template-columns: 1fr;
         gap: 6px;
@@ -3094,18 +3126,21 @@
       </div>
     </div>
 
-    <div class="mova-cover-route" aria-label="三個月節奏">
+    <div class="mova-cover-meta" aria-label="提案基本資訊">
       <div>
-        <b>8 月</b>
-        <strong>做出第一個作品</strong>
+        <span>合作對象</span>
+        <strong>MOVA</strong>
+        <small>設計商品、跨境電商與品牌零售</small>
       </div>
       <div>
-        <b>9 月</b>
-        <strong>作品變成流程</strong>
+        <span>提案期間</span>
+        <strong>2026 / 08 / 01 - 10 / 31</strong>
+        <small>三個月 AI 陪跑與作品檢核</small>
       </div>
       <div>
-        <b>10 月</b>
-        <strong>大作品驗收</strong>
+        <span>交付焦點</span>
+        <strong>AI 工作資產</strong>
+        <small>品牌判斷、營運資料與流程共用</small>
       </div>
     </div>
     <div class="pgn">01</div>
