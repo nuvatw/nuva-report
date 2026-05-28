@@ -531,6 +531,112 @@
       line-height: 1.8;
     }
 
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .action-panel {
+      border: 2px solid var(--ink);
+      background: #fff;
+      padding: 18px 18px 14px;
+    }
+
+    .action-panel.alt {
+      border-color: var(--green-deep);
+      background: linear-gradient(180deg, #f2fbf7, #fff 44%);
+    }
+
+    .action-panel h3 {
+      font-size: 23px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .action-panel .summary {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14.2px;
+      font-weight: 700;
+      line-height: 1.65;
+    }
+
+    .check-flow {
+      display: grid;
+      gap: 0;
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .check-item {
+      display: grid;
+      grid-template-columns: 25px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+    }
+
+    .check-item input {
+      appearance: none;
+      position: relative;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      border: 2px solid var(--blue-deep);
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .action-panel.alt .check-item input {
+      border-color: var(--green-deep);
+    }
+
+    .check-item input::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 11px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg) scale(0);
+      transform-origin: center;
+    }
+
+    .check-item input:checked {
+      background: var(--blue-deep);
+    }
+
+    .action-panel.alt .check-item input:checked {
+      background: var(--green-deep);
+    }
+
+    .check-item input:checked::after {
+      transform: rotate(45deg) scale(1);
+    }
+
+    .check-item strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14.8px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .check-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
     .journey {
       display: grid;
       gap: 0;
@@ -810,6 +916,7 @@
       .cover-grid,
       .journey,
       .path-grid,
+      .action-grid,
       .decision {
         grid-template-columns: 1fr;
       }
@@ -1320,39 +1427,86 @@
 
   <section class="page">
     <div class="rh">
-      <span>09｜服務內容與合作條件</span>
-      <span>課前、課中、課後交付項目</span>
+      <span>09｜選定方案後續</span>
+      <span>可勾選執行清單</span>
     </div>
 
     <div class="sec">
       <div class="sec-num">09</div>
       <div>
-        <h2>服務內容與合作條件</h2>
+        <h2>選定方案後續清單</h2>
       </div>
     </div>
 
-    <div class="deliverables">
-      <article class="deliverable">
-        <h3>方案 A：90 分鐘純講座｜nuva 提供</h3>
-        <p>兩次線上對焦會議、90 分鐘 AI 主題講座、商場巡場 AI Agent 示範流程、現場匿名問答、現場問卷、會後問答行動白皮書、交通與本提案範圍內延伸費用。</p>
+    <p class="lead">確認採用方案後，依下列清單推進。方案 A 以講座準備與會後白皮書為主；方案 B 需先確認短影片合作條件，再進入完整工作坊準備。</p>
+
+    <div class="action-grid">
+      <article class="action-panel">
+        <h3>方案 A 後續｜90 分鐘純講座</h3>
+        <p class="summary">合作流程最單純，重點是完成課前對焦、示範流程設計與會後整理。</p>
+        <div class="check-flow">
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>確認採用方案 A</strong><span>確認 90 分鐘純講座、正式報價單與合約流程。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>完成兩次線上對焦會議</strong><span>確認參與者、主題方向、場地設備與現場限制。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>nuva 設計示範流程</strong><span>準備商場巡場 AI Agent 示範與匿名問答收集方式。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>執行 90 分鐘分享</strong><span>完成 AI 主題講座、現場匿名問答與現場問卷。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>交付會後問答行動白皮書</strong><span>整理現場問題、可嘗試作法與後續內部討論素材。</span></span>
+          </label>
+        </div>
       </article>
-      <article class="deliverable">
-        <h3>方案 B：180 分鐘工作坊｜nuva 提供</h3>
-        <p>兩次線上對焦會議、150 人份講義與紙本流程設計表、商場經理巡場 AI Agent 流程示範、180 分鐘工作坊執行、匿名問答、會後問答行動白皮書、交通與本提案範圍內延伸費用。</p>
-      </article>
-      <article class="deliverable">
-        <h3>方案 B：短影片合作｜統一提供</h3>
-        <p>授權 nuva 拍攝課程當天活動花絮，並安排 4 位參與者以自然、日常語氣各分享 2 至 3 句課前期待與課後心得。</p>
-      </article>
-      <article class="deliverable">
-        <h3>方案 B：素材露出｜雙方確認</h3>
-        <p>訪談畫面或字幕需可標示統一超商商場事業部與受訪者職稱抬頭。活動影像、訪談與品牌識別使用範圍，以雙方確認版本為準。</p>
+
+      <article class="action-panel alt">
+        <h3>方案 B 後續｜工作坊＋短影片合作</h3>
+        <p class="summary">保留完整三個小時課程，並先確認拍攝授權、受訪者與素材使用範圍。</p>
+        <div class="check-flow">
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>確認採用方案 B</strong><span>確認 180 分鐘工作坊與短影片合作條件。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>確認拍攝與素材授權</strong><span>確認活動花絮、訪談畫面、品牌識別與使用版本。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>安排 4 位參與者</strong><span>各分享 2 至 3 句課前期待與課後心得，語氣自然日常。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>確認抬頭露出方式</strong><span>訪談畫面或字幕可標示部門與職稱抬頭。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>完成課前對焦與教材準備</strong><span>nuva 準備 150 人份講義、流程設計表與示範流程。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>執行 180 分鐘工作坊</strong><span>完成完整課程、紙本實作、匿名問答與活動花絮拍攝。</span></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox">
+            <span><strong>交付會後白皮書與素材整理</strong><span>整理問答行動白皮書，短影片素材依雙方確認版本使用。</span></span>
+          </label>
+        </div>
       </article>
     </div>
 
     <div class="quote-box">
-      <strong>建議下一步：先確認採用純講座或工作坊＋短影片合作。</strong>
-      <p>若選擇方案 A，nuva 依講座範圍準備示範流程與會後白皮書。若選擇方案 B，雙方先確認拍攝授權、4 位參與者名單與素材使用範圍，再進行正式報價單與合約簽署。</p>
+      <strong>下一步：先確認採用 A 或 B。</strong>
+      <p>若選擇方案 A，直接進入講座對焦與示範設計。若選擇方案 B，先確認短影片拍攝授權、4 位參與者與素材使用範圍，再進行正式報價單與合約簽署。</p>
     </div>
     <div class="pgn">08</div>
   </section>
