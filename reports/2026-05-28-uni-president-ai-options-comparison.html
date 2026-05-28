@@ -430,6 +430,32 @@
       background: linear-gradient(180deg, #f2fbf7, #fff 52%);
     }
 
+    .path-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .path-card {
+      display: grid;
+      grid-template-columns: 50mm 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 19px 20px;
+    }
+
+    .path-card h3 {
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .path-card > div:first-child p {
+      margin-top: 10px;
+      color: var(--ink);
+      font-size: 14.6px;
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
     .path-card .money {
       margin-top: 12px;
       font-family: "Archivo", "Noto Sans TC", sans-serif;
@@ -449,53 +475,60 @@
 
     .price-strip {
       display: grid;
-      grid-template-columns: 38mm 1fr;
-      gap: 14px;
+      grid-template-columns: 22mm 1fr;
+      gap: 12px;
       align-items: center;
-      margin-top: 16px;
-      border: 2px solid var(--ink);
-      background: var(--blue-tint);
-      padding: 13px 16px;
+      margin-top: 14px;
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      padding: 9px 13px;
     }
 
     .price-strip strong {
-      font-family: "Archivo", "Noto Sans TC", sans-serif;
-      font-size: 28px;
-      font-weight: 900;
-      line-height: 1;
-      color: var(--ink);
+      font-family: "Space Mono", "Noto Sans TC", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--blue-deep);
     }
 
     .price-strip span {
       color: var(--muted);
-      font-size: 12.5px;
+      font-size: 13.5px;
       font-weight: 800;
-      line-height: 1.7;
+      line-height: 1.55;
     }
 
     .responsibility-list {
       display: grid;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 12px;
+      margin-top: 0;
     }
 
     .responsibility-list div {
       border-top: 1px solid var(--line);
-      padding-top: 10px;
+      padding-top: 12px;
     }
 
     .party-label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 7px;
       color: var(--blue-deep);
       font-family: "Space Mono", "Noto Sans TC", sans-serif;
-      font-size: 10px;
+      font-size: 14px;
       font-weight: 800;
       line-height: 1.45;
     }
 
     .path-card.alt .party-label {
       color: var(--green-deep);
+    }
+
+    .responsibility-list p {
+      color: var(--muted);
+      font-size: 14.7px;
+      font-weight: 600;
+      line-height: 1.8;
     }
 
     .journey {
@@ -712,7 +745,7 @@
 
     .quote-box strong {
       display: block;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 900;
       line-height: 1.6;
     }
@@ -720,7 +753,7 @@
     .quote-box p {
       margin-top: 8px;
       color: var(--muted);
-      font-size: 12.8px;
+      font-size: 13.6px;
       line-height: 1.85;
     }
 
@@ -798,7 +831,8 @@
       .agenda-row,
       .timeline-item,
       .table-row,
-      .price-strip {
+      .price-strip,
+      .path-card {
         grid-template-columns: 1fr;
         gap: 7px;
       }
@@ -1027,21 +1061,23 @@
       </div>
     </div>
 
-    <p class="lead">兩種方案的差異在課程深度與合作責任：方案 A 是 90 分鐘純講座；方案 B 是 180 分鐘工作坊，並搭配短影片合作。</p>
+    <p class="lead">方案 A 是單純 90 分鐘分享；方案 B 保留完整三個小時工作坊，但需要一起拍短影片。</p>
 
     <div class="price-strip" aria-label="合作費用">
-      <strong>NT$31,500</strong>
-      <span>含稅總價。以下比較聚焦課程深度、交付內容與雙方合作責任。</span>
+      <strong>費用</strong>
+      <span>NT$31,500（含稅）。以下比較聚焦課程深度、交付內容與雙方合作責任。</span>
     </div>
 
     <div class="path-grid">
       <article class="path-card">
-        <h3>方案 A｜90 分鐘純講座</h3>
-        <p>適合只需要一次 AI 主題分享、案例示範與現場問答，合作流程最單純。</p>
+        <div>
+          <h3>方案 A｜90 分鐘純講座</h3>
+          <p>合作單純，以 AI 主題分享、案例示範與現場問答為主。</p>
+        </div>
         <div class="responsibility-list">
           <div>
             <span class="party-label">nuva 提供</span>
-            <p>兩次線上對焦會議、90 分鐘講座、巡場 AI Agent 示範、現場匿名問答、會後問答行動白皮書。</p>
+            <p>兩次線上對焦會議、90 分鐘分享、巡場 AI Agent 示範、現場匿名問答、會後問答行動白皮書。</p>
           </div>
           <div>
             <span class="party-label">統一配合</span>
@@ -1050,16 +1086,18 @@
         </div>
       </article>
       <article class="path-card alt">
-        <h3>方案 B｜180 分鐘工作坊＋短影片合作</h3>
-        <p>適合希望保留完整課程設計、紙本實作與更完整現場成果，並可配合短影片案例素材。</p>
+        <div>
+          <h3>方案 B｜180 分鐘工作坊＋短影片合作</h3>
+          <p>保留完整三個小時、紙本實作與現場成果，並一起完成短影片素材。</p>
+        </div>
         <div class="responsibility-list">
           <div>
             <span class="party-label">nuva 提供</span>
-            <p>兩次線上對焦會議、180 分鐘工作坊、150 人份講義與流程設計表、巡場 AI Agent 示範、會後問答行動白皮書。</p>
+            <p>兩次線上對焦會議、完整三個小時工作坊、150 人份講義與流程設計表、巡場 AI Agent 示範、會後問答行動白皮書。</p>
           </div>
           <div>
             <span class="party-label">統一提供</span>
-            <p>活動花絮拍攝授權、4 位參與者課前期待與課後心得短句、可露出統一超商商場事業部與職稱抬頭。</p>
+            <p>授權 nuva 拍攝當天活動花絮；安排 4 位參與者各用 2 至 3 句話分享課前期待與課後心得，並可露出部門與職稱抬頭。</p>
           </div>
         </div>
       </article>
@@ -1067,7 +1105,7 @@
 
     <div class="quote-box">
       <strong>決策重點</strong>
-      <p>只需要快速分享與問答，選方案 A。希望保留完整實作、教材與現場成果，且可配合活動花絮與 4 位參與者短句分享，選方案 B。</p>
+      <p>如果希望單純合作，90 分鐘分享就夠了，可以選方案 A。若希望保留完整三個小時，就需要一起拍短影片；這個條件沒有問題，可以選方案 B。</p>
     </div>
     <div class="pgn">04</div>
   </section>
