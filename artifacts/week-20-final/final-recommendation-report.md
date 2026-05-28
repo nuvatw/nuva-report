@@ -10,7 +10,7 @@ Adopt the Week 19 `VPS Docker Compose + PostgreSQL + Caddy` deployment package a
 | --- | --- |
 | Primary self-hosted baseline | VPS Docker Compose + PostgreSQL + Caddy |
 | Beginner or no ops owner | n8n Cloud |
-| Freelancer | VPS baseline or small PaaS with managed PostgreSQL |
+| Freelancer | VPS baseline or small PaaS with managed/external PostgreSQL |
 | Agency | Standardized isolated client blueprint |
 | Production team | AWS/GCP or n8n Enterprise after operational gates are met |
 
@@ -55,7 +55,7 @@ Do not start with Kubernetes. First measure p95 execution latency, active execut
 | Scenario | Decision |
 | --- | --- |
 | Individual learning | n8n Cloud or Local Docker Desktop |
-| First paid automation | VPS package or PaaS with managed PostgreSQL |
+| First paid automation | VPS package or PaaS with managed/external PostgreSQL |
 | Repeatable agency delivery | Standardize Week 19 package per client |
 | Low-ops client | n8n Cloud Business or Enterprise |
 | Heavy production workload | PostgreSQL + Redis queue mode + workers after scaling gate |

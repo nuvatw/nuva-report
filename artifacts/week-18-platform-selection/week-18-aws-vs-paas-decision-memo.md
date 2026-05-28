@@ -9,7 +9,7 @@ Use simpler cloud options by default. Choose AWS or GCP only when the workload, 
 | Situation | Default |
 | --- | --- |
 | Learning and early automation | n8n Cloud or Local Docker Desktop |
-| First paid client | VPS Docker Compose + PostgreSQL, or PaaS + managed PostgreSQL |
+| First paid client | VPS Docker Compose + PostgreSQL, or PaaS + managed/external PostgreSQL |
 | Repeatable agency delivery | Standardized isolated client blueprint |
 | Production platform team | AWS/GCP with managed PostgreSQL, Redis queue, centralized logs, IaC, budgets, and on-call |
 
@@ -19,7 +19,7 @@ Use simpler cloud options by default. Choose AWS or GCP only when the workload, 
 | --- | --- |
 | Faster deployment | Reduces setup time for freelancer and agency delivery. |
 | Managed public endpoint | Simplifies TLS, domain, and routing compared with raw VM networking. |
-| Managed database options | Reduces the chance that SQLite or unmanaged Postgres becomes the hidden production risk. |
+| Managed or external database options | Reduces the chance that SQLite or unmanaged Postgres becomes the hidden production risk; Railway template databases still require operator-owned backups, DR, security, and monitoring unless Enterprise or an external managed provider is used. |
 | Lower cognitive load | Fewer services to debug during Week 17-style incidents. |
 | Easier client explanation | Costs can be explained as app, database, storage, and usage rather than a large AWS bill of materials. |
 
@@ -64,7 +64,7 @@ Use simpler cloud options by default. Choose AWS or GCP only when the workload, 
 
 ## Final Recommendation
 
-Beginner should use n8n Cloud. Freelancer should use VPS Compose or a small PaaS with managed PostgreSQL. Agency should standardize isolated client blueprints or use n8n Cloud Business/Enterprise. Production team should choose AWS/GCP only when they have the operational maturity to own managed state, queue mode, logs, budgets, and incident response.
+Beginner should use n8n Cloud. Freelancer should use VPS Compose or a small PaaS with managed/external PostgreSQL; Railway template databases need explicit backup, DR, security, and monitoring ownership. Agency should standardize isolated client blueprints or use n8n Cloud Business/Enterprise. Production team should choose AWS/GCP only when they have the operational maturity to own managed state, queue mode, logs, budgets, and incident response.
 
 ## Source Links
 
@@ -80,7 +80,8 @@ Beginner should use n8n Cloud. Freelancer should use VPS Compose or a small PaaS
 | n8n monitoring | https://docs.n8n.io/hosting/logging-monitoring/monitoring/ |
 | Render pricing | https://render.com/pricing |
 | Render free usage | https://render.com/free |
-| Railway pricing | https://railway.com/pricing |
+| Railway pricing | https://docs.railway.com/pricing |
+| Railway databases | https://docs.railway.com/databases |
 | Fly.io pricing | https://fly.io/pricing/ |
 | Google Cloud Run pricing | https://cloud.google.com/run/pricing |
 | AWS Fargate pricing | https://aws.amazon.com/fargate/pricing/ |

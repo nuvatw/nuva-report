@@ -112,6 +112,6 @@ Use `troubleshooting-playbook.md` and follow this fixed order:
 | Trigger | Next platform move |
 | --- | --- |
 | Beginner needs low operations | Use n8n Cloud. |
-| Freelancer needs faster deploy and less VM maintenance | Use Railway, Render, or Fly with managed PostgreSQL and budgets. |
+| Freelancer needs faster deploy and less VM maintenance | Use Railway, Render, or Fly with managed/external PostgreSQL and budgets; Railway template databases require explicit backup, DR, security, and monitoring ownership. |
 | Agency needs repeatability | Turn this package into a client blueprint with separate instance, DB, key, backup, and incident notes per client. |
 | Production team needs VPC, IAM, audit, queue workers, and RPO/RTO | Move toward AWS/GCP or n8n Cloud Enterprise with managed state and centralized logs. |

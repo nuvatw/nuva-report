@@ -2,6 +2,7 @@
   const styleId = 'nuva-report-reader-style';
   const tocId = 'nuva-report-reader';
   const searchId = 'nuva-report-search';
+  const progressId = 'nuva-report-progress';
 
   const icons = {
     search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
@@ -288,6 +289,39 @@
         overflow: visible;
         color: var(--reader-ink);
         font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .reader-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1400;
+        height: 4px;
+        background: color-mix(in srgb, var(--reader-blue) 8%, transparent);
+        pointer-events: none;
+      }
+
+      .reader-progress-bar {
+        width: 100%;
+        height: 100%;
+        transform: scaleX(0);
+        transform-origin: left center;
+        background: linear-gradient(90deg, var(--reader-blue), var(--reader-ink));
+        animation: readerProgress linear both;
+        animation-timeline: scroll(root block);
+      }
+
+      @supports not (animation-timeline: scroll(root block)) {
+        .reader-progress-bar {
+          transform: scaleX(1);
+          opacity: .28;
+        }
+      }
+
+      @keyframes readerProgress {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
       }
 
       .reader-panel {
@@ -1087,7 +1121,8 @@
 
       @media print {
         .report-reader,
-        .reader-search-popover {
+        .reader-search-popover,
+        .reader-progress {
           display: none !important;
         }
       }
@@ -1245,6 +1280,16 @@
     });
 
     document.body.appendChild(nav);
+  }
+
+  function createProgress() {
+    if (document.getElementById(progressId)) return;
+    const progress = document.createElement('div');
+    progress.id = progressId;
+    progress.className = 'reader-progress';
+    progress.setAttribute('aria-hidden', 'true');
+    progress.innerHTML = '<div class="reader-progress-bar"></div>';
+    document.body.appendChild(progress);
   }
 
   function createSearch() {
@@ -1431,6 +1476,7 @@
 
     items = collectItems();
     if (!items.length) return;
+    createProgress();
     createSidebar();
     createSearch();
     observeActiveSection();

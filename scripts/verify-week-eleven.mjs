@@ -8,6 +8,7 @@ const paasDir = 'artifacts/week-11-paas';
 const matrixFile = `${paasDir}/week-11-paas-platform-matrix.json`;
 const riskCardFile = `${paasDir}/week-11-persistent-storage-risk-card.json`;
 const recommendationsFile = `${paasDir}/week-11-platform-selection-recommendations.csv`;
+const feedbackFile = `${paasDir}/week-11-feedback-report.md`;
 
 const requiredFiles = [
   '20 周的執行計劃.md',
@@ -15,6 +16,7 @@ const requiredFiles = [
   matrixFile,
   riskCardFile,
   recommendationsFile,
+  feedbackFile,
   'scripts/verify-week-ten.mjs',
   'scripts/verify-week-eleven.mjs',
   'package.json'
@@ -129,7 +131,7 @@ async function verifyDocument() {
     'https://zeabur.com/docs/en-US/networking/public',
     'https://zeabur.com/docs/en-US/deploy/special-variables',
     'https://zeabur.com/docs/template',
-    'https://zeabur.com/docs/en-US/billing/pricing',
+    'https://zeabur.com/en-US/pricing',
     'https://fly.io/docs/volumes/overview/',
     'https://fly.io/docs/mpg',
     'https://fly.io/docs/postgres/getting-started/what-you-should-know/',
@@ -286,6 +288,22 @@ async function verifyRecommendations() {
   assert(csv.includes('WEBHOOK_URL'), 'Recommendations CSV must include WEBHOOK_URL acceptance tests');
 }
 
+async function verifyFeedbackReport() {
+  const feedback = await readText(feedbackFile);
+  const requiredText = [
+    'Week 11 回饋報告',
+    'Zeabur pricing source drift',
+    'https://zeabur.com/docs/en-US/billing/pricing',
+    'https://zeabur.com/en-US/pricing',
+    'subscription tier + resource usage fee',
+    '修正範圍'
+  ];
+
+  for (const text of requiredText) {
+    assert(feedback.includes(text), `Week eleven feedback report missing text: ${text}`);
+  }
+}
+
 async function verifyPackageScripts() {
   const pkg = await readJson('package.json');
   assert(pkg.scripts['verify:week10'] === 'node scripts/verify-week-ten.mjs', 'package.json missing verify:week10 script');
@@ -325,6 +343,7 @@ async function main() {
   await verifyMatrixArtifact();
   await verifyRiskCards();
   await verifyRecommendations();
+  await verifyFeedbackReport();
   await verifyPackageScripts();
   verifyLiveLocalStackStillClean();
 

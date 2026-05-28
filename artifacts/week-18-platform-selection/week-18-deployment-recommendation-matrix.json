@@ -13,7 +13,8 @@
     "n8nMonitoring": "https://docs.n8n.io/hosting/logging-monitoring/monitoring/",
     "renderPricing": "https://render.com/pricing",
     "renderFree": "https://render.com/free",
-    "railwayPricing": "https://railway.com/pricing",
+    "railwayPricing": "https://docs.railway.com/pricing",
+    "railwayDatabases": "https://docs.railway.com/databases",
     "flyPricing": "https://fly.io/pricing/",
     "cloudRunPricing": "https://cloud.google.com/run/pricing",
     "awsFargatePricing": "https://aws.amazon.com/fargate/pricing/",
@@ -48,7 +49,7 @@
     {
       "userType": "freelancer",
       "primaryRecommendation": "Single VPS with Docker Compose, PostgreSQL, Caddy, backup, and patch cadence",
-      "alternative": "Railway, Render, or Fly with managed PostgreSQL; n8n Cloud when the client pays for low operations",
+      "alternative": "Railway, Render, or Fly with managed or external PostgreSQL; Railway template databases require operator-owned backups, disaster recovery, security, and monitoring; n8n Cloud when the client pays for low operations",
       "avoid": [
         "free tier production",
         "usage-priced platform without monthly budget alerts",
@@ -73,7 +74,7 @@
     },
     {
       "userType": "agency",
-      "primaryRecommendation": "Standardized client blueprint using isolated Compose or PaaS instances, managed PostgreSQL, backup, patch cadence, and incident notes",
+      "primaryRecommendation": "Standardized client blueprint using isolated Compose or PaaS instances, managed or external PostgreSQL, backup, patch cadence, and incident notes",
       "alternative": "n8n Cloud Business or Enterprise for low-operations client delivery",
       "avoid": [
         "multiple clients on one unisolated instance",

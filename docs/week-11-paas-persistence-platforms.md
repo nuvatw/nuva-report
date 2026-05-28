@@ -46,7 +46,7 @@ Week 10 的 VPS 架構把責任攤開：DNS、firewall、Caddy、PostgreSQL、vo
 | Zeabur public networking | https://zeabur.com/docs/en-US/networking/public | Zeabur 支援 `*.zeabur.app` domain 與 custom domain。 |
 | Zeabur env vars | https://zeabur.com/docs/en-US/deploy/special-variables | Zeabur 可在 service Variables tab 設定環境變數，並自動注入服務與資料庫相關變數。 |
 | Zeabur templates | https://zeabur.com/docs/template | Zeabur templates 可一鍵部署 n8n、Postgres 等服務，並預先定義 service、env vars 與連線關係。 |
-| Zeabur pricing | https://zeabur.com/docs/en-US/billing/pricing | Zeabur 使用 usage-based pricing，包含 memory、egress、persistent volume 等項目。 |
+| Zeabur pricing | https://zeabur.com/en-US/pricing | Zeabur 目前採 subscription tier 加 resource usage fee；resource usage 包含 memory、network egress、persistent volume 等項目，需以最新 pricing page 為準。 |
 | Fly.io volumes | https://fly.io/docs/volumes/overview/ | Fly Machine root filesystem 是 ephemeral；Fly Volumes 是 local persistent storage，volume 位於單一 server/region，且不自動複製。 |
 | Fly.io Managed Postgres | https://fly.io/docs/mpg | Fly.io Managed Postgres 是 fully-managed database service，包含 HA、automatic failover、backups、monitoring、support 等能力。 |
 | Fly Postgres unmanaged warning | https://fly.io/docs/postgres/getting-started/what-you-should-know/ | 傳統 Fly Postgres 不是 managed database；production 應優先使用 Managed Postgres 或外部 managed PostgreSQL。 |
@@ -58,7 +58,7 @@ Week 10 的 VPS 架構把責任攤開：DNS、firewall、Caddy、PostgreSQL、vo
 | 平台 | 持久化模型 | PostgreSQL 模型 | custom domain / TLS | env vars / secrets | usage pricing / always-on 成本 | n8n 適配判斷 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Railway | App service filesystem 不能當 durable state；需要 volume 掛到 n8n user folder，PostgreSQL service 另有 volume。Volume 有 service-scoped、single volume、no replicas 等限制。 | PostgreSQL template 快速建立 service 並提供 `DATABASE_URL`、`PGHOST`、`PGUSER` 等變數；官方文件也提醒 database templates 屬 unmanaged service，需要自己處理 backups、monitoring、maintenance。 | 支援 Railway domain、custom domain、自動 SSL。 | Service variables、shared variables、reference variables，可引用 Postgres service 的連線變數。 | subscription + usage；always-on n8n 會持續吃 compute、memory、volume、egress。 | 適合 prototype、solo builder、小型 production，但要明確加 volume、Postgres、backup policy、固定 `N8N_ENCRYPTION_KEY`。 |
-| Zeabur | 預設服務 restart 會回到預設 state；需要把持久化目錄掛到 Volumes。啟用 Volume 後 restart 不支援 zero-downtime。 | templates 與 Databases 流程可建立 PostgreSQL；n8n template 很快，但仍要確認 template 是 PostgreSQL 還是 SQLite/volume 路線。 | 支援 `*.zeabur.app`、custom domain 與 public networking；custom domain 需照 dashboard DNS 設定。 | Service Variables tab 設定，平台會注入 service host、port 與資料庫相關變數。 | usage-based，memory、egress、persistent volume 會累積費用；suspend 可停 compute，但 volume 仍需檢查保留與費用。 | 最 beginner-friendly 的 PaaS 候選之一，尤其適合 template deployment；風險在於把「模板成功啟動」誤當成「state model 已驗證」。 |
+| Zeabur | 預設服務 restart 會回到預設 state；需要把持久化目錄掛到 Volumes。啟用 Volume 後 restart 不支援 zero-downtime。 | templates 與 Databases 流程可建立 PostgreSQL；n8n template 很快，但仍要確認 template 是 PostgreSQL 還是 SQLite/volume 路線。 | 支援 `*.zeabur.app`、custom domain 與 public networking；custom domain 需照 dashboard DNS 設定。 | Service Variables tab 設定，平台會注入 service host、port 與資料庫相關變數。 | subscription tier + resource usage fee；memory、network egress、persistent volume 會累積費用；suspend 可停 compute，但 volume 仍需檢查保留與費用。 | 最 beginner-friendly 的 PaaS 候選之一，尤其適合 template deployment；風險在於把「模板成功啟動」誤當成「state model 已驗證」。 |
 | Render | 預設 filesystem 是 ephemeral。可選 Render Postgres 儲存 workflow data，或 paid persistent disk 儲存 SQLite/n8n local files；disk 只保存 mount path。 | Render 官方 n8n guide 推薦 Render Postgres；free Postgres 會過期，production 需 paid DB。 | 支援 custom domain、自動 TLS、HTTP redirect HTTPS。 | Environment variables、secrets、environment groups；Blueprint 可一起定義 service 與 DB。 | free web service idle 會 spin down，free Postgres 30 天過期；paid always-on 才適合 production。 | 最適合用「Render Postgres + n8n web service」當 low-maintenance PaaS 路線；不要用 free DB 做長期 state。 |
 | Fly.io | Machine root filesystem 是 ephemeral。Fly Volumes 是 local persistent storage，單一 volume 綁單一 Machine/server/region，不自動複製。 | 可用 Fly.io Managed Postgres；傳統 Fly Postgres 是 unmanaged，不適合沒有 DB ops 能力的 production。 | 支援 `.fly.dev` 與 custom domain，透過 Fly Proxy 管理 TLS。 | `fly secrets` 注入 runtime env；`fly.toml` 管理 app config。 | 按 Machines、volumes、egress、Managed Postgres 計費；長期 always-on 和 Managed Postgres 會比簡單 VPS 更需要成本估算。 | 適合有工程能力、需要 global edge / Machines 控制的人；對 beginner 不是最低風險路線。 |
 
@@ -99,7 +99,7 @@ quadrantChart
 | Redeploy persistence | container image 更新常會建立新 instance；沒有 persistent DB/volume 時，啟動成功只是新空白實例成功。 |
 | Backup / restore | volume 存在不等於有可用備份；DB snapshot 也要演練 restore。 |
 | Public URL stability | webhook、OAuth callback、AI tool callback 都依賴 stable HTTPS domain。 |
-| 成本上限 | usage-based 平台容易因 always-on、memory、volume、egress、DB plan 而超過預期。 |
+| 成本上限 | subscription + usage 或 usage-based 平台容易因 always-on、memory、volume、egress、DB plan 而超過預期。 |
 
 ## 4. 交付物二：persistent storage risk card
 

@@ -19,7 +19,7 @@
     "zeaburPublicNetworking": "https://zeabur.com/docs/en-US/networking/public",
     "zeaburEnvVars": "https://zeabur.com/docs/en-US/deploy/special-variables",
     "zeaburTemplates": "https://zeabur.com/docs/template",
-    "zeaburPricing": "https://zeabur.com/docs/en-US/billing/pricing",
+    "zeaburPricing": "https://zeabur.com/en-US/pricing",
     "flyVolumes": "https://fly.io/docs/volumes/overview/",
     "flyManagedPostgres": "https://fly.io/docs/mpg",
     "flyUnmanagedPostgresWarning": "https://fly.io/docs/postgres/getting-started/what-you-should-know/",
@@ -78,7 +78,7 @@
       },
       "customDomainTls": "Supports generated zeabur.app domains and custom domains through public networking and dashboard DNS instructions.",
       "envVars": "Set variables in the service Variables tab; Zeabur injects service host, port, database credentials, and referenced variables.",
-      "pricingAlwaysOn": "Usage-based memory, egress, and persistent volume pricing. Suspended services stop compute billing but retained state still needs review.",
+      "pricingAlwaysOn": "Subscription tier plus resource usage fee. Memory, network egress, and persistent volume usage can accumulate cost. Suspended services stop compute billing but retained state still needs review.",
       "stateSurvivalRisk": "Medium because templates start quickly but state model must be explicitly verified.",
       "n8nRecommendation": "Best fast-start PaaS candidate for non-ops users when the template is inspected and PostgreSQL, Volume, secrets, and webhook URL are verified."
     },

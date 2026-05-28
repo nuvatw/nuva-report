@@ -1,5 +1,5 @@
 window.REPORT_TIMELINE = {
-  "generatedAt": "2026-05-28T04:43:45.884Z",
+  "generatedAt": "2026-05-28T08:14:20.488Z",
   "count": 7,
   "reports": [
     {
@@ -11,7 +11,7 @@ window.REPORT_TIMELINE = {
       "month": "2026.05",
       "period": "2026/05/27-2026/05/28",
       "category": "課程成果",
-      "client": "NUVA",
+      "client": "nuva",
       "clientGroup": "內部課程與技術導入",
       "timeline": "2026 五月",
       "tags": [
@@ -30,8 +30,8 @@ window.REPORT_TIMELINE = {
       "visibility": "public",
       "guestPin": "",
       "pages": 492,
-      "updatedAt": "2026-05-28T04:12:18.062Z",
-      "sizeKb": 982,
+      "updatedAt": "2026-05-28T07:42:14.701Z",
+      "sizeKb": 990,
       "search": "[課程成果]搬家：n8n 部署全攻略 20 週逐步閱讀、製作與驗收的 n8n 部署課程成果報告 課程成果 nuva 內部課程與技術導入 2026/05/27-2026/05/28 2026 五月 n8n 部署 docker postgresql caddy paas aws runbook 課程成果 reports/2026-05-28-n8n-deployment-complete-guide.html"
     },
     {

@@ -8,6 +8,7 @@ const platformDir = 'artifacts/week-18-platform-selection';
 const recommendationMatrixFile = `${platformDir}/week-18-deployment-recommendation-matrix.json`;
 const costRiskWorksheetFile = `${platformDir}/week-18-cost-risk-worksheet.csv`;
 const awsVsPaaSMemoFile = `${platformDir}/week-18-aws-vs-paas-decision-memo.md`;
+const feedbackReportFile = `${platformDir}/week-18-feedback-report.md`;
 
 const requiredFiles = [
   '20 周的執行計劃.md',
@@ -15,6 +16,7 @@ const requiredFiles = [
   recommendationMatrixFile,
   costRiskWorksheetFile,
   awsVsPaaSMemoFile,
+  feedbackReportFile,
   'scripts/verify-week-seventeen.mjs',
   'scripts/verify-week-eighteen.mjs',
   'package.json'
@@ -130,6 +132,8 @@ async function verifyDocument() {
     'Railway/Render/Fly',
     'AWS/GCP production architecture',
     'managed PostgreSQL',
+    'managed/external PostgreSQL',
+    'unmanaged services',
     'Redis queue',
     'centralized logs',
     'RPO/RTO',
@@ -148,7 +152,8 @@ async function verifyDocument() {
     'https://docs.n8n.io/hosting/logging-monitoring/monitoring/',
     'https://render.com/pricing',
     'https://render.com/free',
-    'https://railway.com/pricing',
+    'https://docs.railway.com/pricing',
+    'https://docs.railway.com/databases',
     'https://fly.io/pricing/',
     'https://cloud.google.com/run/pricing',
     'https://aws.amazon.com/fargate/pricing/',
@@ -200,7 +205,8 @@ async function verifyRecommendationMatrix() {
     'https://docs.n8n.io/hosting/logging-monitoring/monitoring/',
     'https://render.com/pricing',
     'https://render.com/free',
-    'https://railway.com/pricing',
+    'https://docs.railway.com/pricing',
+    'https://docs.railway.com/databases',
     'https://fly.io/pricing/',
     'https://cloud.google.com/run/pricing',
     'https://aws.amazon.com/fargate/pricing/',
@@ -234,6 +240,8 @@ async function verifyRecommendationMatrix() {
   const freelancer = matrix.recommendations.find((item) => item.userType === 'freelancer');
   assert(freelancer.primaryRecommendation.includes('VPS') && freelancer.primaryRecommendation.includes('Docker Compose'), 'freelancer primary should include VPS Docker Compose');
   assert(freelancer.alternative.includes('Railway') && freelancer.alternative.includes('Render') && freelancer.alternative.includes('Fly'), 'freelancer alternative should include Railway/Render/Fly');
+  assert(freelancer.alternative.includes('managed or external PostgreSQL'), 'freelancer alternative should clarify managed or external PostgreSQL');
+  assert(freelancer.alternative.includes('Railway template databases require operator-owned backups'), 'freelancer alternative should clarify Railway database template responsibility');
   assert(freelancer.avoid.join(' ').includes('AWS ECS/RDS'), 'freelancer avoid list should mention AWS ECS/RDS');
 
   const agency = matrix.recommendations.find((item) => item.userType === 'agency');
@@ -345,10 +353,30 @@ async function verifyAwsVsPaaSMemo() {
     'Autoscaling bill shock',
     'Beginner should use n8n Cloud',
     'Freelancer should use VPS Compose or a small PaaS',
+    'managed/external PostgreSQL',
+    'Railway template databases need explicit backup',
     'Agency should standardize isolated client blueprints',
     'Production team should choose AWS/GCP'
   ]) {
     assert(memo.includes(text), `AWS vs PaaS memo missing text: ${text}`);
+  }
+}
+
+async function verifyFeedbackReport() {
+  const feedback = await readText(feedbackReportFile);
+  assertNoBannedPatterns('Week eighteen feedback report', feedback);
+
+  for (const text of [
+    'Railway managed database wording',
+    'Railway-provided database templates are unmanaged services',
+    'base subscription fee + resource usage',
+    'managed/external PostgreSQL',
+    'https://docs.railway.com/pricing',
+    'https://docs.railway.com/databases',
+    'Week 18 artifacts',
+    'Week 19/20'
+  ]) {
+    assert(feedback.includes(text), `Week eighteen feedback report missing text: ${text}`);
   }
 }
 
@@ -391,6 +419,7 @@ async function main() {
   await verifyRecommendationMatrix();
   await verifyCostRiskWorksheet();
   await verifyAwsVsPaaSMemo();
+  await verifyFeedbackReport();
   await verifyPackageScripts();
   verifyLiveLocalStackStillClean();
 

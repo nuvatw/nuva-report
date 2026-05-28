@@ -12,7 +12,7 @@ const metadata = {
   date: "2026-05-28",
   period: "2026/05/27-2026/05/28",
   category: "課程成果",
-  client: "NUVA",
+  client: "nuva",
   clientGroup: "內部課程與技術導入",
   timeline: "2026 五月",
   tags: [
@@ -6938,7 +6938,7 @@ function renderWeekElevenChapter(week, startIndex) {
       ["Zeabur public networking", "<a href=\"https://zeabur.com/docs/en-US/networking/public\">Zeabur public networking</a>", "Zeabur 支援 <code>*.zeabur.app</code> domain 與 custom domain。"],
       ["Zeabur env vars", "<a href=\"https://zeabur.com/docs/en-US/deploy/special-variables\">Zeabur variables</a>", "Zeabur 可在 service Variables tab 設定環境變數，並自動注入服務與資料庫相關變數。"],
       ["Zeabur templates", "<a href=\"https://zeabur.com/docs/template\">Zeabur templates</a>", "Zeabur templates 可一鍵部署 n8n、Postgres 等服務，並預先定義 service、env vars 與連線關係。"],
-      ["Zeabur pricing", "<a href=\"https://zeabur.com/docs/en-US/billing/pricing\">Zeabur pricing</a>", "Zeabur 使用 usage-based pricing，包含 memory、egress、persistent volume 等項目。"]
+      ["Zeabur pricing", "<a href=\"https://zeabur.com/en-US/pricing\">Zeabur pricing</a>", "Zeabur 目前採 subscription tier 加 resource usage fee；resource usage 包含 memory、network egress、persistent volume 等項目，需以最新 pricing page 為準。"]
     ],
     "week11-source-table"
   );
@@ -7061,7 +7061,7 @@ function renderWeekElevenChapter(week, startIndex) {
             ["PostgreSQL 模型", "templates 與 Databases 流程可建立 PostgreSQL；n8n template 很快，但仍要確認 template 是 PostgreSQL 還是 SQLite/volume 路線。"],
             ["custom domain / TLS", "支援 <code>*.zeabur.app</code>、custom domain 與 public networking；custom domain 需照 dashboard DNS 設定。"],
             ["env vars / secrets", "Service Variables tab 設定，平台會注入 service host、port 與資料庫相關變數。"],
-            ["usage pricing / always-on 成本", "usage-based，memory、egress、persistent volume 會累積費用；suspend 可停 compute，但 volume 仍需檢查保留與費用。"],
+            ["usage pricing / always-on 成本", "subscription tier + resource usage fee；memory、network egress、persistent volume 會累積費用；suspend 可停 compute，但 volume 仍需檢查保留與費用。"],
             ["n8n 適配判斷", "最 beginner-friendly 的 PaaS 候選之一，尤其適合 template deployment；風險在於把「模板成功啟動」誤當成「state model 已驗證」。"]
           ])}
         </div>
@@ -7149,7 +7149,7 @@ function renderWeekElevenChapter(week, startIndex) {
       ["Redeploy persistence", "container image 更新常會建立新 instance；沒有 persistent DB/volume 時，啟動成功只是新空白實例成功。"],
       ["Backup / restore", "volume 存在不等於有可用備份；DB snapshot 也要演練 restore。"],
       ["Public URL stability", "webhook、OAuth callback、AI tool callback 都依賴 stable HTTPS domain。"],
-      ["成本上限", "usage-based 平台容易因 always-on、memory、volume、egress、DB plan 而超過預期。"]
+      ["成本上限", "subscription + usage 或 usage-based 平台容易因 always-on、memory、volume、egress、DB plan 而超過預期。"]
     ],
     "paas-ops-table"
   );
@@ -11946,7 +11946,8 @@ function renderWeekEighteenChapter(week, startIndex) {
     [
       ["Render pricing", "<a href=\"https://render.com/pricing\">Render pricing</a>", "Render 以服務、Postgres、disk、bandwidth 等項目組合成本；適合簡化部署，但仍需看 persistent disk 與 DB plan。"],
       ["Render free usage", "<a href=\"https://render.com/free\">Render free</a>", "free tier 有使用限制；不能把 free service 當 production webhook 承載，也不能放真客戶 credentials。"],
-      ["Railway pricing", "<a href=\"https://railway.com/pricing\">Railway pricing</a>", "Railway 採 usage-based credits，RAM、CPU、storage、egress 會直接影響月費；適合快速部署但要設 usage alerts。"],
+      ["Railway pricing", "<a href=\"https://docs.railway.com/pricing\">Railway pricing</a>", "Railway 採 base subscription fee + resource usage；RAM、CPU、storage、egress 會直接影響月費；適合快速部署但要設 usage alerts。"],
+      ["Railway databases", "<a href=\"https://docs.railway.com/databases\">Railway databases</a>", "Railway database templates 是 unmanaged services；production 要自行負責 backup、DR、security、monitoring/maintenance，或改用 Enterprise / external managed database provider。"],
       ["Fly.io pricing", "<a href=\"https://fly.io/pricing/\">Fly pricing</a>", "Fly 以 machines、volumes、bandwidth 等項目計價；多 region 或 volume 成長會改變成本。"],
       ["Google Cloud Run pricing", "<a href=\"https://cloud.google.com/run/pricing\">Cloud Run pricing</a>", "Cloud Run 依 CPU、memory、requests、networking 等項目計費；scale-to-zero 有價值，但長時間常駐與 egress 要估算。"]
     ],
@@ -11973,8 +11974,8 @@ function renderWeekEighteenChapter(week, startIndex) {
     ["User type", "首選", "替代方案", "避免事項"],
     [
       ["beginner", "n8n Cloud", "Local Docker Desktop for learning volume, credentials, and workflow export behavior", "<ul><li>public tunnel as production</li><li>self-hosted VPS with real client credentials before backup and security are understood</li><li>AWS, Kubernetes, or queue mode as the first deployment</li></ul>"],
-      ["freelancer", "Single VPS with Docker Compose, PostgreSQL, Caddy, backup, and patch cadence", "Railway, Render, or Fly with managed PostgreSQL；n8n Cloud when the client pays for low operations", "<ul><li>free tier production</li><li>usage-priced platform without monthly budget alerts</li><li>AWS ECS/RDS or Kubernetes for a small client workflow</li><li>single Docker container without PostgreSQL backup</li></ul>"],
-      ["agency", "Standardized client blueprint using isolated Compose or PaaS instances, managed PostgreSQL, backup, patch cadence, and incident notes", "n8n Cloud Business or Enterprise for low-operations client delivery", "<ul><li>multiple clients on one unisolated instance</li><li>shared credentials across clients</li><li>manual one-off deployments without a runbook</li><li>usage-priced platform without per-client budget ownership</li></ul>"],
+      ["freelancer", "Single VPS with Docker Compose, PostgreSQL, Caddy, backup, and patch cadence", "Railway, Render, or Fly with managed/external PostgreSQL；Railway template DB needs operator-owned backup、DR、security、monitoring；n8n Cloud when the client pays for low operations", "<ul><li>free tier production</li><li>usage-priced platform without monthly budget alerts</li><li>AWS ECS/RDS or Kubernetes for a small client workflow</li><li>single Docker container without PostgreSQL backup</li></ul>"],
+      ["agency", "Standardized client blueprint using isolated Compose or PaaS instances, managed/external PostgreSQL, backup, patch cadence, and incident notes", "n8n Cloud Business or Enterprise for low-operations client delivery", "<ul><li>multiple clients on one unisolated instance</li><li>shared credentials across clients</li><li>manual one-off deployments without a runbook</li><li>usage-priced platform without per-client budget ownership</li></ul>"],
       ["production team", "AWS or GCP production architecture with managed PostgreSQL, Redis queue, workers, centralized logs, IaC, budgets, and on-call", "n8n Cloud Enterprise or mature PaaS with managed database and Redis during transition", "<ul><li>single VM for high-SLO workloads</li><li>queue mode without centralized logs and DB capacity planning</li><li>autoscaling without maximum instance limits and budget alerts</li><li>production platform without RPO, RTO, and security review</li></ul>"]
     ],
     "week18-recommend-table"
@@ -12056,7 +12057,7 @@ function renderWeekEighteenChapter(week, startIndex) {
           <div class="week18-decision-flow">
             <div><span>1</span><strong>Who owns operations?</strong><p>沒有 ops owner 時先選 n8n Cloud。</p></div>
             <div><span>2</span><strong>Need fixed client cost?</strong><p>需要清楚報價時優先 VPS Compose。</p></div>
-            <div><span>3</span><strong>Need fast managed deploy?</strong><p>可選 Railway、Render、Fly 加 managed PostgreSQL。</p></div>
+            <div><span>3</span><strong>Need fast managed deploy?</strong><p>可選 Railway、Render、Fly 加 managed/external PostgreSQL；Railway template DB 要另管備份與監控。</p></div>
             <div><span>4</span><strong>Need VPC/IAM/compliance?</strong><p>需求跨過 maturity gate 後才進 AWS/GCP。</p></div>
             <div><span>5</span><strong>Can you operate queue?</strong><p>Redis workers、centralized logs、RPO/RTO 要有人負責。</p></div>
             <div><span>6</span><strong>Document the decision</strong><p>把成本、avoid list、90 天行動寫進 handoff。</p></div>
@@ -12256,7 +12257,7 @@ monthly_total =
     ["Situation", "Default"],
     [
       ["Learning and early automation", "n8n Cloud or Local Docker Desktop"],
-      ["First paid client", "VPS Docker Compose + PostgreSQL, or PaaS + managed PostgreSQL"],
+      ["First paid client", "VPS Docker Compose + PostgreSQL, or PaaS + managed/external PostgreSQL"],
       ["Repeatable agency delivery", "Standardized isolated client blueprint"],
       ["Production platform team", "AWS/GCP with managed PostgreSQL, Redis queue, centralized logs, IaC, budgets, and on-call"]
     ],
@@ -12381,7 +12382,7 @@ monthly_total =
     ["Maturity", "Platform"],
     [
       ["Learning", "n8n Cloud 或 Local Docker Desktop。"],
-      ["First paid automation", "VPS Compose + PostgreSQL 或 PaaS + managed PostgreSQL。"],
+      ["First paid automation", "VPS Compose + PostgreSQL 或 PaaS + managed/external PostgreSQL。"],
       ["Repeatable client delivery", "Standardized PaaS/VPS blueprint + backup + incident note + budget alerts。"],
       ["Production operations", "AWS/GCP + managed PostgreSQL + Redis queue + logs + IaC + budget + on-call。"]
     ],
@@ -12397,7 +12398,7 @@ monthly_total =
         <div>
           <h3>Recommendation by maturity</h3>
           ${maturityRows}
-          <p class="section-lead">Beginner should use n8n Cloud. Freelancer should use VPS Compose or a small PaaS with managed PostgreSQL. Agency should standardize isolated client blueprints or use n8n Cloud Business/Enterprise. Production team should choose AWS/GCP only when they have the operational maturity to own managed state, queue mode, logs, budgets, and incident response.</p>
+          <p class="section-lead">Beginner should use n8n Cloud. Freelancer should use VPS Compose or a small PaaS with managed/external PostgreSQL；Railway template databases need explicit backup, DR, security, and monitoring ownership. Agency should standardize isolated client blueprints or use n8n Cloud Business/Enterprise. Production team should choose AWS/GCP only when they have the operational maturity to own managed state, queue mode, logs, budgets, and incident response.</p>
         </div>
       </section>
     `
@@ -12407,7 +12408,7 @@ monthly_total =
     ["User type", "首選", "替代方案", "避免事項"],
     [
       ["beginner", "n8n Cloud，因為先避開 hosting、backup、public URL、secure cookie、database 維運。", "Local Docker Desktop 學習 volume、credentials、workflow 匯出。", "public tunnel 當 production、自架 VPS 放真客戶 credentials、跳 AWS/Kubernetes。"],
-      ["freelancer", "VPS Docker Compose + PostgreSQL + Caddy，成本固定、可控、容易向客戶說明。", "Railway/Render/Fly + managed PostgreSQL；或客戶願付時用 n8n Cloud。", "沒 backup 的單容器、free tier production、未設 budget 的 usage-priced 平台、AWS multi-service 起手。"],
+      ["freelancer", "VPS Docker Compose + PostgreSQL + Caddy，成本固定、可控、容易向客戶說明。", "Railway/Render/Fly + managed/external PostgreSQL；Railway template DB 需自己處理 backup、DR、security、monitoring；或客戶願付時用 n8n Cloud。", "沒 backup 的單容器、free tier production、未設 budget 的 usage-priced 平台、AWS multi-service 起手。"],
       ["agency", "標準化 blueprint：每客戶獨立 instance、獨立 DB、backup、patch cadence、incident note。", "n8n Cloud Business/Enterprise，或 PaaS + managed DB 作為低維運交付。", "多客戶共用未隔離 instance、同一組 credentials、手工散裝部署、沒有維護合約。"],
       ["production team", "AWS/GCP production stack：managed PostgreSQL、Redis queue、workers、centralized logs、IaC、budget alerts。", "n8n Cloud Enterprise；或成熟 PaaS + managed DB/Redis 作為過渡。", "單台 VPS 承擔高 SLO、沒有 RPO/RTO、未控 autoscaling、無 logs/alerts 的 queue mode。"]
     ],
@@ -13201,7 +13202,7 @@ curl -I "https://\${N8N_DOMAIN}/healthz/readiness"`;
     ["Trigger", "Next platform move"],
     [
       ["Beginner needs low operations", "Use n8n Cloud."],
-      ["Freelancer needs faster deploy and less VM maintenance", "Use Railway, Render, or Fly with managed PostgreSQL and budgets."],
+      ["Freelancer needs faster deploy and less VM maintenance", "Use Railway, Render, or Fly with managed/external PostgreSQL and budgets; Railway template databases require explicit backup, DR, security, and monitoring ownership."],
       ["Agency needs repeatability", "Turn this package into a client blueprint with separate instance, DB, key, backup, and incident notes per client."],
       ["Production team needs VPC, IAM, audit, queue workers, and RPO/RTO", "Move toward AWS/GCP or n8n Cloud Enterprise with managed state and centralized logs."]
     ],
@@ -13428,7 +13429,7 @@ function renderWeekTwentyChapter(week, startIndex) {
     [
       ["Primary self-hosted baseline", "VPS Docker Compose + PostgreSQL + Caddy"],
       ["Beginner or no ops owner", "n8n Cloud"],
-      ["Freelancer", "VPS baseline or small PaaS with managed PostgreSQL"],
+      ["Freelancer", "VPS baseline or small PaaS with managed/external PostgreSQL"],
       ["Agency", "Standardized isolated client blueprint"],
       ["Production team", "AWS/GCP or n8n Enterprise after operational gates are met"]
     ],
@@ -13498,7 +13499,7 @@ function renderWeekTwentyChapter(week, startIndex) {
     ["Scenario", "Decision"],
     [
       ["Individual learning", "n8n Cloud or Local Docker Desktop"],
-      ["First paid automation", "VPS package or PaaS with managed PostgreSQL"],
+      ["First paid automation", "VPS package or PaaS with managed/external PostgreSQL"],
       ["Repeatable agency delivery", "Standardize Week 19 package per client"],
       ["Low-ops client", "n8n Cloud Business or Enterprise"],
       ["Heavy production workload", "PostgreSQL + Redis queue mode + workers after scaling gate"],
@@ -13855,18 +13856,23 @@ const reportPages = [];
 
 reportPages.push(`
   <section class="page cover">
+    <div class="cover-brand">
+      <img src="../blue_logo_nuva.png" alt="nuva">
+      <span>course outcome report</span>
+    </div>
     <div class="cover-grid">
       <div>
-        <p class="kicker">NUVA Course Outcome Report</p>
+        <p class="kicker">nuva course outcome report</p>
         <h1><span>[課程成果]搬家：</span>n8n 部署全攻略</h1>
         <p class="lead">20 週逐步閱讀、製作、驗收與交接的 n8n 部署課程成果報告。每週都包含導讀、實作任務、驗收標準與完整原文講義。</p>
       </div>
       <aside class="cover-card">
+        <img src="../white-nuva-logo.png" alt="" class="cover-card-logo">
         <span>Report Date</span>
         <strong>2026-05-28</strong>
         <p>Period: 2026/05/27-2026/05/28</p>
         <p>Category: 課程成果</p>
-        <p>Client: NUVA</p>
+        <p>Client: nuva</p>
       </aside>
     </div>
     <div class="cover-strip">
@@ -18480,6 +18486,245 @@ ${JSON.stringify(metadata, null, 2)}
       font-weight: 700;
     }
 
+    /* nuva premium report layer */
+    :root {
+      --paper: #ffffff;
+      --desk: #f7faff;
+      --ink: #13213f;
+      --muted: #53627c;
+      --faint: #8390ad;
+      --line: rgba(32, 75, 145, .14);
+      --line-strong: rgba(16, 42, 95, .26);
+      --navy: #102a5f;
+      --blue: #2563eb;
+      --blue-dark: #123f95;
+      --blue-soft: #eaf2ff;
+      --sky: #dbeafe;
+      --shadow: rgba(26, 65, 130, .12);
+      --report-bg-base: #f7faff;
+      --report-bg-line: rgba(37, 99, 235, .032);
+      --report-bg-line-strong: rgba(16, 42, 95, .046);
+      --focus-ring: rgba(37, 99, 235, .32);
+    }
+
+    body {
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        linear-gradient(180deg, #ffffff 0%, var(--report-bg-base) 52%, #eef5ff 100%);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 3px;
+    }
+
+    .page {
+      border: 1px solid rgba(16, 42, 95, .08);
+      border-radius: 8px;
+      box-shadow: 0 24px 70px rgba(26, 65, 130, .12);
+    }
+
+    .page::before {
+      background:
+        linear-gradient(90deg, transparent 23mm, rgba(37, 99, 235, .11) 23mm, rgba(37, 99, 235, .11) calc(23mm + 1px), transparent calc(23mm + 1px));
+    }
+
+    .page::after {
+      background:
+        linear-gradient(140deg, rgba(239, 246, 255, .64), transparent 34%);
+      opacity: .72;
+    }
+
+    .cover {
+      min-height: 297mm;
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, .98), rgba(246, 250, 255, .94)),
+        var(--paper);
+    }
+
+    .cover-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 34px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .cover-brand img {
+      width: 118px;
+      height: auto;
+      display: block;
+    }
+
+    .cover-grid {
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 34px;
+      align-items: stretch;
+    }
+
+    .cover h1 {
+      max-width: 13ch;
+      color: var(--blue-dark);
+      font-family: "Noto Sans TC", "Archivo", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .cover h1 span {
+      color: var(--navy);
+    }
+
+    .cover-card {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-color: rgba(16, 42, 95, .14);
+      background:
+        linear-gradient(155deg, rgba(16, 42, 95, .97), rgba(37, 99, 235, .84)),
+        var(--navy);
+      color: #fff;
+      box-shadow: 0 18px 42px rgba(16, 42, 95, .18);
+    }
+
+    .cover-card-logo {
+      width: 140px;
+      height: auto;
+      margin-bottom: auto;
+      filter: drop-shadow(0 10px 18px rgba(6, 21, 56, .2));
+    }
+
+    .cover-card span,
+    .cover-card strong,
+    .cover-card p {
+      color: #fff;
+    }
+
+    .cover-card p {
+      color: rgba(255, 255, 255, .78);
+    }
+
+    .cover-strip {
+      overflow: hidden;
+      border-color: rgba(16, 42, 95, .14);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .76);
+    }
+
+    .cover-strip span {
+      color: var(--blue-dark);
+      border-color: var(--line);
+      background: rgba(234, 242, 255, .58);
+    }
+
+    .cover-bottom div,
+    .reader-grid article,
+    .week-panels article,
+    .closing-grid article,
+    .phase-card,
+    .flow-node,
+    .week-mini,
+    .chapter-summary,
+    .note-band,
+    .tip-callout,
+    .risk-card,
+    .final-answer {
+      border-color: rgba(16, 42, 95, .14);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .84);
+      box-shadow: 0 10px 26px rgba(26, 65, 130, .07);
+    }
+
+    .cover-bottom div {
+      border-top: 0;
+      padding: 16px;
+    }
+
+    .cover-bottom strong,
+    .stat-v,
+    .week-mini span,
+    .sec-num,
+    .section-number {
+      color: var(--blue);
+    }
+
+    .rh {
+      border-bottom-color: var(--line);
+      color: var(--muted);
+    }
+
+    .kicker,
+    .phase-topline,
+    .flow-node span,
+    .checkpoint-band span,
+    .ladder span,
+    .closing-grid span {
+      color: var(--blue);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--navy);
+    }
+
+    .source-table-wrap,
+    .source-panel,
+    .report-table,
+    table {
+      border-color: rgba(16, 42, 95, .14);
+      border-radius: 8px;
+    }
+
+    th {
+      background: var(--blue-soft);
+      color: var(--navy);
+      text-transform: none;
+    }
+
+    td {
+      color: var(--muted);
+    }
+
+    .source-panel summary {
+      background: var(--blue-soft);
+      color: var(--navy);
+    }
+
+    .source-panel pre {
+      background: #102a5f;
+      color: #eef5ff;
+    }
+
+    .pgn {
+      color: var(--muted);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+
     @media (max-width: 900px) {
       body {
         padding: 18px 0;
@@ -18573,23 +18818,108 @@ ${JSON.stringify(metadata, null, 2)}
     }
 
     @media print {
+      @page {
+        size: A4;
+        margin: 12mm;
+      }
+
       body {
         background: #fff;
+        color: #111827;
         padding: 0;
       }
 
       .page {
-        width: 210mm;
+        width: auto;
         min-height: auto;
         margin: 0;
+        border: 0;
+        border-radius: 0;
         box-shadow: none;
         break-after: page;
         overflow: visible;
+        padding: 14mm 13mm 15mm;
+      }
+
+      .page::before,
+      .page::after {
+        display: none;
+      }
+
+      .cover {
+        min-height: auto;
+      }
+
+      .cover-card {
+        background: #102a5f !important;
+        color: #fff !important;
+        box-shadow: none;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .cover-card-logo {
+        max-width: 115px;
+      }
+
+      h1,
+      h2,
+      h3,
+      .chapter-head,
+      .week-hero,
+      .chapter-section,
+      .phase-card,
+      .week-mini,
+      .reader-grid article,
+      .week-panels article,
+      .closing-grid article,
+      .note-band,
+      .tip-callout,
+      .risk-card,
+      .final-answer {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      h1,
+      h2,
+      h3 {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      table,
+      tr,
+      td,
+      th {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      table,
+      .report-table,
+      .source-table {
+        width: 100% !important;
+      }
+
+      th {
+        background: #eaf2ff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
       }
 
       .source-panel pre {
         max-height: none;
         overflow: visible;
+        background: #f8fbff;
+        color: #13213f;
+        border: 1px solid rgba(16, 42, 95, .16);
+        white-space: pre-wrap;
+      }
+
+      .source-table-wrap {
+        overflow: visible;
+        max-height: none;
       }
     }
   </style>

@@ -1277,33 +1277,562 @@
         left: -27px;
       }
     }
+
+    .skip-link {
+      position: fixed;
+      left: 18px;
+      top: 18px;
+      z-index: 3000;
+      transform: translateY(-140%);
+      border-radius: 999px;
+      background: var(--blue-deep, #102a5f);
+      color: #fff;
+      padding: 10px 14px;
+      text-decoration: none;
+      transition: transform .16s cubic-bezier(.23, 1, .32, 1);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+      outline: 3px solid rgba(37, 99, 235, .28);
+      outline-offset: 3px;
+    }
+
+    /* Premium nuva refresh, kept as an override layer so existing behavior stays intact. */
+    :root {
+      --surface: #f7faff;
+      --paper: #ffffff;
+      --ink: #13213f;
+      --muted: #53627c;
+      --line: rgba(32, 75, 145, .14);
+      --line-strong: rgba(16, 42, 95, .26);
+      --red: #2563eb;
+      --teal: #102a5f;
+      --yellow: #eaf2ff;
+      --blue: #2563eb;
+      --blue-deep: #102a5f;
+      --blue-soft: #eaf2ff;
+      --shadow: rgba(26, 65, 130, .12);
+      --report-bg-base: #f7faff;
+      --report-bg-line: rgba(37, 99, 235, .032);
+      --report-bg-line-strong: rgba(16, 42, 95, .046);
+      --focus-ring: rgba(37, 99, 235, .32);
+    }
+
+    body {
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        linear-gradient(180deg, #ffffff 0%, var(--report-bg-base) 48%, #eef5ff 100%);
+      color: var(--ink);
+    }
+
+    .shell {
+      width: min(1200px, calc(100% - 48px));
+      padding: 24px 0 72px;
+    }
+
+    .masthead {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(246, 250, 255, .92)),
+        var(--paper);
+      box-shadow: 0 24px 60px rgba(26, 65, 130, .08);
+      padding: 24px clamp(20px, 4vw, 44px) clamp(34px, 5vw, 58px);
+    }
+
+    .brandline {
+      align-items: center;
+      color: var(--muted);
+      font-size: .86rem;
+      text-transform: none;
+    }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--blue-deep);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .brand-mark img {
+      width: 104px;
+      height: auto;
+      display: block;
+    }
+
+    .brand-meta {
+      color: color-mix(in srgb, var(--muted) 86%, transparent);
+      font-weight: 700;
+    }
+
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
+      gap: clamp(28px, 6vw, 74px);
+      align-items: center;
+      margin-top: clamp(44px, 8vw, 86px);
+    }
+
+    .eyebrow {
+      width: fit-content;
+      border: 1px solid rgba(37, 99, 235, .18);
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      padding: 8px 12px;
+      font-size: .88rem;
+      text-transform: none;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin-top: 16px;
+      font-family: "Noto Sans TC", "Archivo", sans-serif;
+      font-size: clamp(3rem, 7.2vw, 5.8rem);
+      line-height: 1.05;
+      color: var(--blue-deep);
+      letter-spacing: 0;
+      word-break: keep-all;
+      overflow-wrap: normal;
+    }
+
+    h1 span {
+      display: block;
+    }
+
+    .dek {
+      max-width: 600px;
+      color: var(--muted);
+      font-size: 1.14rem;
+      line-height: 1.9;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .hero-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 1px solid rgba(37, 99, 235, .22);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--blue-deep);
+      padding: 0 16px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform .16s cubic-bezier(.23, 1, .32, 1), background .16s ease, border-color .16s ease;
+    }
+
+    .hero-action:first-child {
+      background: var(--blue-deep);
+      color: #fff;
+      border-color: var(--blue-deep);
+    }
+
+    .hero-action:hover,
+    .hero-action:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      border-color: var(--blue);
+      text-decoration: none;
+    }
+
+    .hero-action:active {
+      transform: scale(.98);
+    }
+
+    .archive-plate {
+      min-height: 330px;
+      border-left: 0;
+      padding-left: 0;
+    }
+
+    .brand-poster {
+      position: relative;
+      min-height: 330px;
+      overflow: hidden;
+      border-radius: 8px;
+      background:
+        linear-gradient(155deg, rgba(16, 42, 95, .96), rgba(37, 99, 235, .82)),
+        var(--blue-deep);
+      box-shadow: 0 28px 70px rgba(16, 42, 95, .24);
+      padding: 28px;
+      color: #fff;
+    }
+
+    .brand-poster::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .brand-poster img {
+      width: min(220px, 72%);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 12px 24px rgba(6, 21, 56, .18));
+    }
+
+    .poster-copy {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 28px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .poster-copy span {
+      color: rgba(255, 255, 255, .74);
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+
+    .poster-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .poster-metrics b {
+      display: block;
+      color: #fff;
+      font-family: "Archivo", sans-serif;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .poster-metrics small {
+      color: rgba(255, 255, 255, .72);
+      font-size: .76rem;
+    }
+
+    .toolbar,
+    .month-nav,
+    .stats,
+    .content {
+      border-color: var(--line-strong);
+    }
+
+    .search {
+      border-color: rgba(16, 42, 95, .22);
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(26, 65, 130, .08);
+    }
+
+    .search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px var(--focus-ring);
+    }
+
+    .chip,
+    .month-chip,
+    .clear-filters,
+    .inline-clear,
+    .theme-reset,
+    .admin-login-button,
+    .admin-logout {
+      border-radius: 999px;
+    }
+
+    .chip,
+    .month-chip {
+      border-color: rgba(16, 42, 95, .22);
+      color: var(--blue-deep);
+      box-shadow: 0 6px 16px rgba(26, 65, 130, .06);
+    }
+
+    .chip.is-active,
+    .month-chip.is-active {
+      background: var(--blue-deep);
+      color: #fff;
+      border-color: var(--blue-deep);
+    }
+
+    .stats {
+      overflow: hidden;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .72);
+    }
+
+    .stat {
+      background: transparent;
+    }
+
+    .stat-label,
+    .section-label,
+    .meta {
+      color: color-mix(in srgb, var(--muted) 88%, transparent);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .stat-value {
+      color: var(--blue-deep);
+    }
+
+    .rail {
+      color: var(--muted);
+    }
+
+    .section-label {
+      color: var(--blue-deep);
+    }
+
+    .timeline {
+      border-left-color: rgba(16, 42, 95, .28);
+    }
+
+    .month-pin {
+      border-color: rgba(37, 99, 235, .2);
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+    }
+
+    .report-card {
+      overflow: hidden;
+      border: 1px solid rgba(16, 42, 95, .14);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 18px 42px rgba(26, 65, 130, .09);
+    }
+
+    .report-card.is-latest {
+      border-color: rgba(37, 99, 235, .38);
+      box-shadow: 0 24px 52px rgba(37, 99, 235, .14);
+    }
+
+    .report-main-link:hover,
+    .report-main-link:focus-visible {
+      outline: none;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .date-block {
+      background:
+        linear-gradient(160deg, var(--blue-deep), #1f4ca7);
+      color: #fff;
+    }
+
+    .report-title {
+      color: var(--blue-deep);
+      font-family: "Noto Sans TC", "Archivo", sans-serif;
+    }
+
+    .latest-badge,
+    .visibility-badge.is-public {
+      border-color: rgba(37, 99, 235, .22);
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+    }
+
+    .open-mark {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        color: #111 !important;
+      }
+
+      .shell {
+        width: 100%;
+        padding: 0;
+      }
+
+      .masthead,
+      .report-card,
+      .stats {
+        box-shadow: none !important;
+      }
+
+      .toolbar,
+      .month-nav,
+      .admin-login,
+      .hero-actions,
+      .archive-plate {
+        display: none !important;
+      }
+
+      .content {
+        display: block;
+      }
+
+      .rail {
+        margin-bottom: 18px;
+      }
+
+      .report-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .content,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .masthead {
+        padding-inline: 24px;
+      }
+
+      .brandline {
+        align-items: flex-start;
+      }
+
+      .brand-mark img {
+        width: 92px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shell {
+        width: min(100% - 24px, 1200px);
+        padding-top: 12px;
+      }
+
+      .masthead {
+        padding: 18px 16px 28px;
+      }
+
+      .brandline {
+        gap: 10px;
+      }
+
+      .brand-mark {
+        gap: 10px;
+      }
+
+      .brand-meta {
+        font-size: .76rem;
+        text-align: right;
+      }
+
+      .hero-grid {
+        margin-top: 34px;
+      }
+
+      h1 {
+        font-size: clamp(2.25rem, 11vw, 3rem);
+        line-height: 1.14;
+        max-width: 10ch;
+      }
+
+      .dek {
+        font-size: 1rem;
+      }
+
+      .brand-poster {
+        min-height: auto;
+        padding: 22px;
+      }
+
+      .brand-poster img {
+        width: 152px;
+      }
+
+      .poster-copy {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin-top: 52px;
+      }
+
+      .poster-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        gap: 18px;
+      }
+
+      .stats {
+        border-radius: 8px;
+      }
+
+      .report-main-link {
+        transform: none !important;
+      }
+    }
   </style>
   <script src="assets/report-theme.js"></script>
 </head>
 
 <body>
+  <a class="skip-link" href="#timeline">跳到報告列表</a>
   <main class="shell">
     <header class="masthead">
       <div class="brandline">
-        <span>成果報告時間軸</span>
-        <span id="generated-at">索引建立中</span>
+        <span class="brand-mark">
+          <img src="blue_logo_nuva.png" alt="nuva">
+          <span>報告時間軸</span>
+        </span>
+        <span class="brand-meta" id="generated-at">索引建立中</span>
       </div>
 
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">成果報告索引</p>
-          <h1>每一份成果，按時間回到現場。</h1>
-          <p class="dek">依日期保存課程、活動與專案的成果報告，讓後續提案、結案與回顧都有清楚入口。</p>
+          <p class="eyebrow">互動報告索引</p>
+          <h1><span>把每一份成果，</span><span>整理成可以</span><span>回看的現場。</span></h1>
+          <p class="dek">依日期保存課程、活動與專案報告，保留脈絡、證據與後續行動，螢幕閱讀舒服，列印也清楚。</p>
+          <div class="hero-actions" aria-label="主要操作">
+            <a class="hero-action" href="#timeline">瀏覽報告</a>
+            <a class="hero-action" href="reports/2026-05-28-n8n-deployment-complete-guide.html">最新報告</a>
+          </div>
         </div>
         <div class="archive-plate" aria-hidden="true">
-          <div class="plate-card"></div>
-          <div class="plate-card"></div>
-          <div class="plate-card">
-            <div class="plate-lines">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+          <div class="brand-poster">
+            <img src="white-nuva-logo.png" alt="">
+            <div class="poster-copy">
+              <span>Report library for courses, proposals, and operating notes.</span>
+              <div class="poster-metrics">
+                <span><b id="poster-count">0</b><small>reports</small></span>
+                <span><b id="poster-category-count">0</b><small>categories</small></span>
+                <span><b id="poster-month-count">0</b><small>months</small></span>
+              </div>
             </div>
           </div>
         </div>
@@ -1453,6 +1982,9 @@
       latestDate: document.querySelector('#latest-date'),
       categoryCount: document.querySelector('#category-count'),
       monthCount: document.querySelector('#month-count'),
+      posterCount: document.querySelector('#poster-count'),
+      posterCategoryCount: document.querySelector('#poster-category-count'),
+      posterMonthCount: document.querySelector('#poster-month-count'),
       yearChips: document.querySelector('#year-chips'),
       chips: document.querySelector('#category-chips'),
       monthNav: document.querySelector('#month-nav'),
@@ -1863,6 +2395,9 @@
       nodes.latestDate.textContent = source[0] ? formatDate(source[0].date) : '--';
       nodes.categoryCount.textContent = categories(source).length;
       nodes.monthCount.textContent = months(source).length;
+      if (nodes.posterCount) nodes.posterCount.textContent = source.length;
+      if (nodes.posterCategoryCount) nodes.posterCategoryCount.textContent = categories(source).length;
+      if (nodes.posterMonthCount) nodes.posterMonthCount.textContent = months(source).length;
       const modeText = adminState.isAdmin ? '管理模式' : '公開模式';
       nodes.resultNote.textContent = items.length === source.length
         ? `目前以${modeText}顯示全部可見報告。`

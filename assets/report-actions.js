@@ -24,7 +24,7 @@
         gap: 10px;
         align-items: stretch;
         justify-content: flex-end;
-        width: 148px;
+        width: 156px;
       }
 
       .report-action {
@@ -34,20 +34,20 @@
         align-items: center;
         justify-content: center;
         gap: 9px;
-        border: 1px solid rgba(255, 255, 255, .2);
-        border-radius: 0;
+        border: 1px solid color-mix(in srgb, var(--report-blue, var(--blue, #1d4ed8)) 22%, transparent);
+        border-radius: 999px;
         background: var(--report-blue, var(--blue, #1d4ed8));
         color: #fff;
         cursor: pointer;
-        font-family: 'Space Mono', 'Archivo', 'Noto Sans TC', sans-serif;
+        font-family: 'Archivo', 'Noto Sans TC', sans-serif;
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 800;
         line-height: 1;
-        letter-spacing: .08em;
-        padding: 15px 20px;
+        letter-spacing: 0;
+        padding: 15px 18px;
         text-decoration: none;
-        box-shadow: 0 8px 26px rgba(29, 78, 216, .34);
-        transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease, transform .2s ease;
+        box-shadow: 0 12px 28px rgba(29, 78, 216, .26);
+        transition: background-color .16s cubic-bezier(.23, 1, .32, 1), border-color .16s ease, box-shadow .16s ease, color .16s ease, transform .16s cubic-bezier(.23, 1, .32, 1);
         white-space: nowrap;
       }
 
@@ -55,8 +55,12 @@
       .report-action:focus-visible {
         background: var(--blue-deep, #12286a);
         color: #fff;
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         outline: none;
+      }
+
+      .report-action:active {
+        transform: scale(.98);
       }
 
       .report-action:focus-visible {
@@ -73,7 +77,7 @@
         border-color: color-mix(in srgb, var(--report-blue, var(--blue, #1d4ed8)) 28%, transparent);
         background: var(--report-paper, #fff);
         color: var(--report-blue, var(--blue, #1d4ed8));
-        box-shadow: 0 8px 22px rgba(21, 34, 63, .14);
+        box-shadow: 0 10px 24px rgba(21, 34, 63, .12);
       }
 
       .report-action--learn:hover,
@@ -100,7 +104,7 @@
           min-height: 52px;
           padding: 13px 10px;
           font-size: 12px;
-          letter-spacing: .04em;
+          letter-spacing: 0;
           box-shadow: 0 8px 24px rgba(29, 78, 216, .24);
         }
 
@@ -120,6 +124,12 @@
       @media print {
         .${actionsClass} {
           display: none !important;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .report-action {
+          transition-duration: .001ms !important;
         }
       }
     `;

@@ -11,6 +11,7 @@
 | deployment recommendation matrix | 完成 | `artifacts/week-18-platform-selection/week-18-deployment-recommendation-matrix.json`；本文件第 3 節 |
 | cost-risk worksheet | 完成 | `artifacts/week-18-platform-selection/week-18-cost-risk-worksheet.csv`；本文件第 4 節 |
 | AWS vs PaaS decision memo | 完成 | `artifacts/week-18-platform-selection/week-18-aws-vs-paas-decision-memo.md`；本文件第 5 節 |
+| Week 18 回饋報告 | 完成 | `artifacts/week-18-platform-selection/week-18-feedback-report.md` |
 | beginner、freelancer、agency、production team 選型 | 完成 | 本文件第 3、6 節 |
 | AWS 與 simpler cloud options 比較 | 完成 | 本文件第 5 節 |
 | usage-priced RAM/CPU/storage/egress 風險整理 | 完成 | 本文件第 4 節 |
@@ -45,7 +46,8 @@ Week 18 的判斷基準不是「哪個平台最酷」，而是「誰要承擔維
 | n8n monitoring | https://docs.n8n.io/hosting/logging-monitoring/monitoring/ | production 需要 health/readiness/metrics；監控與告警是維運責任，不是可省略項。 |
 | Render pricing | https://render.com/pricing | Render 以服務、Postgres、disk、bandwidth 等項目組合成本；適合簡化部署但仍需看 persistent disk 與 DB plan。 |
 | Render free usage | https://render.com/free | free tier 有使用限制；不能把 free service 當 production webhook 承載。 |
-| Railway pricing | https://railway.com/pricing | Railway 採 usage-based credits，RAM/CPU/storage/egress 會直接影響月費；適合快速部署但要設 usage alerts。 |
+| Railway pricing | https://docs.railway.com/pricing | Railway 採 base subscription fee + resource usage；RAM/CPU/storage/egress 會直接影響月費；適合快速部署但要設 usage alerts。 |
+| Railway databases | https://docs.railway.com/databases | Railway database templates 是 unmanaged services；production 要自己負責 backup、DR、tuning、security、monitoring/maintenance，或改用 Enterprise / external managed database provider。 |
 | Fly.io pricing | https://fly.io/pricing/ | Fly 以 machines、volumes、bandwidth 等項目計價；多 region 或 volume 成長會改變成本。 |
 | Google Cloud Run pricing | https://cloud.google.com/run/pricing | Cloud Run 依 CPU、memory、requests、networking 等項目計費；scale-to-zero 有價值，但長時間常駐與 egress 要估算。 |
 | AWS Fargate pricing | https://aws.amazon.com/fargate/pricing/ | Fargate 以 vCPU、memory、OS/CPU architecture、running time 計費；需搭配 RDS、logs、load balancer、data transfer 看總成本。 |
@@ -58,8 +60,8 @@ Week 18 的判斷基準不是「哪個平台最酷」，而是「誰要承擔維
 | User type | 首選 | 替代方案 | 避免事項 | 為什麼 |
 | --- | --- | --- | --- | --- |
 | beginner | n8n Cloud | Local Docker Desktop 學習環境 | 不要用 public tunnel 或自架 VPS 承載 production credentials | beginner 的主要風險是把 state、URL、backup、security 搞混；先讓平台承擔 hosting，自己學 workflow。 |
-| freelancer | 單台 VPS + Docker Compose + PostgreSQL + Caddy | Railway/Render/Fly 小型 PaaS + managed PostgreSQL，或 n8n Cloud 交給客戶付費 | 不要為小客戶上 AWS ECS/RDS 或 Kubernetes | freelancer 需要可解釋月費與可控維運；VPS 固定成本清楚，PaaS 上線快但要控 usage。 |
-| agency | 標準化 client blueprint：Compose/PaaS + managed PostgreSQL + backup + incident note | n8n Cloud Business/Enterprise 作為低維運交付 | 不要多客戶共用同一個未隔離 instance，不要沒有 budget alert 的 usage-priced 平台 | agency 的核心是可複製、可交接、可隔離；選型要降低每個客戶的維運變異。 |
+| freelancer | 單台 VPS + Docker Compose + PostgreSQL + Caddy | Railway/Render/Fly 小型 PaaS + managed or external PostgreSQL；Railway template DB 需另做 backup/monitoring/maintenance；或 n8n Cloud 交給客戶付費 | 不要為小客戶上 AWS ECS/RDS 或 Kubernetes | freelancer 需要可解釋月費與可控維運；VPS 固定成本清楚，PaaS 上線快但要控 usage。 |
+| agency | 標準化 client blueprint：Compose/PaaS + managed or external PostgreSQL + backup + incident note | n8n Cloud Business/Enterprise 作為低維運交付 | 不要多客戶共用同一個未隔離 instance，不要沒有 budget alert 的 usage-priced 平台 | agency 的核心是可複製、可交接、可隔離；選型要降低每個客戶的維運變異。 |
 | production team | AWS/GCP production architecture：managed PostgreSQL、Redis queue、centralized logs、IaC、budgets | n8n Cloud Enterprise 或成熟 PaaS + managed DB/Redis | 不要用單 VM 無 backup 無 logs，也不要未設 budget 的 autoscaling | production team 有 compliance、VPC、SSO、audit、queue workers、SLO，值得承擔雲端架構，但必須有 FinOps 與 on-call。 |
 
 ### 選型流程
@@ -173,7 +175,7 @@ monthly_total =
 | Maturity | Platform |
 | --- | --- |
 | Learning | n8n Cloud 或 Local Docker Desktop。 |
-| First paid automation | VPS Compose + PostgreSQL 或 PaaS + managed PostgreSQL。 |
+| First paid automation | VPS Compose + PostgreSQL，或 PaaS + managed/external PostgreSQL。 |
 | Repeatable client delivery | Standardized PaaS/VPS blueprint + backup + incident note + budget alerts。 |
 | Production operations | AWS/GCP + managed PostgreSQL + Redis queue + logs + IaC + budget + on-call。 |
 
@@ -182,7 +184,7 @@ monthly_total =
 | User type | 首選 | 替代方案 | 避免事項 |
 | --- | --- | --- | --- |
 | beginner | n8n Cloud，因為先避開 hosting、backup、public URL、secure cookie、database 維運 | Local Docker Desktop 學習 volume、credentials、workflow 匯出 | public tunnel 當 production、自架 VPS 放真客戶 credentials、跳 AWS/Kubernetes |
-| freelancer | VPS Docker Compose + PostgreSQL + Caddy，成本固定、可控、容易向客戶說明 | Railway/Render/Fly + managed PostgreSQL；或客戶願付時用 n8n Cloud | 沒 backup 的單容器、free tier production、未設 budget 的 usage-priced 平台、AWS multi-service 起手 |
+| freelancer | VPS Docker Compose + PostgreSQL + Caddy，成本固定、可控、容易向客戶說明 | Railway/Render/Fly + managed/external PostgreSQL；Railway template DB 需自己處理 backup、DR、security、monitoring；或客戶願付時用 n8n Cloud | 沒 backup 的單容器、free tier production、未設 budget 的 usage-priced 平台、AWS multi-service 起手 |
 | agency | 標準化 blueprint：每客戶獨立 instance、獨立 DB、backup、patch cadence、incident note | n8n Cloud Business/Enterprise，或 PaaS + managed DB 作為低維運交付 | 多客戶共用未隔離 instance、同一組 credentials、手工散裝部署、沒有維護合約 |
 | production team | AWS/GCP production stack：managed PostgreSQL、Redis queue、workers、centralized logs、IaC、budget alerts | n8n Cloud Enterprise；或成熟 PaaS + managed DB/Redis 作為過渡 | 單台 VPS 承擔高 SLO、沒有 RPO/RTO、未控 autoscaling、無 logs/alerts 的 queue mode |
 
