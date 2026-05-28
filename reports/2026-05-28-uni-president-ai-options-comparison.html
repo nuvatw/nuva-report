@@ -3,14 +3,14 @@
 <!-- report-meta
 {
   "title": "統一超商商場事業部 AI 課程兩方案比較",
-  "subtitle": "同一含稅費用下的 90 分鐘講座與 180 分鐘工作坊比較",
+  "subtitle": "90 分鐘純講座與 180 分鐘工作坊＋短影片合作比較",
   "date": "2026-05-28",
   "period": "2026/09/09 下午",
   "category": "課程提案",
   "client": "統一超商股份有限公司",
   "clientGroup": "零售、商場與餐飲營運",
   "timeline": "2026 九月",
-  "tags": ["AI 講座", "AI 工作坊", "品牌案例合作", "商場營運", "方案比較"],
+  "tags": ["AI 講座", "AI 工作坊", "短影片合作", "商場營運", "方案比較"],
   "thumbnail": "",
   "visibility": "private"
 }
@@ -447,6 +447,57 @@
       line-height: 1.55;
     }
 
+    .price-strip {
+      display: grid;
+      grid-template-columns: 38mm 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-top: 16px;
+      border: 2px solid var(--ink);
+      background: var(--blue-tint);
+      padding: 13px 16px;
+    }
+
+    .price-strip strong {
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .price-strip span {
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .responsibility-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .responsibility-list div {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .party-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--blue-deep);
+      font-family: "Space Mono", "Noto Sans TC", sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .path-card.alt .party-label {
+      color: var(--green-deep);
+    }
+
     .journey {
       display: grid;
       gap: 0;
@@ -746,7 +797,8 @@
       .sec,
       .agenda-row,
       .timeline-item,
-      .table-row {
+      .table-row,
+      .price-strip {
         grid-template-columns: 1fr;
         gap: 7px;
       }
@@ -781,7 +833,7 @@
       <div>
         <div class="kicker">2026 課程提案</div>
         <h1><span>統一超商商場事業部</span><span>AI 工作坊提案</span></h1>
-        <p class="subtitle">從商場巡檢、餐飲櫃位管理、食安職安表單到宣導溝通，建立同仁能帶回工作現場的 AI 自動化思維。本提案提供同一含稅費用下的 90 分鐘講座與 180 分鐘工作坊，協助商場事業部依時數、內容與合作條件選擇合適方案。</p>
+        <p class="subtitle">從商場巡檢、餐飲櫃位管理、食安職安表單到宣導溝通，建立同仁能帶回工作現場的 AI 自動化思維。本提案提供 90 分鐘純講座與 180 分鐘工作坊＋短影片合作，協助商場事業部依時數、內容與合作責任選擇合適方案。</p>
         <div class="tagline">
           <span class="tag">AI 不是取代人，而是放大人</span>
           <span class="tag">不需攜帶電腦</span>
@@ -840,7 +892,7 @@
       </div>
       <div>
         <div class="meta">課程形式</div>
-        <div class="value">90 分鐘講座<br>或 3 小時工作坊</div>
+        <div class="value">90 分鐘純講座<br>或 180 分鐘工作坊</div>
       </div>
     </div>
     <div class="pgn">01</div>
@@ -870,7 +922,7 @@
       <div>
         <div class="stat-k">課程時數</div>
         <div class="stat-v">90 / 180</div>
-        <div class="stat-s">90 分鐘講座或 3 小時工作坊</div>
+        <div class="stat-s">90 分鐘純講座或 180 分鐘工作坊</div>
       </div>
       <div>
         <div class="stat-k">設備需求</div>
@@ -965,7 +1017,7 @@
   <section class="page">
     <div class="rh">
       <span>04｜方案比較</span>
-      <span>預算內講座 vs. 品牌案例合作工作坊</span>
+      <span>純講座 vs. 工作坊＋短影片合作</span>
     </div>
 
     <div class="sec">
@@ -975,65 +1027,47 @@
       </div>
     </div>
 
-    <p class="lead">兩案費用皆為 NT$31,500（含稅）。方案 A 是流程單純的 90 分鐘講座；方案 B 是以品牌案例合作與素材授權換取完整 3 小時工作坊。</p>
+    <p class="lead">兩種方案的差異在課程深度與合作責任：方案 A 是 90 分鐘純講座；方案 B 是 180 分鐘工作坊，並搭配短影片合作。</p>
+
+    <div class="price-strip" aria-label="合作費用">
+      <strong>NT$31,500</strong>
+      <span>含稅總價。以下比較聚焦課程深度、交付內容與雙方合作責任。</span>
+    </div>
 
     <div class="path-grid">
       <article class="path-card">
-        <h3>方案 A｜90 分鐘 AI 主題講座</h3>
-        <p>適合預算明確、流程需單純、目標是一次主題分享與共同理解的情況。</p>
-        <div class="money">NT$31,500</div>
-        <span class="money-note">含稅總價；條件單純，依講座範圍執行。</span>
+        <h3>方案 A｜90 分鐘純講座</h3>
+        <p>適合只需要一次 AI 主題分享、案例示範與現場問答，合作流程最單純。</p>
+        <div class="responsibility-list">
+          <div>
+            <span class="party-label">nuva 提供</span>
+            <p>兩次線上對焦會議、90 分鐘講座、巡場 AI Agent 示範、現場匿名問答、會後問答行動白皮書。</p>
+          </div>
+          <div>
+            <span class="party-label">統一配合</span>
+            <p>確認主題方向、提供場地與基本簡報設備，現場不需安排完整實作。</p>
+          </div>
+        </div>
       </article>
       <article class="path-card alt">
-        <h3>方案 B｜3 小時 AI 工作坊｜品牌案例合作</h3>
-        <p>適合希望保留完整課程設計、教材、示範與現場實作，並可配合品牌案例合作的情況。</p>
-        <div class="money">NT$31,500</div>
-        <span class="money-note">含稅總價；需品牌案例合作與素材授權。</span>
+        <h3>方案 B｜180 分鐘工作坊＋短影片合作</h3>
+        <p>適合希望保留完整課程設計、紙本實作與更完整現場成果，並可配合短影片案例素材。</p>
+        <div class="responsibility-list">
+          <div>
+            <span class="party-label">nuva 提供</span>
+            <p>兩次線上對焦會議、180 分鐘工作坊、150 人份講義與流程設計表、巡場 AI Agent 示範、會後問答行動白皮書。</p>
+          </div>
+          <div>
+            <span class="party-label">統一提供</span>
+            <p>活動花絮拍攝授權、4 位參與者課前期待與課後心得短句、可露出統一超商商場事業部與職稱抬頭。</p>
+          </div>
+        </div>
       </article>
     </div>
 
-    <div class="compare-table" role="table" aria-label="方案比較表">
-      <div class="table-row table-head" role="row">
-        <div role="columnheader">比較項目</div>
-        <div role="columnheader">方案 A：90 分鐘講座</div>
-        <div role="columnheader">方案 B：3 小時工作坊</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">費用</div>
-        <div role="cell">NT$31,500（含稅）。</div>
-        <div role="cell">NT$31,500（含稅）。</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">課程形式</div>
-        <div role="cell">講座分享，不屬於完整工作坊。</div>
-        <div role="cell">完整工作坊，含分享、示範、紙本流程設計實作與問答。</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">教材與實作</div>
-        <div role="cell">不含 150 人份紙本教具，不安排完整現場實作。</div>
-        <div role="cell">含 150 人份講義與紙本流程設計表，保留完整實作段落。</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">課後交付</div>
-        <div role="cell">現場問卷、匿名問答、課後問答行動白皮書。</div>
-        <div role="cell">匿名問答、課後問答行動白皮書，並可作為內部推動素材。</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">合作條件</div>
-        <div role="cell">條件單純，依講座範圍執行。</div>
-        <div role="cell">需品牌案例合作與素材授權，實際使用範圍以雙方確認版本為準。</div>
-      </div>
-    </div>
-
-    <div class="decision">
-      <article class="decision-card">
-        <h3>同一費用、流程簡單：選方案 A</h3>
-        <p>用 90 分鐘完成核心觀念、案例與巡場 AI Agent 示範，讓同仁快速理解 AI 應用方向。</p>
-      </article>
-      <article class="decision-card alt">
-        <h3>同一費用、保留完整價值：選方案 B</h3>
-        <p>以品牌案例合作取得完整 3 小時工作坊、教材、現場實作與更高課程深度。</p>
-      </article>
+    <div class="quote-box">
+      <strong>決策重點</strong>
+      <p>只需要快速分享與問答，選方案 A。希望保留完整實作、教材與現場成果，且可配合活動花絮與 4 位參與者短句分享，選方案 B。</p>
     </div>
     <div class="pgn">04</div>
   </section>
@@ -1041,7 +1075,7 @@
   <section class="page">
     <div class="rh">
       <span>05｜90 分鐘流程</span>
-      <span>預算內 AI 主題講座</span>
+      <span>90 分鐘純講座</span>
     </div>
 
     <div class="sec">
@@ -1051,7 +1085,7 @@
       </div>
     </div>
 
-    <p class="lead">90 分鐘版本聚焦核心觀念、餐飲與商場案例、巡場 AI Agent 示範與匿名問答，適合在預算內快速建立共同語言。</p>
+    <p class="lead">90 分鐘版本聚焦核心觀念、餐飲與商場案例、巡場 AI Agent 示範與匿名問答，適合以純講座形式快速建立共同語言。</p>
 
     <div class="timeline-list">
       <article class="timeline-item">
@@ -1098,7 +1132,7 @@
       </article>
       <article class="deliverable">
         <h3>不包含範圍</h3>
-        <p>不提供完整工作坊教材、不提供 150 人份紙本教具、不安排完整現場實作，且不屬於 3 小時工作坊。</p>
+        <p>不提供完整工作坊教材、不提供 150 人份紙本教具、不安排完整現場實作，且不屬於 180 分鐘工作坊。</p>
       </article>
     </div>
     <div class="pgn">05</div>
@@ -1107,7 +1141,7 @@
   <section class="page">
     <div class="rh">
       <span>06｜180 分鐘流程</span>
-      <span>完整 AI 工作坊</span>
+      <span>工作坊＋短影片合作</span>
     </div>
 
     <div class="sec">
@@ -1117,7 +1151,7 @@
       </div>
     </div>
 
-    <p class="lead">180 分鐘版本保留完整課程設計，包含案例分享、核心觀念、AI 學習旅程、巡場 AI Agent 示範、紙本流程設計練習、現場交流與匿名問答。</p>
+    <p class="lead">180 分鐘版本保留完整課程設計，包含案例分享、核心觀念、AI 學習旅程、巡場 AI Agent 示範、紙本流程設計練習、現場交流與匿名問答，並搭配短影片案例素材合作。</p>
 
     <div class="agenda">
       <div class="agenda-row">
@@ -1248,7 +1282,7 @@
 
   <section class="page">
     <div class="rh">
-      <span>09｜服務內容與費用</span>
+      <span>09｜服務內容與合作條件</span>
       <span>課前、課中、課後交付項目</span>
     </div>
 
@@ -1261,49 +1295,26 @@
 
     <div class="deliverables">
       <article class="deliverable">
-        <h3>方案 A：90 分鐘講座</h3>
-        <p>兩次 20 分鐘線上對焦會議、商場巡場 AI Agent 示範流程、現場匿名問答、現場問卷、課後問答行動白皮書、交通與本提案範圍內延伸費用。</p>
+        <h3>方案 A：90 分鐘純講座｜nuva 提供</h3>
+        <p>兩次線上對焦會議、90 分鐘 AI 主題講座、商場巡場 AI Agent 示範流程、現場匿名問答、現場問卷、會後問答行動白皮書、交通與本提案範圍內延伸費用。</p>
       </article>
       <article class="deliverable">
-        <h3>方案 B：3 小時工作坊</h3>
-        <p>兩次 30 分鐘線上對焦會議、150 人份講義與紙本流程設計表、商場經理巡場 AI Agent 流程示範、3 小時工作坊執行、匿名問答、課後問答行動白皮書、交通與本提案範圍內延伸費用。</p>
+        <h3>方案 B：180 分鐘工作坊｜nuva 提供</h3>
+        <p>兩次線上對焦會議、150 人份講義與紙本流程設計表、商場經理巡場 AI Agent 流程示範、180 分鐘工作坊執行、匿名問答、會後問答行動白皮書、交通與本提案範圍內延伸費用。</p>
       </article>
       <article class="deliverable">
-        <h3>方案 B 合作條件</h3>
-        <p>方案 B 建立在品牌案例合作與素材授權基礎上，需配合活動影像紀錄、課程當天側錄與現場花絮、2 位參與者分享課前期待與課後收穫。</p>
+        <h3>方案 B：短影片合作｜統一提供</h3>
+        <p>授權 nuva 拍攝課程當天活動花絮，並安排 4 位參與者以自然、日常語氣各分享 2 至 3 句課前期待與課後心得。</p>
       </article>
       <article class="deliverable">
-        <h3>素材使用範圍</h3>
-        <p>授權 nuva 使用活動影像、訪談與統一超商／7-ELEVEN 相關品牌識別於 IG 短影音或案例分享素材。實際使用範圍以雙方確認版本為準。</p>
+        <h3>方案 B：素材露出｜雙方確認</h3>
+        <p>訪談畫面或字幕需可標示統一超商商場事業部與受訪者職稱抬頭。活動影像、訪談與品牌識別使用範圍，以雙方確認版本為準。</p>
       </article>
-    </div>
-
-    <div class="compare-table" role="table" aria-label="費用摘要">
-      <div class="table-row table-head" role="row">
-        <div role="columnheader">項目</div>
-        <div role="columnheader">方案 A</div>
-        <div role="columnheader">方案 B</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">費用</div>
-        <div role="cell">NT$31,500（含稅）。</div>
-        <div role="cell">NT$31,500（含稅）。</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">決策重點</div>
-        <div role="cell">同一費用下，選擇流程單純與精簡講座。</div>
-        <div role="cell">同一費用下，配合素材授權取得完整工作坊。</div>
-      </div>
-      <div class="table-row" role="row">
-        <div class="table-label" role="cell">下一步</div>
-        <div role="cell">確認講座版本後，進行正式報價單與合約流程。</div>
-        <div role="cell">確認品牌案例合作範圍後，進行正式報價單與合約流程。</div>
-      </div>
     </div>
 
     <div class="quote-box">
-      <strong>建議下一步：先確認合作模式，再進行正式報價單與合約簽署。</strong>
-      <p>若統一超商股份有限公司商場事業部確認有意願推進，nuva 可依所選方案開立正式報價單與合約供簽署；簽署完成後，開始設計當天可示範的 AI Agent 流程，並補齊詳細課程資訊、示範腳本與教材內容。</p>
+      <strong>建議下一步：先確認採用純講座或工作坊＋短影片合作。</strong>
+      <p>若選擇方案 A，nuva 依講座範圍準備示範流程與會後白皮書。若選擇方案 B，雙方先確認拍攝授權、4 位參與者名單與素材使用範圍，再進行正式報價單與合約簽署。</p>
     </div>
     <div class="pgn">08</div>
   </section>
