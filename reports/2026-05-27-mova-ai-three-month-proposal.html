@@ -2,8 +2,8 @@
 <html lang="zh-Hant">
 <!-- report-meta
 {
-  "title": "MOVA AI 三個月陪跑課程提案",
-  "subtitle": "8/1-10/31，以 nuvaClub、作品牆與 Line 陪跑建立 MOVA 內部 AI 工作資產",
+  "title": "MOVA AI Keep Building",
+  "subtitle": "2026/08/01-2026/10/31，三個月 AI 陪跑提案",
   "date": "2026-05-27",
   "period": "2026/08/01-2026/10/31",
   "category": "課程提案",
@@ -19,7 +19,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MOVA AI 三個月陪跑課程提案</title>
+  <title>MOVA AI Keep Building</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1350,7 +1350,7 @@
       }
     }
 
-    body[data-version="mova-simplified"] > section:nth-of-type(n+8) {
+    body[data-version="mova-simplified"] > section:nth-of-type(n+9) {
       display: none !important;
     }
 
@@ -1803,10 +1803,54 @@
       color: var(--ink);
     }
 
+    .mova-timeline-board .timeline-tabs {
+      justify-content: center;
+      align-items: center;
+      padding: 4px 0 2px;
+    }
+
+    .mova-timeline-board .timeline-tab {
+      min-width: 92px;
+      text-align: center;
+      box-shadow:
+        0 0 0 1px rgba(37, 99, 235, .18),
+        0 0 18px rgba(37, 99, 235, .18);
+      animation: movaTabGlow 2.4s ease-in-out infinite;
+    }
+
+    .mova-timeline-board .timeline-tab:nth-child(2) {
+      animation-delay: .22s;
+    }
+
+    .mova-timeline-board .timeline-tab:nth-child(3) {
+      animation-delay: .44s;
+    }
+
     .mova-v2 .timeline-tab.is-active,
     .mova-v2 .module-tab.is-active {
       background: linear-gradient(135deg, #0d2a67, #2563eb 62%, #60a5fa);
       color: #fff;
+    }
+
+    .mova-timeline-board .timeline-tab.is-active {
+      box-shadow:
+        0 12px 26px rgba(37, 99, 235, .28),
+        0 0 26px rgba(96, 165, 250, .34);
+    }
+
+    @keyframes movaTabGlow {
+      0%,
+      100% {
+        box-shadow:
+          0 0 0 1px rgba(37, 99, 235, .16),
+          0 0 12px rgba(37, 99, 235, .12);
+      }
+
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(37, 99, 235, .36),
+          0 0 24px rgba(96, 165, 250, .34);
+      }
     }
 
     .mova-v2 .timeline-rail {
@@ -1852,12 +1896,23 @@
     }
 
     .mova-v2 .module-visualizer {
-      grid-template-columns: 1fr .9fr;
+      grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr);
       margin-top: 18px;
     }
 
     .mova-v2 .module-tabs {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
       align-content: start;
+    }
+
+    .mova-v2 .module-tab {
+      width: 100%;
+      min-width: 0;
+      padding-inline: 4px;
+      text-align: center;
+      white-space: nowrap;
     }
 
     .mova-v2 .module-story {
@@ -2169,32 +2224,74 @@
     }
 
     .mova-cover .mova-cover-grid {
-      grid-template-columns: minmax(0, 1fr) 66mm;
-      gap: 20px;
-      margin-top: 13mm;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      max-width: 124mm;
+      margin-top: 19mm;
     }
 
     .mova-cover .mova-title {
-      max-width: 118mm;
-      font-size: 52px;
-      line-height: 1.02;
+      max-width: 124mm;
+      font-size: 60px;
+      line-height: .96;
     }
 
     .mova-cover .mova-statement {
-      max-width: 115mm;
-      padding: 18px 20px;
+      max-width: 121mm;
+      margin-top: 24px;
+      padding: 22px 23px;
       background:
         linear-gradient(135deg, #0b255d 0%, #1e4fd6 62%, #6ab2ff 100%);
       box-shadow: 10px 10px 0 rgba(37, 99, 235, .11);
     }
 
     .mova-cover .mova-statement strong {
-      font-size: 19px;
+      font-size: 21px;
       line-height: 1.5;
     }
 
-    .mova-cover .mova-side-panel {
-      align-self: start;
+    .mova-toc-page .mova-toc-hero {
+      margin-top: 28mm;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(19, 33, 63, .86);
+    }
+
+    .mova-toc-page .mova-kicker {
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .mova-toc-page h2 {
+      max-width: 118mm;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 48px;
+      line-height: 1.04;
+      text-wrap: balance;
+    }
+
+    .mova-toc-page .mova-reading-map {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16mm;
+    }
+
+    .mova-toc-page .mova-reading-map div {
+      min-height: 31mm;
+      border: 1px solid rgba(37, 99, 235, .28);
+      border-left: 5px solid var(--teal);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .94), rgba(238, 245, 255, .82));
+      padding: 16px 17px;
+    }
+
+    .mova-toc-page .mova-reading-map span {
+      font-size: 11px;
+    }
+
+    .mova-toc-page .mova-reading-map strong {
+      margin-top: 14px;
+      font-size: 20px;
+      line-height: 1.3;
     }
 
     .mova-reading-map {
@@ -2238,28 +2335,28 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-top: 18px;
+      margin-top: 58mm;
     }
 
     .mova-cover-route div {
-      min-height: 96px;
+      min-height: 72px;
       border-left: 5px solid var(--teal);
       background: linear-gradient(180deg, #fff, #eef5ff);
-      padding: 13px 14px;
+      padding: 13px 14px 15px;
     }
 
     .mova-cover-route b {
       display: block;
-      color: rgba(37, 99, 235, .16);
+      color: rgba(37, 99, 235, .2);
       font-family: "Archivo", "Noto Sans TC", sans-serif;
-      font-size: 42px;
+      font-size: 36px;
       line-height: .9;
     }
 
     .mova-cover-route strong {
       display: block;
-      margin-top: -8px;
-      font-size: 15px;
+      margin-top: 7px;
+      font-size: 16px;
       line-height: 1.35;
     }
 
@@ -2296,6 +2393,17 @@
       text-wrap: pretty;
     }
 
+    .mova-page-question.mova-question-line {
+      grid-template-columns: max-content minmax(0, 1fr);
+      align-items: baseline;
+    }
+
+    .mova-page-question.mova-question-line strong {
+      max-width: none;
+      white-space: nowrap;
+      text-wrap: nowrap;
+    }
+
     .mova-sec {
       margin-bottom: 12px;
     }
@@ -2326,6 +2434,120 @@
       box-shadow: none;
     }
 
+    .mova-project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .mova-project-card {
+      display: block;
+      width: 100%;
+      min-height: 148px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      padding: 0;
+      perspective: 1200px;
+      text-align: left;
+    }
+
+    .mova-project-inner {
+      position: relative;
+      display: block;
+      min-height: 148px;
+      transform-style: preserve-3d;
+      transition: transform .48s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .mova-project-card.is-flipped .mova-project-inner {
+      transform: rotateY(180deg);
+    }
+
+    .mova-project-card:focus-visible .mova-project-inner {
+      outline: 3px solid rgba(37, 99, 235, .32);
+      outline-offset: 3px;
+    }
+
+    .mova-project-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid rgba(37, 99, 235, .3);
+      border-left: 5px solid var(--teal);
+      backface-visibility: hidden;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .94), rgba(238, 245, 255, .82));
+      padding: 15px 17px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55);
+    }
+
+    .mova-project-face::after {
+      content: "";
+      position: absolute;
+      right: -18px;
+      top: -28px;
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, .07);
+    }
+
+    .mova-project-back {
+      justify-content: flex-start;
+      transform: rotateY(180deg);
+      background:
+        linear-gradient(135deg, rgba(13, 42, 103, .96), rgba(29, 78, 216, .9));
+      border-color: rgba(13, 42, 103, .8);
+      color: #fff;
+    }
+
+    .mova-project-index {
+      position: relative;
+      z-index: 1;
+      color: var(--teal);
+      font-family: "Space Mono", "Noto Sans TC", sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .mova-project-back .mova-project-index {
+      color: rgba(255, 255, 255, .72);
+    }
+
+    .mova-project-face strong {
+      position: relative;
+      z-index: 1;
+      display: block;
+      margin-top: 9px;
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .mova-project-back strong {
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .mova-project-copy {
+      position: relative;
+      z-index: 1;
+      display: block;
+      margin-top: 8px;
+      color: rgba(255, 255, 255, .82);
+      font-size: 11.2px;
+      line-height: 1.58;
+    }
+
     .mova-timeline-board {
       display: grid;
       gap: 14px;
@@ -2351,11 +2573,11 @@
     .mova-month-column::before {
       content: attr(data-large);
       position: absolute;
-      right: 8px;
-      top: -8px;
+      right: 15px;
+      top: 12px;
       color: rgba(37, 99, 235, .11);
       font-family: "Archivo", "Noto Sans TC", sans-serif;
-      font-size: 72px;
+      font-size: 68px;
       font-weight: 900;
       line-height: 1;
     }
@@ -2470,6 +2692,33 @@
       opacity: .42;
     }
 
+    @media print {
+      body[data-version="mova-simplified"] .module-tab {
+        box-shadow: none !important;
+      }
+
+      body[data-version="mova-simplified"] .module-tab[data-module-target="all"] {
+        border-color: transparent !important;
+        background: linear-gradient(135deg, var(--teal-deep), var(--teal) 58%, var(--blue-glow)) !important;
+        color: #fff !important;
+      }
+
+      body[data-version="mova-simplified"] .module-tab:not([data-module-target="all"]) {
+        border-color: rgba(37, 99, 235, .28) !important;
+        background: #fff !important;
+        color: var(--ink) !important;
+      }
+
+      body[data-version="mova-simplified"] .mova-module-row,
+      body[data-version="mova-simplified"] .mova-module-row.is-featured,
+      body[data-version="mova-simplified"] .mova-module-row.is-dimmed {
+        opacity: 1 !important;
+        transform: none !important;
+        border-color: rgba(37, 99, 235, .2) !important;
+        background: #fff !important;
+      }
+    }
+
     .mova-flow {
       grid-template-columns: repeat(5, 1fr);
       margin-top: 14px;
@@ -2560,7 +2809,7 @@
 
     .mova-event-layout {
       display: grid;
-      grid-template-columns: 1.25fr .75fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 16px;
       margin-top: 18px;
       align-items: start;
@@ -2568,6 +2817,7 @@
 
     .mova-event-layout .mova-agenda {
       margin-top: 0;
+      width: 100%;
     }
 
     .mova-event-side {
@@ -2626,6 +2876,7 @@
       .mova-sec,
       .mova-route,
       .mova-lanes,
+      .mova-project-grid,
       .mova-v2 .timeline-rail,
       .mova-v2 .month-panel,
       .mova-cadence,
@@ -2654,6 +2905,10 @@
       .mova-launch-list .mova-launch-card,
       .mova-page-question {
         grid-template-columns: 1fr;
+      }
+
+      .mova-page-question.mova-question-line strong {
+        white-space: normal;
       }
 
       .mova-cover .mova-cover-grid {
@@ -2730,134 +2985,162 @@
     <div class="mova-cover-grid">
       <div>
         <div class="mova-kicker">2026/08/01 - 2026/10/31</div>
-        <h1 class="mova-title"><span>MOVA AI</span><span>三個月陪跑</span><span>課程提案</span></h1>
+        <h1 class="mova-title"><span>MOVA AI</span><span>Keep Building</span></h1>
 
         <div class="mova-statement">
           <strong>三個月內，把 MOVA 的品牌判斷、營運資料與工作流程，轉成同仁共用的 AI 工作資產。</strong>
-          <p>nuvaClub 線上課程、論壇作品牆、Line 陪跑、月中 Q&A、10 月底成果交流。</p>
-        </div>
-
-        <div class="mova-reading-map" aria-label="報告閱讀地圖">
-          <div><span>01</span><strong>提案核心</strong></div>
-          <div><span>02</span><strong>三個月節奏</strong></div>
-          <div><span>03</span><strong>課程到作品</strong></div>
-          <div><span>04</span><strong>作品檢核</strong></div>
-          <div><span>05</span><strong>期末交流</strong></div>
-          <div><span>06</span><strong>啟動準備</strong></div>
         </div>
       </div>
-
-      <aside class="mova-side-panel" aria-label="三個月成果摘要">
-        <header>
-          <span>Project Shape</span>
-          <strong>課程吸收 × 作品檢核 × 期末交流</strong>
-        </header>
-        <div class="mova-counts">
-          <div class="mova-count"><b>3</b><span>個月陪跑<br>8/1 至 10/31</span></div>
-          <div class="mova-count"><b>2</b><span>次月底小作品<br>8 月底、9 月底</span></div>
-          <div class="mova-count"><b>1</b><span>次大作品驗收<br>10 月底 3 小時交流</span></div>
-        </div>
-      </aside>
     </div>
 
     <div class="mova-cover-route" aria-label="三個月節奏">
       <div>
-        <b>08</b>
-        <strong>先做出第一個作品</strong>
-        <p>課程上線、Line 啟動、月中 Q&A、月底作品牆。</p>
+        <b>8 月</b>
+        <strong>做出第一個作品</strong>
       </div>
       <div>
-        <b>09</b>
-        <strong>把作品整理成流程</strong>
-        <p>補資料、補檢核點、補交接格式。</p>
+        <b>9 月</b>
+        <strong>作品變成流程</strong>
       </div>
       <div>
-        <b>10</b>
-        <strong>帶大作品進入驗收</strong>
-        <p>3 小時交流，排出後續導入順序。</p>
+        <b>10 月</b>
+        <strong>大作品驗收</strong>
       </div>
     </div>
     <div class="pgn">01</div>
   </section>
 
+  <section class="page mova-v2 mova-toc-page">
+    <div class="rh">
+      <span>目錄</span>
+      <span>01-06</span>
+    </div>
+
+    <div class="mova-toc-hero">
+      <span class="mova-kicker">CONTENTS</span>
+      <h2>報告目錄</h2>
+    </div>
+
+    <div class="mova-reading-map" aria-label="報告目錄">
+      <div><span>01</span><strong>提案核心</strong></div>
+      <div><span>02</span><strong>三個月節奏</strong></div>
+      <div><span>03</span><strong>課程到作品</strong></div>
+      <div><span>04</span><strong>作品檢核</strong></div>
+      <div><span>05</span><strong>期末交流</strong></div>
+      <div><span>06</span><strong>啟動準備</strong></div>
+    </div>
+
+    <div class="pgn">02</div>
+  </section>
+
   <section class="page mova-v2">
     <div class="rh">
       <span>提案核心</span>
-      <span>六個需求收斂為三套能力</span>
+      <span>六個 Project 作品方向</span>
     </div>
 
     <div class="mova-sec">
       <div class="mova-sec-num">01</div>
       <div>
-        <h2>先收斂，再陪跑。</h2>
+        <h2>六個 Project，三個月做成作品。</h2>
       </div>
     </div>
 
-    <div class="mova-page-question">
+    <div class="mova-page-question mova-question-line">
       <span>此頁回答</span>
       <strong>六個需求如何變成一套三個月可以推進的學習與作品架構？</strong>
     </div>
 
-    <p class="mova-lead">MOVA 的六個需求可整理成三套能力：品牌判斷、營收與服務雷達、營運流程自動化。三個月的學習成果，都會回到作品與檢核。</p>
+    <div class="mova-project-grid" aria-label="六個 AI Project">
+      <button class="mova-project-card" type="button" data-project-card aria-pressed="false">
+        <span class="mova-project-inner">
+          <span class="mova-project-face mova-project-front">
+            <span class="mova-project-index">01</span>
+            <strong>品牌核心概念建立</strong>
+          </span>
+          <span class="mova-project-face mova-project-back">
+            <span class="mova-project-index">01</span>
+            <strong>品牌核心概念建立</strong>
+            <span class="mova-project-copy">利用既有品牌資料建立 MOVA 品牌說明書，讓同仁能套用在各自使用的 AI 工具中，形成一致的判斷流程、使用方法與決策依據。</span>
+          </span>
+        </span>
+      </button>
 
-    <div class="mova-route" aria-label="提案轉化路徑">
-      <div class="mova-route-card">
-        <b>6</b>
-        <strong>需求題目</strong>
-        <span>品牌、客服、數據、趨勢、素材、流程。</span>
-      </div>
-      <div class="mova-arrow" aria-hidden="true"></div>
-      <div class="mova-route-card">
-        <b>3</b>
-        <strong>能力路線</strong>
-        <span>Brand OS、Revenue Radar、Ops Automation。</span>
-      </div>
-      <div class="mova-arrow" aria-hidden="true"></div>
-      <div class="mova-route-card">
-        <b>1</b>
-        <strong>作品資產庫</strong>
-        <span>HR 與主管可檢核、團隊可沿用。</span>
-      </div>
-    </div>
+      <button class="mova-project-card" type="button" data-project-card aria-pressed="false">
+        <span class="mova-project-inner">
+          <span class="mova-project-face mova-project-front">
+            <span class="mova-project-index">02</span>
+            <strong>客服 AI 回覆</strong>
+          </span>
+          <span class="mova-project-face mova-project-back">
+            <span class="mova-project-index">02</span>
+            <strong>客服 AI 回覆</strong>
+            <span class="mova-project-copy">自動收集官網與平台客服內容，建立 AI 回覆草稿、分類與升級規則，並定期彙整客服事件，讓常見問題與風險能被追蹤。</span>
+          </span>
+        </span>
+      </button>
 
-    <div class="mova-lanes">
-      <article class="mova-lane is-primary">
-        <small>Lane A</small>
-        <h3>Brand OS</h3>
-        <p>MOVA 的品牌語氣、產品事實、質感判斷與禁忌說法。</p>
-        <ul>
-          <li>品牌 AI 說明書</li>
-          <li>AI 素材審核規範</li>
-          <li>人物 IP 初版設定</li>
-        </ul>
-      </article>
-      <article class="mova-lane">
-        <small>Lane B</small>
-        <h3>Revenue & Service Radar</h3>
-        <p>客服內容、銷售日報與外部趨勢，整理成每週可讀的判斷面板。</p>
-        <ul>
-          <li>客服回覆與事件彙整</li>
-          <li>全平台銷售數據分析</li>
-          <li>每週趨勢曝光題材</li>
-        </ul>
-      </article>
-      <article class="mova-lane">
-        <small>Lane C</small>
-        <h3>Ops Automation</h3>
-        <p>高重複、格式固定、需要人工確認的營運文件流程。</p>
-        <ul>
-          <li>訂單文件</li>
-          <li>出貨通知</li>
-          <li>週報與內部紀錄</li>
-        </ul>
-      </article>
+      <button class="mova-project-card" type="button" data-project-card aria-pressed="false">
+        <span class="mova-project-inner">
+          <span class="mova-project-face mova-project-front">
+            <span class="mova-project-index">03</span>
+            <strong>數據整理及分析</strong>
+          </span>
+          <span class="mova-project-face mova-project-back">
+            <span class="mova-project-index">03</span>
+            <strong>數據整理及分析</strong>
+            <span class="mova-project-copy">以日為維度定期收集各平台銷售數據，比對平台差異與異常，輸出行銷活動、廣告預算分配與下一步建議。</span>
+          </span>
+        </span>
+      </button>
+
+      <button class="mova-project-card" type="button" data-project-card aria-pressed="false">
+        <span class="mova-project-inner">
+          <span class="mova-project-face mova-project-front">
+            <span class="mova-project-index">04</span>
+            <strong>趨勢分析</strong>
+          </span>
+          <span class="mova-project-face mova-project-back">
+            <span class="mova-project-index">04</span>
+            <strong>趨勢分析</strong>
+            <span class="mova-project-copy">用 AI 每週蒐集全球網路資訊與時事，判斷已發生或即將發生的事件是否能連回 MOVA，轉成可用的曝光題材。</span>
+          </span>
+        </span>
+      </button>
+
+      <button class="mova-project-card" type="button" data-project-card aria-pressed="false">
+        <span class="mova-project-inner">
+          <span class="mova-project-face mova-project-front">
+            <span class="mova-project-index">05</span>
+            <strong>降低素材成本</strong>
+          </span>
+          <span class="mova-project-face mova-project-back">
+            <span class="mova-project-index">05</span>
+            <strong>降低素材成本</strong>
+            <span class="mova-project-copy">導入 AI 生成素材，先處理反光外殼與高級質感的擬真問題；同時建立 MOVA 專屬 AI 人物 IP，延伸社群內容。</span>
+          </span>
+        </span>
+      </button>
+
+      <button class="mova-project-card" type="button" data-project-card aria-pressed="false">
+        <span class="mova-project-inner">
+          <span class="mova-project-face mova-project-front">
+            <span class="mova-project-index">06</span>
+            <strong>作業流程自動化</strong>
+          </span>
+          <span class="mova-project-face mova-project-back">
+            <span class="mova-project-index">06</span>
+            <strong>作業流程自動化</strong>
+            <span class="mova-project-copy">自動生成訂單、出貨文件與其他重複性營運文件，讓固定格式的工作流程更快完成，並保留人工確認節點。</span>
+          </span>
+        </span>
+      </button>
     </div>
 
     <div class="mova-blue-band">
-      <strong>這份提案的重點，是把學習過程轉成公司內部能留下的作品。</strong>
-      <p>每個作品都要說清楚資料來源、使用方式、檢核責任與導入條件。</p>
+      <strong>提案目標：把學習過程轉成公司內部能實戰的 AI 作品。</strong>
     </div>
-    <div class="pgn">02</div>
+    <div class="pgn">03</div>
   </section>
 
   <section class="page mova-v2">
@@ -2878,13 +3161,13 @@
       <strong>8/1 到 10/31 期間，每個月要推進什麼、交付什麼、誰來看？</strong>
     </div>
 
-    <p class="mova-lead">每月節奏固定：月初吸收、月中 Q&A、月底交作品。10 月底改為 3 小時交流，完成大作品驗收與導入排序。</p>
+    <p class="mova-lead">每月節奏固定：月初吸收、月中 Q&A、月底交作品。10 月底改為 3 小時交流，完成大作品擴散與導入排序。</p>
 
     <div class="proposal-timeline mova-timeline-board" data-timeline>
       <div class="timeline-tabs" role="tablist" aria-label="三個月月份切換">
         <button class="timeline-tab is-active" type="button" role="tab" aria-selected="true" data-phase-target="aug">08｜吸收</button>
-        <button class="timeline-tab" type="button" role="tab" aria-selected="false" data-phase-target="sep">09｜流程</button>
-        <button class="timeline-tab" type="button" role="tab" aria-selected="false" data-phase-target="oct">10｜驗收</button>
+        <button class="timeline-tab" type="button" role="tab" aria-selected="false" data-phase-target="sep">09｜創造</button>
+        <button class="timeline-tab" type="button" role="tab" aria-selected="false" data-phase-target="oct">10｜擴散</button>
       </div>
 
       <div class="mova-month-board" aria-label="三個月關鍵節點">
@@ -2900,8 +3183,8 @@
         </article>
         <article class="mova-month-column milestone" data-phase="sep" data-large="09">
           <span>September</span>
-          <strong>流程補強與第二次作品</strong>
-          <p>把第一次作品補成更容易交接的流程版本。</p>
+          <strong>創造第二次作品</strong>
+          <p>把第一次作品補成更完整、可交接、可展示的工作流。</p>
           <ul>
             <li>9 月中 Q&A 02</li>
             <li>9 月底小作品 02</li>
@@ -2910,8 +3193,8 @@
         </article>
         <article class="mova-month-column milestone" data-phase="oct" data-large="10">
           <span>October</span>
-          <strong>大作品驗收與導入排序</strong>
-          <p>把可展示的大作品帶進期末交流，判斷下一階段。</p>
+          <strong>擴散大作品與導入排序</strong>
+          <p>把可展示的大作品帶進期末交流，整理後續擴散路徑。</p>
           <ul>
             <li>10 月中 Q&A 03</li>
             <li>10 月底 3 小時交流</li>
@@ -2936,7 +3219,7 @@
         <article class="month-panel" data-phase-panel="sep">
           <div>
             <span>September</span>
-            <h3>把作品整理成可交接流程</h3>
+            <h3>創造可交接的工作流</h3>
             <p>第二個小作品需補上操作步驟、輸出格式、人工檢核與適用限制。</p>
           </div>
           <ul>
@@ -2948,7 +3231,7 @@
         <article class="month-panel" data-phase-panel="oct">
           <div>
             <span>October</span>
-            <h3>用大作品決定導入優先順序</h3>
+            <h3>擴散成果並決定導入順序</h3>
             <p>10 月底集中展示，HR 與主管依實用性、風險與可複製性判斷下一步。</p>
           </div>
           <ul>
@@ -2964,7 +3247,7 @@
       <div><strong>月中｜30 分鐘 Q&A</strong><span>校準題目、資料準備、工具用法與檢核方式。</span></div>
       <div><strong>月底｜論壇作品牆</strong><span>作品公開沉澱，HR、主管與同仁能集中查看。</span></div>
     </div>
-    <div class="pgn">03</div>
+    <div class="pgn">04</div>
   </section>
 
   <section class="page mova-v2">
@@ -3050,7 +3333,7 @@
       <div class="mova-flow-step"><span>04</span><strong>發布論壇</strong></div>
       <div class="mova-flow-step"><span>05</span><strong>檢核與收藏</strong></div>
     </div>
-    <div class="pgn">04</div>
+    <div class="pgn">05</div>
   </section>
 
   <section class="page mova-v2">
@@ -3132,7 +3415,7 @@
         <div class="mova-template-card"><span>欄位 04</span><strong>人工檢核</strong></div>
       </div>
     </div>
-    <div class="pgn">05</div>
+    <div class="pgn">06</div>
   </section>
 
   <section class="page mova-v2">
@@ -3150,10 +3433,10 @@
 
     <div class="mova-page-question">
       <span>此頁回答</span>
-      <strong>10 月底的 3 小時交流如何把學習成果轉成下一階段導入判斷？</strong>
+      <strong>10 月底的 3 小時交流<br>如何展現每一個同仁的學習成果？</strong>
     </div>
 
-    <p class="mova-lead">期末活動聚焦展示、討論與排序。每個大作品都要說明問題、使用方法、成果畫面、人工檢核與導入條件。</p>
+    <p class="mova-lead">期末活動聚焦展示、討論與排序。每個大作品都要說明問題、<br>使用方法、成果畫面、人工檢核與導入條件。</p>
 
     <div class="mova-event-layout">
       <div class="mova-agenda" aria-label="三小時交流活動流程">
@@ -3179,14 +3462,8 @@
         </div>
       </div>
 
-      <aside class="mova-event-side" aria-label="期末交流輸出">
-        <div class="mova-output"><strong>模板候選</strong><span>可放入 MOVA 內部訓練與日常使用。</span></div>
-        <div class="mova-output"><strong>SOP 候選</strong><span>需補權限、欄位或人工審核節點。</span></div>
-        <div class="mova-output"><strong>資料缺口</strong><span>品牌資料、FAQ、銷售欄位、流程樣本。</span></div>
-        <div class="mova-output"><strong>系統化候選</strong><span>適合串接平台、表單、通知或報表。</span></div>
-      </aside>
     </div>
-    <div class="pgn">06</div>
+    <div class="pgn">07</div>
   </section>
 
   <section class="page mova-v2">
@@ -3202,12 +3479,12 @@
       </div>
     </div>
 
-    <div class="mova-page-question">
+    <div class="mova-page-question mova-question-line">
       <span>此頁回答</span>
       <strong>8/1 前 MOVA 與 nuva 各自需要準備什麼，才能順利開跑？</strong>
     </div>
 
-    <p class="mova-lead">若確認推進，建議先完成名單、權限、檢核規則與資料樣本。8/1 課程上線後，同仁即可進入同一套節奏。</p>
+    <p class="mova-lead">若確認推進，建議先完成名單、權限、檢核規則與資料樣本。<br>8/1 課程上線後，同仁即可進入同一套節奏。</p>
 
     <div class="mova-launch-board">
       <div class="mova-launch-list" aria-label="啟動前確認事項">
@@ -3233,7 +3510,7 @@
       <strong>三個月後，MOVA 會擁有一批可被檢核、複製與延伸的 AI 工作作品。</strong>
       <p>下一階段即可挑選高價值作品，進入標準化、SOP 化或系統串接。</p>
     </div>
-    <div class="pgn">07</div>
+    <div class="pgn">08</div>
   </section>
 
   <script>
@@ -3261,6 +3538,13 @@
         tab.addEventListener("click", () => activatePhase(tab.dataset.phaseTarget));
       });
     }
+
+    document.querySelectorAll("[data-project-card]").forEach((card) => {
+      card.addEventListener("click", () => {
+        const flipped = card.classList.toggle("is-flipped");
+        card.setAttribute("aria-pressed", String(flipped));
+      });
+    });
 
     const moduleCopy = {
       all: ["一門課，一種作品方向", "切換模組可查看 MOVA 對應的成果類型。全部模式呈現完整作品地圖。"],
@@ -3300,6 +3584,8 @@
       controls.forEach((control) => {
         control.addEventListener("click", () => activateModule(control.dataset.moduleTarget));
       });
+
+      window.addEventListener("beforeprint", () => activateModule("all"));
     }
   </script>
   <script src="../assets/report-reader.js?v=20260527-mobile-tables" defer></script>
