@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<!-- report-meta
+{
+  "title": "恆隆行 AI 圖文影音工作坊提案",
+  "subtitle": "從展品照到 20 秒產品介紹影片的兩小時實作課",
+  "date": "2026-05-29",
+  "period": "2 小時工作坊｜日期待定",
+  "category": "課程提案",
+  "client": "恆隆行",
+  "clientGroup": "企業品牌與商品行銷",
+  "timeline": "2026 五月",
+  "tags": ["AI 圖文影音", "產品介紹影片", "PM 內訓", "社群素材", "廣告文案", "Google Flow", "ChatGPT"],
+  "thumbnail": "",
+  "visibility": "private"
+}
+-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>恆隆行 AI 圖文影音工作坊提案</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: oklch(99% 0.004 250);
+      --paper-soft: oklch(96.5% 0.012 255);
+      --desk: #f8fbff;
+      --ink: #13203c;
+      --muted: #4a5570;
+      --faint: #8993a8;
+      --line: rgba(19, 32, 60, .16);
+      --line-strong: rgba(19, 32, 60, .42);
+      --blue: #1d4ed8;
+      --blue-deep: #12286a;
+      --blue-soft: #eaf1ff;
+      --signal: #008f72;
+      --signal-soft: #dff7f0;
+      --prize: #f2c94c;
+      --shadow: rgba(20, 40, 90, .18);
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
+      color: var(--ink);
+      font-family: "Noto Sans TC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 34px 0;
+    }
+
+    .page {
+      position: relative;
+      width: min(210mm, calc(100vw - 28px));
+      min-height: 297mm;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 10px 36px var(--shadow);
+      padding: 21mm 19mm 16mm;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 22mm, rgba(29, 78, 216, .1) 22mm, rgba(29, 78, 216, .1) calc(22mm + 1px), transparent calc(22mm + 1px)),
+        linear-gradient(0deg, transparent 0, transparent calc(100% - 16mm), rgba(19, 32, 60, .08) calc(100% - 16mm), rgba(19, 32, 60, .08) calc(100% - 16mm + 1px), transparent calc(100% - 16mm + 1px));
+    }
+
+    .page > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .rh,
+    .kicker,
+    .meta,
+    .tag,
+    .pgn,
+    .mini-label,
+    .time,
+    .toc-head,
+    .toc-sub,
+    .frame-label,
+    .vote-chip,
+    .quote-label {
+      font-family: "Space Mono", "Noto Sans TC", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .rh {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--ink);
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .pgn {
+      position: absolute;
+      right: 19mm;
+      bottom: 13mm;
+      color: var(--ink);
+      font-size: 11px;
+    }
+
+    .cover {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 297mm;
+      gap: 18px;
+    }
+
+    .cover-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .brand-lockup img {
+      width: 92px;
+      height: auto;
+      display: block;
+    }
+
+    .confidential {
+      border: 1px solid var(--line-strong);
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      padding: 7px 11px;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .cover-main {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 26px;
+      align-items: center;
+      padding: 12mm 0 6mm;
+    }
+
+    .kicker {
+      color: var(--blue);
+      font-size: 12px;
+    }
+
+    h1 {
+      max-width: 128mm;
+      margin-top: 14px;
+      color: var(--ink);
+      font-size: 55px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h1 span {
+      display: block;
+    }
+
+    .subtitle {
+      max-width: 136mm;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .tagline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .tag {
+      border: 1px solid var(--line-strong);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 10px;
+      padding: 6px 9px;
+    }
+
+    .hero-board {
+      border: 2px solid var(--ink);
+      background:
+        linear-gradient(135deg, rgba(29, 78, 216, .14), transparent 44%),
+        var(--paper);
+      padding: 14px;
+      box-shadow: 8px 8px 0 rgba(29, 78, 216, .12);
+    }
+
+    .product-frame {
+      position: relative;
+      min-height: 104mm;
+      border: 1px solid var(--line-strong);
+      background:
+        linear-gradient(90deg, rgba(19, 32, 60, .08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(19, 32, 60, .08) 1px, transparent 1px),
+        oklch(98% 0.01 255);
+      background-size: 15px 15px;
+      overflow: hidden;
+    }
+
+    .product-frame::before {
+      content: "";
+      position: absolute;
+      left: 36px;
+      top: 34px;
+      width: 118px;
+      height: 220px;
+      border: 9px solid var(--blue-deep);
+      border-radius: 64px 64px 22px 22px;
+      transform: rotate(-9deg);
+      background:
+        radial-gradient(circle at 50% 18%, var(--paper) 0 19px, var(--blue-deep) 20px 29px, transparent 30px),
+        linear-gradient(180deg, rgba(255, 255, 255, .92), rgba(29, 78, 216, .1));
+      box-shadow: 16px 18px 0 rgba(29, 78, 216, .1);
+    }
+
+    .product-frame::after {
+      content: "";
+      position: absolute;
+      left: 132px;
+      top: 92px;
+      width: 70px;
+      height: 64px;
+      border: 8px solid var(--blue-deep);
+      border-left: 0;
+      border-radius: 0 42px 42px 0;
+      transform: rotate(-9deg);
+      background: var(--paper);
+    }
+
+    .frame-chip {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      right: 18px;
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 12px;
+      border-top: 2px solid var(--ink);
+      padding-top: 14px;
+    }
+
+    .frame-chip b {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      background: var(--blue-deep);
+      color: var(--paper);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .frame-chip span {
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      line-height: 1.65;
+    }
+
+    .cover-grid,
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    .cover-grid > div,
+    .stats > div {
+      min-height: 29mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 15px 16px;
+      border-right: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .cover-grid > div:last-child,
+    .stats > div:last-child {
+      border-right: 0;
+    }
+
+    .meta {
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 9px;
+    }
+
+    .value {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .sec {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 18px;
+      margin: 44px 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .sec:first-of-type {
+      margin-top: 34px;
+    }
+
+    .sec-num {
+      color: var(--blue);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 38px;
+      font-weight: 900;
+      line-height: .9;
+    }
+
+    h2 {
+      color: var(--ink);
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .lead {
+      max-width: 154mm;
+      border-left: 4px solid var(--blue);
+      padding-left: 18px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.9;
+      text-wrap: pretty;
+    }
+
+    .body,
+    .card p,
+    .signal p,
+    .agenda-main p,
+    .agenda-side,
+    .flow-node p,
+    .deliverable p,
+    .quote-note,
+    .toc-note,
+    .work-note p,
+    .term-list li {
+      color: var(--muted);
+      font-size: 12.7px;
+      line-height: 1.85;
+      text-wrap: pretty;
+    }
+
+    .body {
+      margin-top: 16px;
+    }
+
+    .stats {
+      margin: 20px 0 18px;
+    }
+
+    .stat-k {
+      color: var(--blue);
+      font-size: 10px;
+    }
+
+    .stat-v {
+      margin-top: 6px;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 31px;
+      font-weight: 900;
+      line-height: 1.08;
+    }
+
+    .stat-s {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .toc-head {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 10px;
+      color: var(--blue);
+      font-size: 11px;
+    }
+
+    .toc-title {
+      margin-top: 30px;
+      max-width: 150mm;
+    }
+
+    .toc-title h2 {
+      font-size: 42px;
+    }
+
+    .toc-title p {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.75;
+    }
+
+    .toc {
+      margin-top: 28px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .toc-row {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 24px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toc-l {
+      display: flex;
+      gap: 14px;
+      align-items: baseline;
+    }
+
+    .toc-l .tn {
+      color: var(--blue);
+      font-family: "Archivo", sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .toc-l .tt {
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .toc-sub {
+      display: grid;
+      grid-template-columns: 58px 1fr 30px;
+      gap: 10px;
+      padding: 7px 0;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--line);
+      font-size: 10.5px;
+      transition: background 180ms cubic-bezier(.23, 1, .32, 1), padding 180ms cubic-bezier(.23, 1, .32, 1);
+    }
+
+    .toc-sub:hover,
+    .toc-sub:focus-visible {
+      background: var(--blue-soft);
+      padding-left: 8px;
+      outline: none;
+    }
+
+    .toc-sub span:first-child,
+    .toc-sub span:last-child {
+      color: var(--blue);
+    }
+
+    .toc-note {
+      margin-top: 20px;
+      border: 1px solid var(--line-strong);
+      background: var(--blue-soft);
+      padding: 14px 16px;
+      font-weight: 700;
+    }
+
+    .signal-grid,
+    .principles,
+    .deliverables,
+    .quote-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .signal,
+    .card,
+    .principle,
+    .deliverable,
+    .work-note,
+    .quote-box {
+      border: 1px solid var(--line-strong);
+      background: var(--paper);
+      padding: 16px;
+    }
+
+    .signal {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      min-height: 115px;
+      border-top: 5px solid var(--blue);
+    }
+
+    .signal-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      background: var(--blue-deep);
+      color: var(--paper);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .principle {
+      border-top: 6px solid var(--blue);
+      min-height: 126px;
+    }
+
+    .principle:nth-child(2),
+    .principle:nth-child(4) {
+      border-top-color: var(--signal);
+    }
+
+    .principle h3,
+    .deliverable h3,
+    .card h3 {
+      margin-bottom: 9px;
+      font-size: 17px;
+    }
+
+    .quote-strip,
+    .closing {
+      margin-top: 18px;
+      border: 2px solid var(--ink);
+      background:
+        linear-gradient(90deg, rgba(29, 78, 216, .12), transparent 55%),
+        var(--paper);
+      padding: 18px 20px;
+    }
+
+    .quote-strip strong,
+    .closing strong {
+      display: block;
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.6;
+      text-wrap: pretty;
+    }
+
+    .quote-strip p,
+    .closing p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.85;
+      text-wrap: pretty;
+    }
+
+    .journey {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 20px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    .journey-step {
+      min-height: 126px;
+      padding: 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .journey-step:last-child {
+      border-right: 0;
+    }
+
+    .mini-label {
+      display: inline-block;
+      color: var(--blue);
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
+
+    .journey-step h3 {
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .journey-step p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12.2px;
+      line-height: 1.75;
+    }
+
+    .agenda {
+      margin-top: 16px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .agenda-row {
+      display: grid;
+      grid-template-columns: 31mm 1fr 41mm;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: start;
+    }
+
+    .time {
+      color: var(--blue);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .agenda-main h3 {
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .agenda-main p {
+      margin-top: 5px;
+    }
+
+    .agenda-side {
+      border-left: 3px solid var(--signal-soft);
+      padding-left: 10px;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: 20px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    .pipe-card {
+      min-height: 142px;
+      padding: 15px;
+      border-right: 1px solid var(--line);
+    }
+
+    .pipe-card:last-child {
+      border-right: 0;
+    }
+
+    .pipe-card .frame-label {
+      color: var(--blue);
+      font-size: 10px;
+    }
+
+    .pipe-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin: 12px 0;
+      border: 2px solid var(--ink);
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      font-family: "Archivo", sans-serif;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .pipe-card p {
+      color: var(--muted);
+      font-size: 11.8px;
+      line-height: 1.7;
+    }
+
+    .demo-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    .flow {
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      padding: 14px;
+    }
+
+    .flow-node {
+      position: relative;
+      min-height: 70px;
+      padding: 12px 12px 12px 48px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .flow-node:last-child {
+      border-bottom: 0;
+    }
+
+    .flow-node::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      top: 12px;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      background: var(--blue-deep);
+      color: var(--paper);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .work-note {
+      border-left: 6px solid var(--signal);
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .check-list {
+      margin-top: 12px;
+    }
+
+    .check-list li {
+      position: relative;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 12.4px;
+      line-height: 1.8;
+      margin-top: 7px;
+    }
+
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .82em;
+      width: 8px;
+      height: 2px;
+      background: var(--blue);
+    }
+
+    .canvas {
+      margin-top: 18px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    .canvas-head {
+      display: grid;
+      grid-template-columns: 33mm 1fr;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .canvas-head > div {
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .canvas-head > div:first-child {
+      background: var(--blue-deep);
+      color: var(--paper);
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .canvas-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .canvas-cell {
+      min-height: 96px;
+      padding: 14px;
+      border-right: 1px solid var(--line);
+    }
+
+    .canvas-cell:last-child {
+      border-right: 0;
+    }
+
+    .canvas-cell h3 {
+      font-size: 14px;
+    }
+
+    .canvas-cell p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .vote-board {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 16px;
+      margin-top: 18px;
+      align-items: stretch;
+    }
+
+    .vote-card {
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      padding: 16px;
+    }
+
+    .vote-card h3 {
+      font-size: 18px;
+    }
+
+    .vote-line {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .vote-line:last-child {
+      border-bottom: 0;
+    }
+
+    .vote-chip {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      background: var(--prize);
+      color: var(--ink);
+      font-size: 11px;
+    }
+
+    .vote-line p {
+      color: var(--muted);
+      font-size: 12.3px;
+      line-height: 1.75;
+    }
+
+    .deliverable {
+      min-height: 132px;
+      border-top: 5px solid var(--blue);
+    }
+
+    .deliverable:nth-child(2),
+    .deliverable:nth-child(5) {
+      border-top-color: var(--signal);
+    }
+
+    .deliverable:nth-child(3),
+    .deliverable:nth-child(6) {
+      border-top-color: var(--prize);
+    }
+
+    .quote-grid {
+      align-items: stretch;
+    }
+
+    .quote-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 154px;
+      border: 2px solid var(--ink);
+    }
+
+    .quote-label {
+      color: var(--blue);
+      font-size: 10px;
+    }
+
+    .quote-number {
+      margin-top: 8px;
+      font-family: "Archivo", "Noto Sans TC", sans-serif;
+      font-size: 39px;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .quote-number span {
+      display: block;
+    }
+
+    .calc-table {
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    .calc-row {
+      display: grid;
+      grid-template-columns: 1fr 38mm;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+
+    .calc-row:last-child {
+      border-bottom: 0;
+    }
+
+    .calc-row strong {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .calc-row span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: right;
+    }
+
+    .calc-row.total {
+      background: var(--blue-deep);
+      color: var(--paper);
+    }
+
+    .calc-row.total span {
+      color: var(--paper);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .term-list {
+      margin-top: 18px;
+      border-top: 2px solid var(--ink);
+      padding-top: 14px;
+    }
+
+    .term-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-top: 7px;
+    }
+
+    .term-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .86em;
+      width: 10px;
+      height: 2px;
+      background: var(--blue);
+    }
+
+    .sign {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      margin-top: 22px;
+    }
+
+    .sign div {
+      padding: 16px 18px 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .sign div:last-child {
+      border-right: 0;
+    }
+
+    .sign .sk {
+      color: var(--muted);
+      font-family: "Space Mono", "Noto Sans TC", sans-serif;
+      font-size: 8.5px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .sign .sv {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    #p-quote .sec {
+      margin-top: 34px;
+      margin-bottom: 18px;
+    }
+
+    #p-quote .quote-grid {
+      margin-top: 14px;
+    }
+
+    #p-quote .term-list {
+      margin-top: 14px;
+      padding-top: 12px;
+    }
+
+    #p-quote .term-list li {
+      margin-top: 5px;
+      font-size: 12.2px;
+      line-height: 1.75;
+    }
+
+    #p-quote .closing {
+      margin-top: 14px;
+      padding: 15px 18px;
+    }
+
+    #p-quote .sign {
+      margin-top: 16px;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        break-after: page;
+      }
+
+      .toc-sub {
+        color: var(--ink);
+      }
+
+      .signal,
+      .card,
+      .principle,
+      .deliverable,
+      .quote-box,
+      .agenda-row,
+      .pipe-card,
+      .flow-node,
+      .canvas-cell,
+      .vote-line {
+        break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 780px) {
+      body {
+        padding: 12px 0;
+      }
+
+      .page {
+        width: calc(100vw - 18px);
+        min-height: auto;
+        padding: 30px 22px 42px;
+        margin-bottom: 14px;
+      }
+
+      .page::before {
+        display: none;
+      }
+
+      .pgn {
+        right: 22px;
+        bottom: 18px;
+      }
+
+      .cover {
+        min-height: auto;
+      }
+
+      .cover-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .cover-main,
+      .signal-grid,
+      .principles,
+      .deliverables,
+      .quote-grid,
+      .demo-layout,
+      .vote-board,
+      .cover-grid,
+      .stats,
+      .journey,
+      .pipeline,
+      .canvas-head,
+      .canvas-grid,
+      .calc-row,
+      .toc-row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
+      .toc-title h2 {
+        font-size: 34px;
+      }
+
+      .cover-grid > div,
+      .stats > div,
+      .journey-step,
+      .pipe-card,
+      .canvas-cell {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .cover-grid > div:last-child,
+      .stats > div:last-child,
+      .journey-step:last-child,
+      .pipe-card:last-child,
+      .canvas-cell:last-child {
+        border-bottom: 0;
+      }
+
+      .sec {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .agenda-row {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      .agenda-side {
+        border-left: 0;
+        border-top: 3px solid var(--signal-soft);
+        padding: 8px 0 0;
+      }
+
+      .calc-row span {
+        text-align: left;
+      }
+
+      .product-frame {
+        min-height: 280px;
+      }
+    }
+  </style>
+  <script src="../assets/report-theme.js"></script>
+</head>
+
+<body>
+  <section class="page cover" id="p-cover">
+    <div class="cover-top">
+      <div class="brand-lockup">
+        <img src="../blue_logo_nuva.png" alt="nuva">
+        <span>AI 課程提案</span>
+      </div>
+      <div class="confidential">不公開提案文件｜PRIVATE</div>
+    </div>
+
+    <div class="cover-main">
+      <div>
+        <div class="kicker">2026 課程提案</div>
+        <h1><span>恆隆行 AI</span><span>圖文影音工作坊</span></h1>
+        <p class="subtitle">兩小時帶領 PM 與各處室主管，從一張展品照片開始，完成廣告文案、產品視覺與 20 秒產品介紹影片。</p>
+        <div class="tagline">
+          <span class="tag">ChatGPT 腳本與圖片生成</span>
+          <span class="tag">Google Flow 圖片轉影片</span>
+          <span class="tag">40+ PM 現場實作</span>
+          <span class="tag">Dyson 產品任務主軸</span>
+        </div>
+      </div>
+
+      <div class="hero-board" aria-label="從展品照到產品影片的提案視覺">
+        <div class="product-frame">
+          <div class="frame-chip">
+            <b>20s</b>
+            <span>拍一張展品照，生成文案、產品圖與可以輪播展示的產品介紹影片。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-grid">
+      <div>
+        <div class="meta">提案對象</div>
+        <div class="value">恆隆行<br>主管、副總、協理與 PM</div>
+      </div>
+      <div>
+        <div class="meta">課程形式</div>
+        <div class="value">2 小時工作坊<br>示範、實作、輪播投票</div>
+      </div>
+      <div>
+        <div class="meta">提案日期</div>
+        <div class="value">2026 / 05 / 29<br>不公開版本</div>
+      </div>
+    </div>
+    <div class="pgn">01</div>
+  </section>
+
+  <section class="page" id="toc">
+    <div class="toc-head"><span>00.0</span><span>目錄</span></div>
+
+    <div class="toc-title">
+      <h2>讓決策者一眼看懂：價值、流程、成果。</h2>
+      <p>這份提案以兩小時為單位設計，重點不是再介紹 AI 概念，而是讓 PM 能帶著自己的產品語言，當場做出可展示的素材。</p>
+    </div>
+
+    <div class="toc">
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">01</span><span class="tt">提案總覽</span></div>
+        <div>
+          <a class="toc-sub" href="#p-context"><span>01.1 /</span><span>課程背景與目標</span><span>03</span></a>
+          <a class="toc-sub" href="#p-value"><span>01.2 /</span><span>學習價值與參與者設計</span><span>04</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">02</span><span class="tt">兩小時架構</span></div>
+        <div>
+          <a class="toc-sub" href="#p-agenda"><span>02.1 /</span><span>120 分鐘課程流程</span><span>05</span></a>
+          <a class="toc-sub" href="#p-case"><span>02.2 /</span><span>Dyson 產品任務主軸</span><span>06</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">03</span><span class="tt">實作與互動</span></div>
+        <div>
+          <a class="toc-sub" href="#p-practice"><span>03.1 /</span><span>30 分鐘實作與現場輪播</span><span>07</span></a>
+          <a class="toc-sub" href="#p-deliverables"><span>03.2 /</span><span>交付物、教材與獎品機制</span><span>08</span></a>
+        </div>
+      </div>
+      <div class="toc-row">
+        <div class="toc-l"><span class="tn">04</span><span class="tt">費用與下一步</span></div>
+        <div>
+          <a class="toc-sub" href="#p-quote"><span>04.1 /</span><span>報價、範圍與確認事項</span><span>09</span></a>
+        </div>
+      </div>
+    </div>
+
+    <p class="toc-note">可交付成果：一份可列印的 A4 提案、一套現場工作坊流程，以及讓 PM 在課程結束前完成 20 秒影片的操作節奏。</p>
+    <div class="pgn">02</div>
+  </section>
+
+  <section class="page" id="p-context">
+    <div class="rh">
+      <span>提案背景</span>
+      <span>從 Prompt 基礎走向可交付素材</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">01</div>
+      <div>
+        <h2>課程背景與提案目標</h2>
+      </div>
+    </div>
+
+    <p class="lead">恆隆行內部已經有 Prompt 撰寫與 AI 基本概念的分享，本次工作坊建議往前推進一層：不只知道如何提問，而是知道如何把提問變成廣告文案、產品視覺與可以展示的短影片。</p>
+
+    <div class="stats">
+      <div>
+        <div class="stat-k">參與對象</div>
+        <div class="stat-v">40+ PM</div>
+        <div class="stat-s">並包含各處室主管、副總、協理等領導角色</div>
+      </div>
+      <div>
+        <div class="stat-k">課程長度</div>
+        <div class="stat-v">2 小時</div>
+        <div class="stat-s">60 分鐘示範、30 分鐘實作、10 分鐘投票、20 分鐘交流與問答</div>
+      </div>
+      <div>
+        <div class="stat-k">現場成果</div>
+        <div class="stat-v">20 秒影片</div>
+        <div class="stat-s">每組在課程結束前產出可輪播的產品介紹影片</div>
+      </div>
+    </div>
+
+    <div class="signal-grid">
+      <div class="signal">
+        <div class="signal-mark">01</div>
+        <div>
+          <h3>把 AI 從概念拉回 PM 工作</h3>
+          <p>社群貼文、素材編寫、產品亮點、廣告腳本、記者會素材與行銷活動，都需要 PM 能把商品語言轉成可被 AI 執行的指令。</p>
+        </div>
+      </div>
+      <div class="signal">
+        <div class="signal-mark">02</div>
+        <div>
+          <h3>讓冷靜型參與者也願意動手</h3>
+          <p>工作坊採低壓互動與任務導向，先看示範，再分段操作，最後用點數投票讓成果自然被看見。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-strip">
+      <strong>本次課程的核心問題：如果 PM 今天只拿到一張展品照，能不能在兩小時內完成一組可溝通的產品素材？</strong>
+      <p>我們會把答案拆成三段操作：先定義有效指令，再生成產品圖像，最後把圖像轉成 20 秒產品介紹影片。</p>
+    </div>
+
+    <div class="pgn">03</div>
+  </section>
+
+  <section class="page" id="p-value">
+    <div class="rh">
+      <span>課程價值</span>
+      <span>PM、主管與行銷活動可直接使用</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">02</div>
+      <div>
+        <h2>學習價值與參與者設計</h2>
+      </div>
+    </div>
+
+    <p class="lead">本次不是工具清單課，而是商品溝通課。參與者會用恆隆行熟悉的產品情境，學會如何把「產品特色」翻譯成「AI 可以產生素材的工作指令」。</p>
+
+    <div class="principles">
+      <div class="principle">
+        <h3>給 PM：快速製作自媒體素材</h3>
+        <p>讓 PM 可以把產品重點轉成社群文案、短影音腳本、產品視覺方向與活動前期素材草案。</p>
+      </div>
+      <div class="principle">
+        <h3>給主管：看見 AI 在行銷流程中的位置</h3>
+        <p>不是要求主管親自做每一張圖，而是理解 AI 能協助的段落，以及品質把關應該放在哪裡。</p>
+      </div>
+      <div class="principle">
+        <h3>給活動團隊：支援新品、記者會與促銷</h3>
+        <p>以產品發布與現場活動為情境，練習把一張展品照延伸成多版本素材與短影音雛形。</p>
+      </div>
+      <div class="principle">
+        <h3>給組織：建立可複製的素材生成流程</h3>
+        <p>透過 Markdown 指令框架與限制條件，讓不同 PM 產出的素材更容易被討論、修正與標準化。</p>
+      </div>
+    </div>
+
+    <div class="journey">
+      <div class="journey-step">
+        <span class="mini-label">一｜寫對任務</span>
+        <h3>有效指令</h3>
+        <p>用 ViewShop Prompting 與 Markdown 分段，把產品、受眾、風格、限制、輸出格式講清楚。</p>
+      </div>
+      <div class="journey-step">
+        <span class="mini-label">二｜生成素材</span>
+        <h3>圖文草案</h3>
+        <p>讓 ChatGPT 協助生成廣告文案、短影音腳本、圖片提示詞與產品視覺方向。</p>
+      </div>
+      <div class="journey-step">
+        <span class="mini-label">三｜完成展示</span>
+        <h3>短片輸出</h3>
+        <p>使用 Google Flow 進行圖片轉影片練習，完成可在現場輪播的 20 秒作品。</p>
+      </div>
+    </div>
+
+    <div class="closing">
+      <strong>Takeaway 不是「我聽懂 AI」，而是「我做出一個可以被看見、被討論、被改版的產品素材」。</strong>
+      <p>這個成果對 PM 特別重要，因為 PM 本來就最懂產品，只需要一套能把產品知識轉成 AI 產出的操作方法。</p>
+    </div>
+
+    <div class="pgn">04</div>
+  </section>
+
+  <section class="page" id="p-agenda">
+    <div class="rh">
+      <span>課程流程</span>
+      <span>120 分鐘實作型工作坊</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">03</div>
+      <div>
+        <h2>120 分鐘課程流程</h2>
+      </div>
+    </div>
+
+    <p class="lead">前 60 分鐘分成三個 20 分鐘模組，讓參與者先掌握指令、圖片與影片的生成邏輯。接著安排小結、現場實作、輪播投票與 Q&A。</p>
+
+    <div class="agenda">
+      <div class="agenda-row">
+        <div class="time">00:00<br>00:20</div>
+        <div class="agenda-main">
+          <h3>有效指令設計：廣告文案與腳本生成</h3>
+          <p>帶大家拆解如何寫出對 PM 有效的指令，使用 ViewShop Prompting、Markdown 分段架構，以及限制條件來框架 AI 的生成風格。</p>
+        </div>
+        <div class="agenda-side">輸出：廣告文案方向、產品介紹腳本初稿。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">00:20<br>00:40</div>
+        <div class="agenda-main">
+          <h3>圖片生成：從產品照到品牌視覺</h3>
+          <p>現場拍攝 Dyson 展品照，示範如何讓 ChatGPT 協助生成提示詞、優化提示詞、翻譯提示詞，並收斂出想要的產品圖片風格。</p>
+        </div>
+        <div class="agenda-side">輸出：可用於商品素材的圖片提示詞與視覺草案。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">00:40<br>01:00</div>
+        <div class="agenda-main">
+          <h3>影片生成：圖片轉 20 秒產品介紹影片</h3>
+          <p>使用 Google Flow 示範圖片轉影片，說明鏡頭運動、產品焦點、文字節奏、場景限制與品牌調性如何寫進影片指令。</p>
+        </div>
+        <div class="agenda-side">輸出：圖片轉影片的指令邏輯與範例。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">01:00<br>01:10</div>
+        <div class="agenda-main">
+          <h3>小結與操作確認</h3>
+          <p>回顧三段流程，確認大家的帳號、素材、輪播設定與實作任務。課前會先提供影片輪播設定說明，降低現場技術摩擦。</p>
+        </div>
+        <div class="agenda-side">輸出：每組知道接下來 30 分鐘要完成什麼。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">01:10<br>01:40</div>
+        <div class="agenda-main">
+          <h3>現場實作：完成 20 秒產品介紹影片</h3>
+          <p>每組使用自己的電腦完成一支 20 秒影片，從文案、圖片提示詞到影片生成，由講師現場巡迴協助。</p>
+        </div>
+        <div class="agenda-side">輸出：可輪播展示的作品檔。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">01:40<br>01:50</div>
+        <div class="agenda-main">
+          <h3>成果輪播與點數投票</h3>
+          <p>各組作品在現場輪播。每位參與者在投票小卡寫下姓名，並用三個點數投給喜歡的作品。</p>
+        </div>
+        <div class="agenda-side">輸出：最佳作品、現場討論與獎品頒發依據。</div>
+      </div>
+
+      <div class="agenda-row">
+        <div class="time">01:50<br>02:00</div>
+        <div class="agenda-main">
+          <h3>Q&A 與後續應用建議</h3>
+          <p>回答 PM 在自媒體經營、行銷活動、記者會素材、品牌一致性與工具使用上的問題，並說明課後可如何複製流程。</p>
+        </div>
+        <div class="agenda-side">輸出：後續可使用的教材與操作提醒。</div>
+      </div>
+    </div>
+
+    <div class="pgn">05</div>
+  </section>
+
+  <section class="page" id="p-case">
+    <div class="rh">
+      <span>主軸任務</span>
+      <span>Dyson 新品情境與產品介紹影片</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">04</div>
+      <div>
+        <h2>Dyson 產品任務主軸</h2>
+      </div>
+    </div>
+
+    <p class="lead">工作坊當天會以 Dyson 吹風機產品情境作為主軸：從現場拍攝的展品照出發，設計一組適合新品溝通、社群素材或活動宣傳使用的產品介紹影片。</p>
+
+    <div class="pipeline">
+      <div class="pipe-card">
+        <div class="frame-label">STEP 01</div>
+        <div class="pipe-icon">拍</div>
+        <h3>拍攝展品照</h3>
+        <p>用現場產品作為真實素材，讓參與者知道 AI 不是憑空生成，而是可以從自己的商品資料開始。</p>
+      </div>
+      <div class="pipe-card">
+        <div class="frame-label">STEP 02</div>
+        <div class="pipe-icon">寫</div>
+        <h3>生成文案與腳本</h3>
+        <p>把產品特色、目標族群、使用情境與語氣限制寫成可重複使用的指令。</p>
+      </div>
+      <div class="pipe-card">
+        <div class="frame-label">STEP 03</div>
+        <div class="pipe-icon">圖</div>
+        <h3>生成產品視覺</h3>
+        <p>透過提示詞優化與翻譯，把同一產品做出不同社群視覺與情境圖草案。</p>
+      </div>
+      <div class="pipe-card">
+        <div class="frame-label">STEP 04</div>
+        <div class="pipe-icon">影</div>
+        <h3>完成短影片</h3>
+        <p>把圖片轉成短影音，加入鏡頭運動、產品焦點、節奏與 CTA，完成 20 秒作品。</p>
+      </div>
+    </div>
+
+    <div class="demo-layout">
+      <div class="flow">
+        <div class="flow-node" data-step="01">
+          <h3>角色與目標</h3>
+          <p>我是一位 PM，目標是為 Dyson 新品設計一支 20 秒產品介紹影片，用於社群或活動現場輪播。</p>
+        </div>
+        <div class="flow-node" data-step="02">
+          <h3>產品與受眾</h3>
+          <p>說清楚產品特色、使用者痛點、主要賣點，以及希望吸引的消費者或活動來賓。</p>
+        </div>
+        <div class="flow-node" data-step="03">
+          <h3>風格與限制</h3>
+          <p>用 Markdown 列出視覺風格、語氣、禁用字、影片長度、場景限制與輸出格式。</p>
+        </div>
+        <div class="flow-node" data-step="04">
+          <h3>生成與改版</h3>
+          <p>先產出初稿，再要求 AI 依品牌語氣、產品焦點與影片節奏進行修正。</p>
+        </div>
+      </div>
+
+      <div class="work-note">
+        <h3>課堂會把工具操作壓成「可記住的流程」</h3>
+        <p>參與者不需要記住每一個工具按鈕，而是記住如何把商品任務拆成：目標、素材、受眾、風格、限制、輸出。</p>
+        <ul class="check-list">
+          <li>文案：一句產品主張、三個賣點、短影音旁白。</li>
+          <li>圖片：產品角度、場景、光線、品牌調性與構圖。</li>
+          <li>影片：鏡頭運動、秒數節奏、畫面焦點與結尾 CTA。</li>
+          <li>改版：用限制條件讓 AI 更接近企業可用素材。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pgn">06</div>
+  </section>
+
+  <section class="page" id="p-practice">
+    <div class="rh">
+      <span>現場實作</span>
+      <span>30 分鐘產出、10 分鐘輪播投票</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">05</div>
+      <div>
+        <h2>30 分鐘實作與現場輪播</h2>
+      </div>
+    </div>
+
+    <p class="lead">考量 40 多位 PM 的參與規模與較冷靜的互動習慣，建議採「分組任務、低壓競賽、點數投票」的方式，讓每個人都能參與，但不必被迫公開表演。</p>
+
+    <div class="canvas">
+      <div class="canvas-head">
+        <div>實作任務</div>
+        <div><strong>30 分鐘內完成一支 20 秒產品介紹影片</strong></div>
+      </div>
+      <div class="canvas-grid">
+        <div class="canvas-cell">
+          <h3>任務卡</h3>
+          <p>每組收到產品任務、受眾、使用場景與交付格式。</p>
+        </div>
+        <div class="canvas-cell">
+          <h3>提示詞卡</h3>
+          <p>用 Markdown 版型快速填入目標、風格、限制與輸出格式。</p>
+        </div>
+        <div class="canvas-cell">
+          <h3>生成檢查</h3>
+          <p>講師巡迴協助修正圖片與影片指令，避免卡在工具細節。</p>
+        </div>
+        <div class="canvas-cell">
+          <h3>輪播檔案</h3>
+          <p>課前提供輪播教學，現場每組能把作品放到自己的電腦播放。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="vote-board">
+      <div class="vote-card">
+        <h3>現場互動設計</h3>
+        <div class="vote-line">
+          <span class="vote-chip">1</span>
+          <p>分組以 4 至 5 人為單位，降低個人壓力，也讓主管和 PM 可以在同一任務中交換產品觀點。</p>
+        </div>
+        <div class="vote-line">
+          <span class="vote-chip">2</span>
+          <p>每位參與者拿到投票小卡與三個點數，可投給其他組別喜歡的作品，讓交流自然發生。</p>
+        </div>
+        <div class="vote-line">
+          <span class="vote-chip">3</span>
+          <p>講師會用「為什麼這支影片有效」做短講評，將投票結果轉成可學習的判斷標準。</p>
+        </div>
+      </div>
+
+      <div class="vote-card">
+        <h3>作品評分建議</h3>
+        <ul class="check-list">
+          <li>產品特色是否被清楚呈現。</li>
+          <li>畫面風格是否符合品牌與商品定位。</li>
+          <li>20 秒內是否有起承轉合與明確 CTA。</li>
+          <li>文案、圖片與影片是否互相支援，而不是各自漂亮。</li>
+          <li>是否有後續可改成社群貼文、記者會素材或活動露出的潛力。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="closing">
+      <strong>這段互動的重點，是讓每一組都拿到一個「完成過」的經驗。</strong>
+      <p>只要 PM 當場完成一次從照片到影片的流程，後續回到自己的產品線、社群經營或活動專案時，就會更容易把 AI 放進真實工作。</p>
+    </div>
+
+    <div class="pgn">07</div>
+  </section>
+
+  <section class="page" id="p-deliverables">
+    <div class="rh">
+      <span>服務內容</span>
+      <span>課前、課中、課後與獎品機制</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">06</div>
+      <div>
+        <h2>交付物、教材與獎品機制</h2>
+      </div>
+    </div>
+
+    <p class="lead">本提案採「讓現場順利操作」為核心交付。除了兩小時課程，也會包含課前對焦、教材印製、投票小卡、輪播操作說明與課後教材整理。</p>
+
+    <div class="deliverables">
+      <div class="deliverable">
+        <span class="mini-label">課前對焦</span>
+        <h3>兩次線上會議</h3>
+        <p>確認產品主軸、參與者設備、現場網路、Google Flow 使用方式、輪播流程與實作分組。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">教材印製</span>
+        <h3>Prompt 與影片任務工作紙</h3>
+        <p>包含 Markdown 指令框架、ViewShop Prompting 練習、圖片提示詞欄位與影片檢查清單。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">現場教具</span>
+        <h3>投票小卡與點數制</h3>
+        <p>每位參與者填姓名並持有三個點數，投給喜歡的作品，最後彙整最佳作品。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">操作支援</span>
+        <h3>輪播設定教學</h3>
+        <p>課前提供如何讓影片在電腦進行輪播的說明，讓課程當天不被播放設定卡住。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">課後文件</span>
+        <h3>課後教材製作</h3>
+        <p>整理當天使用的指令框架、示範流程、常見問題與後續練習方式，方便 PM 回到工作中複用。</p>
+      </div>
+      <div class="deliverable">
+        <span class="mini-label">獎品機制</span>
+        <h3>Dyson 電風扇獎項</h3>
+        <p>建議以 Dyson 電風扇作為最佳作品獎，讓現場成果交流有明確終點與參與動機。獎品採購歸屬可於課前會議確認。</p>
+      </div>
+    </div>
+
+    <div class="quote-strip">
+      <strong>課程結束後，參與者應帶走三件事：可複製的指令框架、完成短片的操作記憶、以及一套判斷素材好壞的共同語言。</strong>
+      <p>這些內容會比單次工具展示更有延續性，因為它能接上 PM 日常的社群、自媒體、行銷活動與記者會需求。</p>
+    </div>
+
+    <div class="pgn">08</div>
+  </section>
+
+  <section class="page" id="p-quote">
+    <div class="rh">
+      <span>課程報價</span>
+      <span>報價、範圍與下一步</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-num">07</div>
+      <div>
+        <h2>報價、範圍與確認事項</h2>
+      </div>
+    </div>
+
+    <p class="lead">本次以 nuva 工作坊培訓報價新臺幣 23,000 元／小時計算，共 2 小時，含 5% 營業稅，講師費含稅總額為新臺幣 48,300 元。</p>
+
+    <div class="quote-grid">
+      <div class="quote-box">
+        <div>
+          <div class="quote-label">含稅總金額</div>
+          <div class="quote-number"><span>新臺幣</span><span>48,300 元</span></div>
+        </div>
+        <p class="quote-note">已含稅、交通、教材印製費、課前兩次線上會議、課後教材製作等本提案範圍內所有雜支。</p>
+      </div>
+
+      <div class="calc-table">
+        <div class="calc-row">
+          <strong>工作坊培訓單價</strong>
+          <span>新臺幣 23,000 元／小時</span>
+        </div>
+        <div class="calc-row">
+          <strong>課程時數</strong>
+          <span>2 小時</span>
+        </div>
+        <div class="calc-row">
+          <strong>未稅小計</strong>
+          <span>新臺幣 46,000 元</span>
+        </div>
+        <div class="calc-row">
+          <strong>營業稅 5%</strong>
+          <span>新臺幣 2,300 元</span>
+        </div>
+        <div class="calc-row total">
+          <strong>含稅總計</strong>
+          <span>新臺幣 48,300 元</span>
+        </div>
+      </div>
+    </div>
+
+    <ul class="term-list">
+      <li>本報價包含兩小時現場工作坊、課前兩次線上對焦會議、課程教材印製、投票小卡設計、交通、課後教材製作與本提案範圍內相關雜支。</li>
+      <li>Google Flow 點數、帳號登入、企業內部設備政策與現場網路，建議於課前會議確認；若需統一帳號或替代工具，將依現場條件調整。</li>
+      <li>Dyson 電風扇獎品建議作為互動機制的一部分，獎品採購與預算歸屬可由恆隆行確認，或另行委託 nuva 協助處理。</li>
+      <li>課程正式執行前，建議確認產品主軸、分組方式、現場投影與輪播設備、是否允許使用個人或公司帳號登入 AI 工具。</li>
+    </ul>
+
+    <div class="closing">
+      <strong>建議下一步：確認日期、產品主軸與現場設備後，進入課前教材與示範腳本製作。</strong>
+      <p>確認後，nuva 將依恆隆行指定產品與參與者結構，準備示範腳本、Prompt 工作紙、圖片與影片生成流程、投票小卡與輪播操作說明。</p>
+    </div>
+
+    <div class="sign">
+      <div><div class="sk">提案單位</div><div class="sv">nuva｜努法有限公司</div></div>
+      <div><div class="sk">提案對象</div><div class="sv">恆隆行</div></div>
+      <div><div class="sk">文件狀態</div><div class="sv">不公開提案｜2026 / 05 / 29</div></div>
+    </div>
+
+    <div class="pgn">09</div>
+  </section>
+
+  <script src="../assets/report-reader.js?v=20260527-mobile-tables" defer></script>
+  <script src="../assets/report-actions.js" defer></script>
+</body>
+
+</html>

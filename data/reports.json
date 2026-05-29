@@ -1,7 +1,37 @@
 {
-  "generatedAt": "2026-05-28T12:26:39.073Z",
-  "count": 9,
+  "generatedAt": "2026-05-29T09:07:33.318Z",
+  "count": 10,
   "reports": [
+    {
+      "id": "2026-05-29-hengstyle-ai-creative-workshop-proposal",
+      "file": "reports/2026-05-29-hengstyle-ai-creative-workshop-proposal.html",
+      "title": "恆隆行 AI 圖文影音工作坊提案",
+      "subtitle": "從展品照到 20 秒產品介紹影片的兩小時實作課",
+      "date": "2026-05-29",
+      "month": "2026.05",
+      "period": "2 小時工作坊｜日期待定",
+      "category": "課程提案",
+      "client": "恆隆行",
+      "clientGroup": "企業品牌與商品行銷",
+      "timeline": "2026 五月",
+      "tags": [
+        "AI 圖文影音",
+        "產品介紹影片",
+        "PM 內訓",
+        "社群素材",
+        "廣告文案",
+        "Google Flow",
+        "ChatGPT"
+      ],
+      "thumbnail": "",
+      "pdf": "",
+      "visibility": "private",
+      "guestPin": "",
+      "pages": 9,
+      "updatedAt": "2026-05-29T09:07:23.586Z",
+      "sizeKb": 48,
+      "search": "恆隆行 ai 圖文影音工作坊提案 從展品照到 20 秒產品介紹影片的兩小時實作課 課程提案 恆隆行 企業品牌與商品行銷 2 小時工作坊｜日期待定 2026 五月 ai 圖文影音 產品介紹影片 pm 內訓 社群素材 廣告文案 google flow chatgpt reports/2026-05-29-hengstyle-ai-creative-workshop-proposal.html"
+    },
     {
       "id": "2026-05-28-n8n-deployment-complete-guide",
       "file": "reports/2026-05-28-n8n-deployment-complete-guide.html",
