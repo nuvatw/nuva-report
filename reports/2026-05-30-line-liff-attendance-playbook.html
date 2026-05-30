@@ -1,0 +1,3040 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<!-- report-meta
+{
+  "title": "LINE LIFF 打卡系統 Playbook",
+  "subtitle": "從 MVP 到生產化的 A4 視覺工程手冊",
+  "date": "2026-05-30",
+  "period": "2026/05/30",
+  "category": "研究摘要",
+  "client": "nuva 內部技術整理",
+  "clientGroup": "企業與研究機構",
+  "timeline": "2026 五月",
+  "tags": ["LINE LIFF", "打卡系統", "Messaging API", "Rich Menu", "Flex Message", "Webhook", "工程手冊"],
+  "visibility": "internal"
+}
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LINE LIFF 打卡系統 Playbook 視覺報告</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: oklch(99% 0.004 250);
+      --paper-soft: oklch(96.8% 0.014 252);
+      --desk: #f8fbff;
+      --ink: #13203c;
+      --muted: #4c5873;
+      --faint: #8791a8;
+      --line: rgba(19, 32, 60, .16);
+      --line-strong: rgba(19, 32, 60, .42);
+      --blue: #1d4ed8;
+      --blue-deep: #12286a;
+      --blue-soft: #eaf1ff;
+      --blue-wash: #f3f7ff;
+      --shadow: rgba(20, 40, 90, .18);
+      --report-bg-base: #f8fbff;
+      --report-bg-line: rgba(29, 78, 216, .034);
+      --report-bg-line-strong: rgba(29, 78, 216, .046);
+      --report-bg-size: 42px;
+      --ease-out: cubic-bezier(.23, 1, .32, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, var(--report-bg-line-strong) 1px, transparent 1px),
+        linear-gradient(0deg, var(--report-bg-line) 1px, transparent 1px),
+        var(--report-bg-base);
+      background-size: var(--report-bg-size) var(--report-bg-size);
+      color: var(--ink);
+      font-family: "Noto Sans TC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 34px 0;
+    }
+    .page {
+      position: relative;
+      width: min(210mm, calc(100vw - 28px));
+      min-height: 297mm;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 10px 36px var(--shadow);
+      padding: 18mm 17mm 15mm;
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 20mm, rgba(29, 78, 216, .1) 20mm, rgba(29, 78, 216, .1) calc(20mm + 1px), transparent calc(20mm + 1px)),
+        linear-gradient(0deg, transparent 0, transparent calc(100% - 15mm), rgba(19, 32, 60, .08) calc(100% - 15mm), rgba(19, 32, 60, .08) calc(100% - 15mm + 1px), transparent calc(100% - 15mm + 1px));
+    }
+    .page > * { position: relative; z-index: 1; }
+    .rh,
+    .pgn,
+    .cover-kicker,
+    .cover-top,
+    .cover-metrics span,
+    .toc-head,
+    .toc-sub,
+    .visual-meta,
+    .code-card figcaption,
+    .summary-hero span,
+    .summary-grid span,
+    .route-map span,
+    .assumption-table span,
+    .continuation {
+      font-family: "Space Mono", "Noto Sans TC", monospace;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .rh {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 9px;
+      border-bottom: 2px solid var(--ink);
+      color: var(--muted);
+      font-size: 10px;
+    }
+    .pgn {
+      position: absolute;
+      right: 17mm;
+      bottom: 12mm;
+      color: var(--ink);
+      font-size: 11px;
+    }
+    .cover-page {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      min-height: 297mm;
+    }
+    .cover-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 12px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .brand-lockup { display: flex; align-items: center; gap: 12px; color: var(--ink); font-weight: 900; }
+    .brand-lockup img { width: 94px; height: auto; display: block; }
+    .cover-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8mm 0 4mm;
+    }
+    .cover-kicker {
+      align-self: flex-start;
+      border: 1.5px solid var(--blue);
+      color: var(--blue);
+      padding: 7px 12px;
+      font-size: 11px;
+    }
+    h1 {
+      max-width: 155mm;
+      margin-top: 22px;
+      color: var(--ink);
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .cover-main p {
+      max-width: 150mm;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.85;
+    }
+    .cover-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 2px solid var(--ink);
+    }
+    .cover-metrics div { padding: 16px 18px; border-right: 1px solid var(--line-strong); }
+    .cover-metrics div:last-child { border-right: 0; }
+    .cover-metrics span { display: block; color: var(--blue); font-size: 10px; margin-bottom: 8px; }
+    .cover-metrics b { display: block; font-size: 18px; line-height: 1.35; }
+    .toc-head {
+      display: flex;
+      justify-content: space-between;
+      color: var(--blue);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+      font-size: 10px;
+    }
+    .toc-page h2,
+    .summary-page h2 {
+      margin-top: 22px;
+      font-size: 34px;
+      line-height: 1.22;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .toc-intro {
+      margin-top: 12px;
+      max-width: 140mm;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      font-weight: 500;
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 18px;
+      margin-top: 24px;
+      border-top: 2px solid var(--ink);
+    }
+    .toc-sub {
+      display: grid;
+      grid-template-columns: 34px 1fr 28px;
+      gap: 8px;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      text-decoration: none;
+      transition: padding 160ms var(--ease-out), background 160ms var(--ease-out);
+      font-size: 9.5px;
+    }
+    .toc-sub:hover { padding-left: 7px; background: var(--blue-soft); }
+    .ts-c { color: var(--blue); }
+    .ts-p { color: var(--faint); text-align: right; }
+    .toc-note {
+      display: grid;
+      grid-template-columns: 34mm 1fr;
+      gap: 16px;
+      margin-top: 22px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.65;
+    }
+    .toc-note b { color: var(--blue); font-family: "Space Mono", monospace; }
+    .summary-hero {
+      margin-top: 18px;
+      padding: 24px 26px;
+      border: 2px solid var(--ink);
+      background: var(--blue-deep);
+      color: var(--paper);
+    }
+    .summary-hero span { color: #9bb8ff; font-size: 10px; }
+    .summary-hero h2 { margin-top: 10px; color: var(--paper); }
+    .summary-hero p { margin-top: 14px; color: #d7e2ff; font-size: 13px; line-height: 1.9; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 2px solid var(--ink);
+      border-top: 0;
+    }
+    .summary-grid div { padding: 16px 14px; border-right: 1px solid var(--line-strong); }
+    .summary-grid div:last-child { border-right: 0; }
+    .summary-grid b { display: block; color: var(--blue); font-size: 30px; line-height: 1; }
+    .summary-grid span { display: block; margin-top: 8px; color: var(--muted); font-size: 9px; }
+    .route-map {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-top: 22px;
+      border-top: 2px solid var(--ink);
+    }
+    .route-map div { padding: 16px 18px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .route-map div:nth-child(2n) { border-right: 0; }
+    .route-map span { color: var(--blue); font-size: 10px; }
+    .route-map b { display: block; margin-top: 6px; font-size: 15px; line-height: 1.45; }
+    .route-map p { margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .assumption-table {
+      margin-top: 18px;
+      border-top: 1px solid var(--line-strong);
+    }
+    .assumption-table div {
+      display: grid;
+      grid-template-columns: 30mm 1fr;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .assumption-table span { color: var(--blue); font-size: 10px; }
+    .assumption-table p { color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .section-shell {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 16px;
+      margin-top: 28px;
+      padding-bottom: 13px;
+      border-bottom: 2px solid var(--ink);
+    }
+    .sec-num {
+      color: var(--blue);
+      font-family: "Archivo", sans-serif;
+      font-size: 36px;
+      font-weight: 900;
+      line-height: .95;
+    }
+    .continuation {
+      display: inline-block;
+      color: var(--blue);
+      font-size: 9px;
+      margin-bottom: 7px;
+    }
+    .section-shell h2 {
+      font-size: 25px;
+      font-weight: 900;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+    .visual-card {
+      margin-top: 16px;
+      border: 1.6px solid var(--ink);
+      background:
+        linear-gradient(135deg, rgba(29, 78, 216, .13), transparent 42%),
+        var(--blue-wash);
+      padding: 14px 16px;
+    }
+    .visual-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--blue);
+      font-size: 9px;
+    }
+    .visual-title { margin-top: 8px; font-size: 18px; line-height: 1.3; font-weight: 900; }
+    .visual-card p { margin-top: 5px; color: var(--muted); font-size: 11.2px; line-height: 1.65; }
+    .visual-lanes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 7px;
+      margin-top: 12px;
+    }
+    .visual-lanes span {
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line-strong);
+      background: color-mix(in oklch, var(--paper) calc(100% - var(--i) * 7%), var(--blue-soft));
+      color: var(--ink);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.35;
+      padding: 6px;
+    }
+    .content-flow { margin-top: 14px; }
+    .content-heading {
+      color: var(--ink);
+      font-weight: 900;
+      line-height: 1.36;
+      letter-spacing: 0;
+    }
+    .content-heading.h3 { margin: 14px 0 8px; font-size: 17px; }
+    .content-heading.h4 { margin: 12px 0 7px; font-size: 14px; color: var(--blue-deep); }
+    .body-copy {
+      color: var(--muted);
+      font-size: 11.7px;
+      font-weight: 500;
+      line-height: 1.78;
+      margin-top: 8px;
+    }
+    .body-copy strong,
+    .source-list strong,
+    .quote-box strong { color: var(--ink); font-weight: 900; }
+    code {
+      font-family: "Space Mono", monospace;
+      font-size: .92em;
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .source-list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-size: 11.3px;
+      line-height: 1.64;
+    }
+    .source-list li { margin-top: 4px; padding-left: 2px; }
+    .quote-box {
+      margin-top: 10px;
+      padding: 13px 15px;
+      border: 1px solid var(--line-strong);
+      background: var(--blue-wash);
+      color: var(--muted);
+    }
+    .quote-box p { font-size: 11.4px; line-height: 1.75; margin-top: 6px; }
+    .quote-box p:first-child { margin-top: 0; }
+    .table-wrap {
+      width: 100%;
+      overflow: hidden;
+      margin-top: 10px;
+      border-top: 2px solid var(--ink);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 8px 9px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 10.8px;
+      line-height: 1.55;
+    }
+    th:last-child,
+    td:last-child { border-right: 0; }
+    th { color: var(--blue); font-weight: 900; background: var(--blue-wash); }
+    td { color: var(--muted); }
+    .code-card {
+      margin-top: 10px;
+      border: 1.5px solid var(--ink);
+      background: #f7faff;
+    }
+    .code-card figcaption {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--line-strong);
+      color: var(--blue);
+      font-size: 9px;
+    }
+    pre {
+      max-width: 100%;
+      overflow: auto;
+      padding: 11px 12px;
+      color: #14213b;
+      font-size: 8.4px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: "Space Mono", monospace;
+    }
+    pre code { background: transparent; color: inherit; padding: 0; border-radius: 0; font-size: inherit; }
+    .soft-rule { border: 0; border-top: 1px solid var(--line); margin: 10px 0; }
+    a { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(29, 78, 216, .28); }
+    *[id] { scroll-margin-top: 24px; }
+    @page { size: A4; margin: 0; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        break-after: page;
+      }
+      .page:last-of-type { break-after: auto; }
+      .visual-card,
+      .summary-hero,
+      .summary-grid,
+      .route-map,
+      .cover-metrics,
+      .table-wrap,
+      .quote-box,
+      .code-card {
+        break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+    @media screen and (max-width: 880px) {
+      body { padding: 14px 0; }
+      .page {
+        transform: scale(.62);
+        transform-origin: top center;
+        margin-bottom: calc(-297mm * .38 + 18px);
+      }
+    }
+  </style>
+  <script src="../assets/report-theme.js"></script>
+</head>
+<body>
+  <section class="page cover-page" id="cover">
+    <div class="cover-top">
+      <div class="brand-lockup"><img src="../blue_logo_nuva.png" alt="nuva"><span>技術手冊視覺報告</span></div>
+      <span>2026 / 05 / 30</span>
+    </div>
+    <div class="cover-main">
+      <span class="cover-kicker">LINE LIFF Attendance Playbook</span>
+      <h1>LINE LIFF 打卡系統 Playbook 視覺報告</h1>
+      <p>從最小可行專案（MVP）開始，逐步做出一個完整的「個人狀態頁 → 今日區段進度 → 打卡/下班 → Flex Message/Rich Menu 整合 → 後台與生產化」系統。</p>
+    </div>
+    <div class="cover-metrics">
+      <div><span>版本</span><b>2026-05-30</b></div>
+      <div><span>語言</span><b>繁體中文</b></div>
+      <div><span>來源行數</span><b>1514 lines</b></div>
+    </div>
+  </section>
+  <section class="page toc-page" id="toc">
+    <div class="toc-head"><span>00.0</span><span>目錄</span></div>
+    <h2>閱讀路線</h2>
+    <p class="toc-intro">這份 report 依照原始 playbook 的 20 個章節完整展開。左側 reader 會吃這一頁的 curated links，讓長篇技術文件仍然可以快速跳轉。</p>
+    <div class="toc-grid"><a class="toc-sub" href="#0-你要先建立的心智模型">
+      <span class="ts-c">00</span>
+      <span class="ts-t">0. 你要先建立的心智模型</span>
+      <span class="ts-p">04</span>
+    </a>
+<a class="toc-sub" href="#1-mvp-路線圖-不要一開始就做完整系統">
+      <span class="ts-c">01</span>
+      <span class="ts-t">1. MVP 路線圖：不要一開始就做完整系統</span>
+      <span class="ts-p">07</span>
+    </a>
+<a class="toc-sub" href="#2-line-developers-後台設定">
+      <span class="ts-c">02</span>
+      <span class="ts-t">2. LINE Developers 後台設定</span>
+      <span class="ts-p">14</span>
+    </a>
+<a class="toc-sub" href="#3-前端專案-liff-health-check">
+      <span class="ts-c">03</span>
+      <span class="ts-t">3. 前端專案：LIFF Health Check</span>
+      <span class="ts-p">18</span>
+    </a>
+<a class="toc-sub" href="#4-後端-身份驗證與-api">
+      <span class="ts-c">04</span>
+      <span class="ts-t">4. 後端：身份驗證與 API</span>
+      <span class="ts-p">24</span>
+    </a>
+<a class="toc-sub" href="#5-資料模型設計">
+      <span class="ts-c">05</span>
+      <span class="ts-t">5. 資料模型設計</span>
+      <span class="ts-p">30</span>
+    </a>
+<a class="toc-sub" href="#6-打卡-api-設計">
+      <span class="ts-c">06</span>
+      <span class="ts-t">6. 打卡 API 設計</span>
+      <span class="ts-p">34</span>
+    </a>
+<a class="toc-sub" href="#7-前端狀態頁設計">
+      <span class="ts-c">07</span>
+      <span class="ts-t">7. 前端狀態頁設計</span>
+      <span class="ts-p">38</span>
+    </a>
+<a class="toc-sub" href="#8-flex-message-整合方式">
+      <span class="ts-c">08</span>
+      <span class="ts-t">8. Flex Message 整合方式</span>
+      <span class="ts-p">41</span>
+    </a>
+<a class="toc-sub" href="#9-rich-menu-整合">
+      <span class="ts-c">09</span>
+      <span class="ts-t">9. Rich Menu 整合</span>
+      <span class="ts-p">45</span>
+    </a>
+<a class="toc-sub" href="#10-webhook-接收-line-事件">
+      <span class="ts-c">10</span>
+      <span class="ts-t">10. Webhook：接收 LINE 事件</span>
+      <span class="ts-p">47</span>
+    </a>
+<a class="toc-sub" href="#11-今日-sections-模組">
+      <span class="ts-c">11</span>
+      <span class="ts-t">11. 今日 Sections 模組</span>
+      <span class="ts-p">50</span>
+    </a>
+<a class="toc-sub" href="#12-員工綁定設計">
+      <span class="ts-c">12</span>
+      <span class="ts-t">12. 員工綁定設計</span>
+      <span class="ts-p">52</span>
+    </a>
+<a class="toc-sub" href="#13-打卡安全與定位">
+      <span class="ts-c">13</span>
+      <span class="ts-t">13. 打卡安全與定位</span>
+      <span class="ts-p">54</span>
+    </a>
+<a class="toc-sub" href="#14-生產部署建議">
+      <span class="ts-c">14</span>
+      <span class="ts-t">14. 生產部署建議</span>
+      <span class="ts-p">57</span>
+    </a>
+<a class="toc-sub" href="#15-測試清單">
+      <span class="ts-c">15</span>
+      <span class="ts-t">15. 測試清單</span>
+      <span class="ts-p">59</span>
+    </a>
+<a class="toc-sub" href="#16-最常見踩雷點">
+      <span class="ts-c">16</span>
+      <span class="ts-t">16. 最常見踩雷點</span>
+      <span class="ts-p">62</span>
+    </a>
+<a class="toc-sub" href="#17-建議課程安排">
+      <span class="ts-c">17</span>
+      <span class="ts-t">17. 建議課程安排</span>
+      <span class="ts-p">65</span>
+    </a>
+<a class="toc-sub" href="#18-建議專案目錄">
+      <span class="ts-c">18</span>
+      <span class="ts-t">18. 建議專案目錄</span>
+      <span class="ts-p">68</span>
+    </a>
+<a class="toc-sub" href="#19-第一週執行計畫">
+      <span class="ts-c">19</span>
+      <span class="ts-t">19. 第一週執行計畫</span>
+      <span class="ts-p">69</span>
+    </a>
+<a class="toc-sub" href="#20-官方與參考資料">
+      <span class="ts-c">20</span>
+      <span class="ts-t">20. 官方與參考資料</span>
+      <span class="ts-p">72</span>
+    </a></div>
+    <div class="toc-note">
+      <b>Source fidelity</b>
+      <span>章節、清單、表格、程式碼區塊、參考連結皆由原始 Markdown 轉入 report；文字轉為台灣繁中，API 路徑與程式碼符號保留。</span>
+    </div>
+    <div class="pgn">02</div>
+  </section>
+  <section class="page summary-page" id="codex-summary">
+    <div class="rh"><span>01 / Codex 小總結</span><span>reader first</span></div>
+    <div class="summary-hero">
+      <span>Codex 小總結</span>
+      <h2>這不是一個 LINE Bot 專案，而是一套打卡狀態系統。</h2>
+      <p>最重要的心智模型是：Flex Message 只做入口，LIFF 做互動介面，後端與資料庫才保存真正的出勤狀態。照 playbook 走，團隊可以從 1 天 health check 推進到可稽核、可補卡、可營運的正式打卡系統。</p>
+    </div>
+    <div class="summary-grid">
+      <div><b>1514</b><span>source lines preserved</span></div>
+      <div><b>21</b><span>curated chapters</span></div>
+      <div><b>6</b><span>MVP milestones</span></div>
+      <div><b>10</b><span>course lessons</span></div>
+    </div>
+    <div class="route-map">
+      <div><span>01</span><b>先讓 LIFF 開得起來</b><p>確認 LINE client、SDK、profile、ID token 與外部瀏覽器登入。</p></div>
+      <div><span>02</span><b>後端驗證身份</b><p>前端不可自己決定 userId，所有寫入都從 verified ID token 進入。</p></div>
+      <div><span>03</span><b>把狀態機做穩</b><p>同一時間只能有一段未關閉 session，所有操作都要可重試、可稽核。</p></div>
+      <div><span>04</span><b>再接 Flex / Rich Menu</b><p>入口帶 action，但 LIFF 內要顯示確認頁，避免誤觸與預載。</p></div>
+    </div>
+    <div class="assumption-table">
+      <div><span>版本</span><p>2026-05-30</p></div><div><span>語言</span><p>中文</p></div><div><span>假設</span><p>你口中的「LINE Live」指的是 <strong>LINE LIFF（LINE Front-end Framework）</strong>。LIFF 是 LINE 內建的網頁應用平台，使用者點 Flex Message、Rich Menu 或 LIFF URL 後，可以在 LINE 裡開啟一個網頁應用，並讓網頁通過 LIFF SDK 取得 LINE 登入狀態、使用者識別資料、好友狀態，或執行部分 LINE 相關動作。</p></div><div><span>目標</span><p>從最小可行專案（MVP）開始，逐步做出一個完整的「個人狀態頁 → 今日區段進度 → 打卡/下班 → Flex Message/Rich Menu 整合 → 後台與生產化」系統。</p></div>
+    </div>
+    <div class="pgn">03</div>
+  </section>
+  <section class="page report-page" id="0-你要先建立的心智模型">
+    <div class="rh"><span>00 / 0. 你要先建立的心智模型</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">00</div>
+      <div>
+        
+        <h2>0. 你要先建立的心智模型</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>0. 你要先建立的心智模型</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">0.1 你現在不是隻做一個 LINE Bot，而是做三塊東西</h3>
+<div class="table-wrap"><table>
+      <thead><tr><th>模組</th><th>它負責什麼</th><th>你會用到什麼 LINE 功能</th></tr></thead>
+      <tbody><tr><td>Chatbot / Bot Server</td><td>收 webhook、回 Flex Message、推播、處理 postback</td><td>Messaging API</td></tr><tr><td>LIFF Web App</td><td>在 LINE 內開啟網頁，顯示個人狀態、今日任務、打卡按鈕</td><td>LINE Login Channel + LIFF SDK</td></tr><tr><td>Attendance API / DB</td><td>真正儲存員工、打卡紀錄、今日 sections、權限</td><td>你的後端與資料庫</td></tr></tbody>
+    </table></div>
+<p class="body-copy"><strong>關鍵結論：</strong></p>
+<ul class="source-list"><li>Flex Message 是「入口」或「通知卡片」。</li><li>LIFF 是「可互動的網頁介面」。</li><li>Messaging API 是「LINE 官方帳號跟使用者聊天、收 webhook、發訊息」的通道。</li><li>真正的業務狀態，例如「已上班」「今天完成 3/5 sections」「最後打卡時間」，應該存在你的後端資料庫，而不是存在 Flex Message 或前端 localStorage。</li></ul>
+    </div>
+    <div class="pgn">04</div>
+  </section>
+<section class="page report-page" id="0-你要先建立的心智模型-2">
+    <div class="rh"><span>00 / 0. 你要先建立的心智模型</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">00</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>0. 你要先建立的心智模型</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>0. 你要先建立的心智模型 / 續讀 2</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">0.2 推薦的整體架構</h3>
+<figure class="code-card">
+      <figcaption><span>mermaid</span><span>16 lines</span></figcaption>
+      <pre><code>flowchart LR
+  U[使用者 LINE App] --&gt;|點選 Flex / Rich Menu URI| L[LIFF URL]
+  L --&gt;|redirect| FE[LIFF Frontend]
+  FE --&gt;|liff.init + getIDToken|getid[LINE Login / LIFF SDK]
+  FE --&gt;|POST idToken| API[你的 Attendance API]
+  API --&gt;|verify ID token| LINEAUTH[LINE OAuth Verify]
+  API --&gt; DB[(Database)]
+  API --&gt;|status JSON| FE
+  FE --&gt;|顯示狀態/今日 sections/按鈕| U
+
+  U --&gt;|發訊息/點 postback| LINE[LINE Platform]
+  LINE --&gt;|Webhook| BOT[Bot Server]
+  BOT --&gt;|Verify signature| BOT
+  BOT --&gt; DB
+  BOT --&gt;|Reply / Push Flex| LINE
+  LINE --&gt; U</code></pre>
+    </figure>
+<h3 class="content-heading h3">0.3 兩種 LINE Channel 的分工</h3>
+    </div>
+    <div class="pgn">05</div>
+  </section>
+<section class="page report-page" id="0-你要先建立的心智模型-3">
+    <div class="rh"><span>00 / 0. 你要先建立的心智模型</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">00</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>0. 你要先建立的心智模型</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>0. 你要先建立的心智模型 / 續讀 3</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <div class="table-wrap"><table>
+      <thead><tr><th>Channel 型別</th><th>作用</th><th>你需要儲存的值</th></tr></thead>
+      <tbody><tr><td>Messaging API Channel</td><td>官方帳號、Flex Message、Webhook、Reply/Push、Rich Menu</td><td>Channel access token、Channel secret</td></tr><tr><td>LINE Login Channel</td><td>LIFF、使用者授權、ID token、profile/openid scope</td><td>Channel ID、LIFF ID、Channel secret（視驗證方式而定）</td></tr></tbody>
+    </table></div>
+<p class="body-copy"><strong>非常重要：</strong> 儘量把 Messaging API Channel 和 LINE Login Channel 放在同一個 Provider 底下，並把 LINE Login Channel 的 <strong>Linked LINE Official Account / Linked OA</strong> 連線到你的官方帳號。這樣未來用 LIFF 取得的 userId、Webhook source.userId、好友狀態和官方帳號好友關係才比較容易串起來。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">06</div>
+  </section>
+<section class="page report-page" id="1-mvp-路線圖-不要一開始就做完整系統">
+    <div class="rh"><span>01 / 1. MVP 路線圖：不要一開始就做完整系統</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">01</div>
+      <div>
+        
+        <h2>1. MVP 路線圖：不要一開始就做完整系統</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>1. MVP 路線圖：不要一開始就做完整系統</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">MVP 0：LIFF 健康檢查頁</h3>
+<p class="body-copy"><strong>目標：</strong> 證明 LIFF 可以開啟、初始化、取得使用者基本資料。 <strong>不做：</strong> 不連資料庫、不打卡、不處理權限。</p>
+<p class="body-copy">功能：</p>
+<ol class="source-list"><li>開啟 LIFF URL。</li><li>顯示：</li><li>當前是否在 LINE client 內開啟。</li><li>LIFF SDK version。</li><li>LINE displayName。</li><li>LINE userId。</li><li>pictureUrl。</li><li>是否已登入。</li><li>若在外部瀏覽器開啟，自動進入 LINE Login。</li></ol>
+<p class="body-copy">驗收標準：</p>
+<ul class="source-list"><li>從 LINE 聊天室點 URL 可以開啟。</li><li>手機 LINE 內和外部瀏覽器都能處理。</li><li>Console 沒有 <code>liff.init()</code> endpoint mismatch warning。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">07</div>
+  </section>
+<section class="page report-page" id="1-mvp-路線圖-不要一開始就做完整系統-2">
+    <div class="rh"><span>01 / 1. MVP 路線圖：不要一開始就做完整系統</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">01</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>1. MVP 路線圖：不要一開始就做完整系統</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>1. MVP 路線圖：不要一開始就做完整系統 / 續讀 2</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">MVP 1：個人狀態頁</h3>
+<p class="body-copy"><strong>目標：</strong> 使用者開啟 LIFF 後，看到自己的「目前打卡狀態」。 <strong>狀態先用 mock 或資料庫最小表。</strong></p>
+<p class="body-copy">頁面顯示：</p>
+<ul class="source-list"><li>使用者頭像、名稱。</li><li>今日狀態：<code>未上班</code> / <code>上班中</code> / <code>已下班</code>。</li><li>最近一次打卡時間。</li><li>今日工作時長。</li><li>一個主要按鈕：</li><li>未上班 →「上班打卡」</li><li>上班中 →「下班打卡」</li><li>已下班 →「檢視今日記錄」或「再次上班」</li></ul>
+<p class="body-copy">驗收標準：</p>
+<ul class="source-list"><li>LIFF 前端把 ID token 送到後端。</li><li>後端驗證 ID token，確認 LINE userId。</li><li>後端根據 userId 回傳狀態。</li><li>前端不信任自己拿到的 userId 來直接寫 DB。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">08</div>
+  </section>
+<section class="page report-page" id="1-mvp-路線圖-不要一開始就做完整系統-3">
+    <div class="rh"><span>01 / 1. MVP 路線圖：不要一開始就做完整系統</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">01</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>1. MVP 路線圖：不要一開始就做完整系統</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>1. MVP 路線圖：不要一開始就做完整系統 / 續讀 3</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">MVP 2：真正打卡/下班</h3>
+<p class="body-copy"><strong>目標：</strong> 可以建立 attendance session。</p>
+<p class="body-copy">最小狀態機：</p>
+<figure class="code-card">
+      <figcaption><span>mermaid</span><span>4 lines</span></figcaption>
+      <pre><code>stateDiagram-v2
+  [*] --&gt; OFF_DUTY
+  OFF_DUTY --&gt; ON_DUTY: clock_in
+  ON_DUTY --&gt; OFF_DUTY: clock_out</code></pre>
+    </figure>
+<p class="body-copy">規則：</p>
+<ol class="source-list"><li>使用者一天可以有多段 session，但同一時間只能有一段未關閉的 session。</li><li><code>clock_in</code> 如果已有未關閉 session，要回傳「你已經上班中」，不要重複建立。</li><li><code>clock_out</code> 如果沒有未關閉 session，要回傳「目前沒有上班中的記錄」。</li><li>所有時間存 UTC，顯示時用 <code>Asia/Taipei</code>。</li><li>每次操作寫入 audit event，方便未來排查爭議。</li></ol>
+<p class="body-copy">驗收標準：</p>
+    </div>
+    <div class="pgn">09</div>
+  </section>
+<section class="page report-page" id="1-mvp-路線圖-不要一開始就做完整系統-4">
+    <div class="rh"><span>01 / 1. MVP 路線圖：不要一開始就做完整系統</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">01</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>1. MVP 路線圖：不要一開始就做完整系統</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>1. MVP 路線圖：不要一開始就做完整系統 / 續讀 4</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ul class="source-list"><li>連點按鈕不會產生兩筆上班中 session。</li><li>網路失敗重試不會重複打卡。</li><li>前端顯示最新狀態。</li></ul>
+<hr class="soft-rule">
+<h3 class="content-heading h3">MVP 3：Flex Message 開啟 LIFF</h3>
+<p class="body-copy"><strong>目標：</strong> 你現有的 Flex Message 可以變成入口。</p>
+<p class="body-copy">做法：</p>
+<ul class="source-list"><li>Flex Message 的「上班」「下班」「檢視今日」按鈕使用 URI action。</li><li>URI 指向 LIFF URL，例如：</li><li><code><a href="https://liff.line.me/{LIFF_ID}/attendance?action=clock_in" target="_blank" rel="noreferrer">https://liff.line.me/{LIFF_ID}/attendance?action=clock_in</a></code></li><li><code><a href="https://liff.line.me/{LIFF_ID}/attendance?action=clock_out" target="_blank" rel="noreferrer">https://liff.line.me/{LIFF_ID}/attendance?action=clock_out</a></code></li><li><code><a href="https://liff.line.me/{LIFF_ID}/today" target="_blank" rel="noreferrer">https://liff.line.me/{LIFF_ID}/today</a></code></li></ul>
+<p class="body-copy">進入 LIFF 後：</p>
+    </div>
+    <div class="pgn">10</div>
+  </section>
+<section class="page report-page" id="1-mvp-路線圖-不要一開始就做完整系統-5">
+    <div class="rh"><span>01 / 1. MVP 路線圖：不要一開始就做完整系統</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">01</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>1. MVP 路線圖：不要一開始就做完整系統</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>1. MVP 路線圖：不要一開始就做完整系統 / 續讀 5</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ol class="source-list"><li><code>liff.init()</code>。</li><li>驗證身份。</li><li>讀取 URL query 的 <code>action</code>。</li><li>顯示確認頁，而不是自動打卡。</li><li>使用者點「確認上班打卡」或「確認下班打卡」。</li></ol>
+<p class="body-copy">為什麼不要開啟就自動打卡：</p>
+<ul class="source-list"><li>使用者可能誤觸 Flex。</li><li>LINE URL 可能被轉發。</li><li>有些環境會預載網頁。</li><li>需要給使用者看到狀態和確認內容。</li></ul>
+<hr class="soft-rule">
+<h3 class="content-heading h3">MVP 4：今日 sections / 今日完成進度</h3>
+<p class="body-copy"><strong>目標：</strong> 開啟 LIFF 後看到「今天完成哪些 section」。</p>
+<p class="body-copy">例子：</p>
+    </div>
+    <div class="pgn">11</div>
+  </section>
+<section class="page report-page" id="1-mvp-路線圖-不要一開始就做完整系統-6">
+    <div class="rh"><span>01 / 1. MVP 路線圖：不要一開始就做完整系統</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">01</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>1. MVP 路線圖：不要一開始就做完整系統</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>1. MVP 路線圖：不要一開始就做完整系統 / 續讀 6</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ul class="source-list"><li>今日打卡狀態：上班中。</li><li>今日完成：3 / 5 sections。</li><li>sections：</li><li>09:00 開店檢查 ✅</li><li>10:00 客戶回訪 ✅</li><li>13:00 庫存檔點 ⏳</li><li>16:00 收銀對帳 ⏳</li><li>18:00 閉店檢查 ⏳</li></ul>
+<p class="body-copy">MVP 版本可以先讓使用者手動點完成；之後再跟表單、任務系統或主管後台串接。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">MVP 5：生產化</h3>
+<p class="body-copy">功能：</p>
+    </div>
+    <div class="pgn">12</div>
+  </section>
+<section class="page report-page" id="1-mvp-路線圖-不要一開始就做完整系統-7">
+    <div class="rh"><span>01 / 1. MVP 路線圖：不要一開始就做完整系統</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">01</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>1. MVP 路線圖：不要一開始就做完整系統</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>1. MVP 路線圖：不要一開始就做完整系統 / 續讀 7</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ul class="source-list"><li>Rich Menu 固定入口。</li><li>打卡地理位置或 QR code。</li><li>主管後台。</li><li>CSV / Google Sheets / ERP 匯出。</li><li>異常處理：忘記下班、跨日、補打卡。</li><li>權限：員工、主管、管理員。</li><li>資料儲存期限和隱私同意。</li><li>監控和記錄。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">13</div>
+  </section>
+<section class="page report-page" id="2-line-developers-後台設定">
+    <div class="rh"><span>02 / 2. LINE Developers 後台設定</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">02</div>
+      <div>
+        
+        <h2>2. LINE Developers 後台設定</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>2. LINE Developers 後台設定</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">2.1 先確認你有 LINE 官方帳號 + Messaging API</h3>
+<p class="body-copy">你需要一個 LINE Official Account，並啟用 Messaging API。現在 Messaging API Channel 通常從 LINE Official Account Manager 啟用，而不是隻從 Developers Console 直接建。</p>
+<p class="body-copy">你會拿到：</p>
+<ul class="source-list"><li>Messaging API Channel ID。</li><li>Messaging API Channel secret。</li><li>Channel access token。</li><li>Webhook URL 設定位置。</li></ul>
+<p class="body-copy">建議：</p>
+<ul class="source-list"><li>先把 Webhook URL 指到你的 bot server。</li><li>開啟 Use webhook。</li><li>如果你自己處理 bot 邏輯，關閉官方後台的自動回覆，避免使用者點按鈕後同時收到 LINE 後台自動回覆和你的 bot 回覆。</li></ul>
+    </div>
+    <div class="pgn">14</div>
+  </section>
+<section class="page report-page" id="2-line-developers-後台設定-2">
+    <div class="rh"><span>02 / 2. LINE Developers 後台設定</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">02</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>2. LINE Developers 後台設定</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>2. LINE Developers 後台設定 / 續讀 2</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">2.2 建立 LINE Login Channel</h3>
+<p class="body-copy">在同一個 Provider 底下建立 LINE Login Channel。</p>
+<p class="body-copy">建議配置：</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>設定</th><th>建議</th></tr></thead>
+      <tbody><tr><td>App type</td><td>Web app</td></tr><tr><td>Channel name</td><td>不要含 LINE 或類似字樣</td></tr><tr><td>Provider</td><td>與 Messaging API Channel 相同</td></tr><tr><td>Linked OA</td><td>連線你的 LINE Official Account</td></tr><tr><td>Email permission</td><td>MVP 不需要，除非你真的要 email</td></tr></tbody>
+    </table></div>
+<h3 class="content-heading h3">2.3 新增 LIFF App</h3>
+<p class="body-copy">到 LINE Login Channel 的 LIFF tab，新增 LIFF App。</p>
+<p class="body-copy">建議配置：</p>
+    </div>
+    <div class="pgn">15</div>
+  </section>
+<section class="page report-page" id="2-line-developers-後台設定-3">
+    <div class="rh"><span>02 / 2. LINE Developers 後台設定</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">02</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>2. LINE Developers 後台設定</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>2. LINE Developers 後台設定 / 續讀 3</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <div class="table-wrap"><table>
+      <thead><tr><th>LIFF 設定</th><th>MVP 建議</th><th>說明</th></tr></thead>
+      <tbody><tr><td>LIFF app name</td><td>Attendance / 打卡</td><td>不要含 LINE 或違規字樣</td></tr><tr><td>Size</td><td>Full</td><td>後續若要 <code>requestFriendship()</code> 或 QR scan，Full 比較安全</td></tr><tr><td>Endpoint URL</td><td><code><a href="https://你的域名/" target="_blank" rel="noreferrer">https://你的域名/</a></code> 或 <code><a href="https://你的域名/app/" target="_blank" rel="noreferrer">https://你的域名/app/</a></code></td><td>必須是 HTTPS，不能帶 URL fragment <code>#xxx</code></td></tr><tr><td>Scopes</td><td><code>openid</code>, <code>profile</code></td><td><code>openid</code> 用 ID token，<code>profile</code> 用 getProfile/getFriendship</td></tr><tr><td>chat_message.write</td><td>先不要勾</td><td>只有要用 <code>liff.sendMessages()</code> 才需要</td></tr><tr><td>Add friend option / Bot link</td><td>On normal 或 aggressive</td><td>想提高加好友率可考慮 aggressive</td></tr><tr><td>Scan QR</td><td>之後要 QR 打卡才開啟</td><td><code>scanCodeV2()</code> 需要對應設定</td></tr></tbody>
+    </table></div>
+<h3 class="content-heading h3">2.4 Endpoint URL 的雷點</h3>
+<p class="body-copy">假設 Endpoint URL 是：</p>
+<figure class="code-card">
+      <figcaption><span>text</span><span>1 lines</span></figcaption>
+      <pre><code>https://example.com/app/</code></pre>
+    </figure>
+<p class="body-copy">那麼 <code>liff.init()</code> 應該在這些 URL 執行：</p>
+    </div>
+    <div class="pgn">16</div>
+  </section>
+<section class="page report-page" id="2-line-developers-後台設定-4">
+    <div class="rh"><span>02 / 2. LINE Developers 後台設定</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">02</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>2. LINE Developers 後台設定</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>2. LINE Developers 後台設定 / 續讀 4</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>text</span><span>5 lines</span></figcaption>
+      <pre><code>https://example.com/app/                  ✅
+https://example.com/app/today             ✅
+https://example.com/app/attendance        ✅
+https://example.com/                      ❌
+https://example.com/other                 ❌</code></pre>
+    </figure>
+<p class="body-copy">建議：</p>
+<ul class="source-list"><li>如果你不確定路由怎麼部署，Endpoint URL 先設成根路徑：<code><a href="https://example.com/" target="_blank" rel="noreferrer">https://example.com/</a></code>。</li><li>如果你用 SPA，例如 React Router，部署時要讓所有路徑 fallback 到 <code>index.html</code>。</li><li>不要在 <code>liff.init()</code> 完成前修改 URL、清 query string、做 redirect、上報完整 URL 到分析工具。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">17</div>
+  </section>
+<section class="page report-page" id="3-前端專案-liff-health-check">
+    <div class="rh"><span>03 / 3. 前端專案：LIFF Health Check</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">03</div>
+      <div>
+        
+        <h2>3. 前端專案：LIFF Health Check</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>3. 前端專案：LIFF Health Check</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">3.1 推薦技術棧</h3>
+<p class="body-copy">MVP 建議：</p>
+<ul class="source-list"><li>React + Vite + TypeScript。</li><li><code>@line/liff</code> npm package。</li><li>Tailwind CSS 可選。</li></ul>
+<p class="body-copy">你也可以用官方 Create LIFF App：</p>
+<figure class="code-card">
+      <figcaption><span>bash</span><span>1 lines</span></figcaption>
+      <pre><code>npx @line/create-liff-app</code></pre>
+    </figure>
+<p class="body-copy">或者自己用 Vite：</p>
+<figure class="code-card">
+      <figcaption><span>bash</span><span>5 lines</span></figcaption>
+      <pre><code>npm create vite@latest line-attendance-liff -- --template react-ts
+cd line-attendance-liff
+npm install
+npm install @line/liff
+npm run dev</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">18</div>
+  </section>
+<section class="page report-page" id="3-前端專案-liff-health-check-2">
+    <div class="rh"><span>03 / 3. 前端專案：LIFF Health Check</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">03</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>3. 前端專案：LIFF Health Check</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>3. 前端專案：LIFF Health Check / 續讀 2</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">3.2 環境變數</h3>
+<p class="body-copy"><code>.env.local</code></p>
+<figure class="code-card">
+      <figcaption><span>bash</span><span>2 lines</span></figcaption>
+      <pre><code>VITE_LIFF_ID=你的_LIFF_ID
+VITE_API_BASE_URL=https://你的-api-domain.com</code></pre>
+    </figure>
+<p class="body-copy">Vite 只會把 <code>VITE_</code> 開頭的變數暴露給前端。LIFF ID 可以在前端出現；但 LINE Login Channel secret、Messaging API access token 絕對不能放前端。</p>
+<h3 class="content-heading h3">3.3 LIFF 初始化封裝</h3>
+<p class="body-copy"><code>src/lib/liffClient.ts</code></p>
+    </div>
+    <div class="pgn">19</div>
+  </section>
+<section class="page report-page" id="3-前端專案-liff-health-check-3">
+    <div class="rh"><span>03 / 3. 前端專案：LIFF Health Check</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">03</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>3. 前端專案：LIFF Health Check</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>3. 前端專案：LIFF Health Check / 續讀 3</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>ts</span><span>43 lines</span></figcaption>
+      <pre><code>import liff from &#39;@line/liff&#39;;
+
+export type LiffSession = {
+  lineUserId: string;
+  displayName: string;
+  pictureUrl?: string;
+  idToken: string;
+  isInClient: boolean;
+  os: string | undefined;
+  liffVersion: string;
+};
+
+export async function initLiffSession(): Promise&lt;LiffSession&gt; {
+  const liffId = import.meta.env.VITE_LIFF_ID;
+  if (!liffId) throw new Error(&#39;Missing VITE_LIFF_ID&#39;);
+
+  await liff.init({
+    liffId,
+    withLoginOnExternalBrowser: true,
+  });
+
+  if (!liff.isLoggedIn()) {
+    liff.login({ redirectUri: window.location.href });
+    throw new Error(&#39;Redirecting to LINE Login&#39;);
+  }
+
+  const profile = await liff.getProfile();
+  const idToken = liff.getIDToken();
+
+  if (!idToken) {
+    throw new Error(&#39;Cannot get ID token. Check LIFF openid scope.&#39;);
+  }
+
+  return {
+    lineUserId: profile.userId,
+    displayName: profile.displayName,
+    pictureUrl: profile.pictureUrl,
+    idToken,
+    isInClient: liff.isInClient(),
+    os: liff.getOS(),
+    liffVersion: liff.getVersion(),
+  };
+}</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">20</div>
+  </section>
+<section class="page report-page" id="3-前端專案-liff-health-check-4">
+    <div class="rh"><span>03 / 3. 前端專案：LIFF Health Check</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">03</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>3. 前端專案：LIFF Health Check</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>3. 前端專案：LIFF Health Check / 續讀 4</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">3.4 Health Check 頁面</h3>
+<p class="body-copy"><code>src/App.tsx</code></p>
+    </div>
+    <div class="pgn">21</div>
+  </section>
+<section class="page report-page" id="3-前端專案-liff-health-check-5">
+    <div class="rh"><span>03 / 3. 前端專案：LIFF Health Check</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">03</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>3. 前端專案：LIFF Health Check</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>3. 前端專案：LIFF Health Check / 續讀 5</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>tsx</span><span>29 lines</span></figcaption>
+      <pre><code>import { useEffect, useState } from &#39;react&#39;;
+import { initLiffSession, LiffSession } from &#39;./lib/liffClient&#39;;
+
+export default function App() {
+  const [session, setSession] = useState&lt;LiffSession | null&gt;(null);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() =&gt; {
+    initLiffSession()
+      .then(setSession)
+      .catch((err) =&gt; {
+        if (String(err?.message || err).includes(&#39;Redirecting&#39;)) return;
+        setError(err?.message ?? String(err));
+      });
+  }, []);
+
+  if (error) return &lt;main style={{ padding: 24 }}&gt;Error: {error}&lt;/main&gt;;
+  if (!session) return &lt;main style={{ padding: 24 }}&gt;Loading LIFF...&lt;/main&gt;;
+
+  return (
+    &lt;main style={{ padding: 24, fontFamily: &#39;system-ui, sans-serif&#39; }}&gt;
+      &lt;h1&gt;LIFF Health Check&lt;/h1&gt;
+      {session.pictureUrl &amp;&amp; (
+        &lt;img src={session.pictureUrl} width={72} height={72} style={{ borderRadius: 36 }} /&gt;
+      )}
+      &lt;pre&gt;{JSON.stringify(session, null, 2)}&lt;/pre&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">22</div>
+  </section>
+<section class="page report-page" id="3-前端專案-liff-health-check-6">
+    <div class="rh"><span>03 / 3. 前端專案：LIFF Health Check</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">03</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>3. 前端專案：LIFF Health Check</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>3. 前端專案：LIFF Health Check / 續讀 6</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">3.5 部署前端</h3>
+<p class="body-copy">你可以用：</p>
+<ul class="source-list"><li>Vercel。</li><li>Netlify。</li><li>Cloudflare Pages。</li><li>Firebase Hosting。</li><li>Zeabur。</li></ul>
+<p class="body-copy">重點：</p>
+<ol class="source-list"><li>一定要 HTTPS。</li><li>部署後，把 LIFF App 的 Endpoint URL 改成正式 URL。</li><li>如果是 SPA，要配置 rewrite，讓 <code>/attendance</code>、<code>/today</code> 這類路徑都回到 <code>index.html</code>。</li><li>修改環境變數後要重新部署。</li></ol>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">23</div>
+  </section>
+<section class="page report-page" id="4-後端-身份驗證與-api">
+    <div class="rh"><span>04 / 4. 後端：身份驗證與 API</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">04</div>
+      <div>
+        
+        <h2>4. 後端：身份驗證與 API</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>4. 後端：身份驗證與 API</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">4.1 為什麼後端要驗證 ID token</h3>
+<p class="body-copy">前端的 <code>liff.getProfile()</code> 適合拿來顯示頭像和名稱，但不要把它當成可信身份來源。正確做法是：</p>
+<ol class="source-list"><li>前端拿 <code>idToken</code>。</li><li>前端把 <code>idToken</code> 送到你的後端。</li><li>後端呼叫 LINE 的 token verify endpoint。</li><li>後端取得可信的 <code>sub</code>，也就是 LINE user ID。</li><li>後端用 <code>sub</code> 查詢或建立員工資料。</li></ol>
+<h3 class="content-heading h3">4.2 後端環境變數</h3>
+<p class="body-copy"><code>.env</code></p>
+<figure class="code-card">
+      <figcaption><span>bash</span><span>5 lines</span></figcaption>
+      <pre><code>LINE_LOGIN_CHANNEL_ID=你的_LINE_Login_Channel_ID
+LINE_MESSAGING_CHANNEL_SECRET=你的_Messaging_API_Channel_Secret
+LINE_MESSAGING_CHANNEL_ACCESS_TOKEN=你的_Messaging_API_Channel_Access_Token
+DATABASE_URL=postgresql://...
+APP_TIMEZONE=Asia/Taipei</code></pre>
+    </figure>
+<p class="body-copy">注意：</p>
+    </div>
+    <div class="pgn">24</div>
+  </section>
+<section class="page report-page" id="4-後端-身份驗證與-api-2">
+    <div class="rh"><span>04 / 4. 後端：身份驗證與 API</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">04</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>4. 後端：身份驗證與 API</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>4. 後端：身份驗證與 API / 續讀 2</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ul class="source-list"><li><code>LINE_LOGIN_CHANNEL_ID</code> 用來驗證 LIFF ID token。</li><li><code>LINE_MESSAGING_CHANNEL_SECRET</code> 用來驗證 Messaging API webhook signature。</li><li>不要把 Messaging API Channel access token 放到前端。</li></ul>
+<h3 class="content-heading h3">4.3 Express 後端骨架</h3>
+<figure class="code-card">
+      <figcaption><span>bash</span><span>6 lines</span></figcaption>
+      <pre><code>mkdir line-attendance-api
+cd line-attendance-api
+npm init -y
+npm install express cors dotenv zod
+npm install -D typescript tsx @types/express @types/cors @types/node
+npx tsc --init</code></pre>
+    </figure>
+<p class="body-copy"><code>src/server.ts</code></p>
+    </div>
+    <div class="pgn">25</div>
+  </section>
+<section class="page report-page" id="4-後端-身份驗證與-api-3">
+    <div class="rh"><span>04 / 4. 後端：身份驗證與 API</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">04</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>4. 後端：身份驗證與 API</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>4. 後端：身份驗證與 API / 續讀 3</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>ts</span><span>48 lines</span></figcaption>
+      <pre><code>import &#39;dotenv/config&#39;;
+import express from &#39;express&#39;;
+import cors from &#39;cors&#39;;
+import { z } from &#39;zod&#39;;
+import { verifyLineIdToken } from &#39;./verifyLineIdToken&#39;;
+
+const app = express();
+
+// Webhook route 如果要驗證 raw body，建議放在 express.json() 前面。
+// app.post(&#39;/webhook&#39;, express.raw({ type: &#39;application/json&#39; }), webhookHandler);
+
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN ?? true }));
+app.use(express.json());
+
+const authSchema = z.object({ idToken: z.string().min(10) });
+
+app.post(&#39;/api/auth/line&#39;, async (req, res) =&gt; {
+  try {
+    const { idToken } = authSchema.parse(req.body);
+    const user = await verifyLineIdToken(idToken);
+
+    // TODO: upsert employee by user.lineUserId
+    res.json({
+      lineUserId: user.lineUserId,
+      displayName: user.displayName,
+      pictureUrl: user.pictureUrl,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(401).json({ error: &#39;LINE_AUTH_FAILED&#39; });
+  }
+});
+
+app.get(&#39;/api/me/status&#39;, async (req, res) =&gt; {
+  // MVP 可先用 Authorization: Bearer &lt;your-session-token&gt;
+  // 或短期內繼續傳 idToken，但生產建議換成你自己的 session。
+  res.json({
+    status: &#39;OFF_DUTY&#39;,
+    businessDate: &#39;2026-05-30&#39;,
+    lastEventAt: null,
+    totalMinutes: 0,
+    sections: { completed: 0, total: 5 },
+  });
+});
+
+app.listen(process.env.PORT ?? 3000, () =&gt; {
+  console.log(&#39;API listening&#39;);
+});</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">26</div>
+  </section>
+<section class="page report-page" id="4-後端-身份驗證與-api-4">
+    <div class="rh"><span>04 / 4. 後端：身份驗證與 API</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">04</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>4. 後端：身份驗證與 API</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>4. 後端：身份驗證與 API / 續讀 4</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <p class="body-copy"><code>src/verifyLineIdToken.ts</code></p>
+    </div>
+    <div class="pgn">27</div>
+  </section>
+<section class="page report-page" id="4-後端-身份驗證與-api-5">
+    <div class="rh"><span>04 / 4. 後端：身份驗證與 API</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">04</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>4. 後端：身份驗證與 API</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>4. 後端：身份驗證與 API / 續讀 5</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>ts</span><span>44 lines</span></figcaption>
+      <pre><code>export type VerifiedLineUser = {
+  lineUserId: string;
+  displayName?: string;
+  pictureUrl?: string;
+};
+
+export async function verifyLineIdToken(idToken: string): Promise&lt;VerifiedLineUser&gt; {
+  const channelId = process.env.LINE_LOGIN_CHANNEL_ID;
+  if (!channelId) throw new Error(&#39;Missing LINE_LOGIN_CHANNEL_ID&#39;);
+
+  const body = new URLSearchParams();
+  body.set(&#39;id_token&#39;, idToken);
+  body.set(&#39;client_id&#39;, channelId);
+
+  const response = await fetch(&#39;https://api.line.me/oauth2/v2.1/verify&#39;, {
+    method: &#39;POST&#39;,
+    headers: { &#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39; },
+    body,
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`LINE verify failed: ${response.status} ${text}`);
+  }
+
+  const payload = await response.json() as {
+    iss?: string;
+    sub?: string;
+    aud?: string;
+    exp?: number;
+    name?: string;
+    picture?: string;
+  };
+
+  if (!payload.sub) throw new Error(&#39;LINE token missing sub&#39;);
+  if (payload.aud !== channelId) throw new Error(&#39;LINE token aud mismatch&#39;);
+  if (payload.exp &amp;&amp; payload.exp * 1000 &lt; Date.now()) throw new Error(&#39;LINE token expired&#39;);
+
+  return {
+    lineUserId: payload.sub,
+    displayName: payload.name,
+    pictureUrl: payload.picture,
+  };
+}</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">28</div>
+  </section>
+<section class="page report-page" id="4-後端-身份驗證與-api-6">
+    <div class="rh"><span>04 / 4. 後端：身份驗證與 API</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">04</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>4. 後端：身份驗證與 API</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>4. 後端：身份驗證與 API / 續讀 6</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <hr class="soft-rule">
+    </div>
+    <div class="pgn">29</div>
+  </section>
+<section class="page report-page" id="5-資料模型設計">
+    <div class="rh"><span>05 / 5. 資料模型設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">05</div>
+      <div>
+        
+        <h2>5. 資料模型設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>5. 資料模型設計</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">5.1 最小表結構</h3>
+    </div>
+    <div class="pgn">30</div>
+  </section>
+<section class="page report-page" id="5-資料模型設計-2">
+    <div class="rh"><span>05 / 5. 資料模型設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">05</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>5. 資料模型設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>5. 資料模型設計 / 續讀 2</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>mermaid</span><span>43 lines</span></figcaption>
+      <pre><code>erDiagram
+  EMPLOYEE ||--o{ ATTENDANCE_SESSION : has
+  EMPLOYEE ||--o{ WORK_SECTION : has
+  EMPLOYEE ||--o{ ATTENDANCE_EVENT : has
+
+  EMPLOYEE {
+    string id
+    string line_user_id
+    string display_name
+    string role
+    boolean active
+    datetime created_at
+  }
+
+  ATTENDANCE_SESSION {
+    string id
+    string employee_id
+    string business_date
+    datetime clock_in_at
+    datetime clock_out_at
+    string clock_in_source
+    string clock_out_source
+    datetime created_at
+  }
+
+  WORK_SECTION {
+    string id
+    string employee_id
+    string business_date
+    string title
+    string status
+    int order_index
+    datetime completed_at
+  }
+
+  ATTENDANCE_EVENT {
+    string id
+    string employee_id
+    string event_type
+    datetime occurred_at
+    string source
+    string metadata_json
+  }</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">31</div>
+  </section>
+<section class="page report-page" id="5-資料模型設計-3">
+    <div class="rh"><span>05 / 5. 資料模型設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">05</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>5. 資料模型設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>5. 資料模型設計 / 續讀 3</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">5.2 推薦欄位說明</h3>
+<p class="body-copy"><code>employees</code></p>
+<div class="table-wrap"><table>
+      <thead><tr><th>欄位</th><th>說明</th></tr></thead>
+      <tbody><tr><td><code>line_user_id</code></td><td>LINE verified user ID，唯一</td></tr><tr><td><code>display_name</code></td><td>LINE 顯示名稱，可更新</td></tr><tr><td><code>role</code></td><td><code>MEMBER</code> / <code>MANAGER</code> / <code>ADMIN</code></td></tr><tr><td><code>active</code></td><td>是否仍是員工</td></tr></tbody>
+    </table></div>
+<p class="body-copy"><code>attendance_sessions</code></p>
+    </div>
+    <div class="pgn">32</div>
+  </section>
+<section class="page report-page" id="5-資料模型設計-4">
+    <div class="rh"><span>05 / 5. 資料模型設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">05</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>5. 資料模型設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>5. 資料模型設計 / 續讀 4</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <div class="table-wrap"><table>
+      <thead><tr><th>欄位</th><th>說明</th></tr></thead>
+      <tbody><tr><td><code>business_date</code></td><td>用 Asia/Taipei 算出的業務日期，例如 <code>2026-05-30</code></td></tr><tr><td><code>clock_in_at</code></td><td>UTC timestamp</td></tr><tr><td><code>clock_out_at</code></td><td>UTC timestamp，可空</td></tr><tr><td><code>clock_in_source</code></td><td><code>LIFF</code>, <code>WEBHOOK</code>, <code>ADMIN</code></td></tr><tr><td><code>clock_out_source</code></td><td>同上</td></tr></tbody>
+    </table></div>
+<p class="body-copy"><code>attendance_events</code></p>
+<p class="body-copy">這個表很重要。它保留使用者每次操作的 audit trail。即使 session 被管理員修正，也能知道原始操作是什麼。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">33</div>
+  </section>
+<section class="page report-page" id="6-打卡-api-設計">
+    <div class="rh"><span>06 / 6. 打卡 API 設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">06</div>
+      <div>
+        
+        <h2>6. 打卡 API 設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>6. 打卡 API 設計</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">6.1 API contract</h3>
+<figure class="code-card">
+      <figcaption><span>http</span><span>2 lines</span></figcaption>
+      <pre><code>GET /api/me/status
+Authorization: Bearer &lt;your-session-token&gt;</code></pre>
+    </figure>
+<p class="body-copy">Response:</p>
+<figure class="code-card">
+      <figcaption><span>json</span><span>14 lines</span></figcaption>
+      <pre><code>{
+  &quot;status&quot;: &quot;ON_DUTY&quot;,
+  &quot;businessDate&quot;: &quot;2026-05-30&quot;,
+  &quot;clockInAt&quot;: &quot;2026-05-30T01:15:00.000Z&quot;,
+  &quot;clockOutAt&quot;: null,
+  &quot;totalMinutes&quot;: 135,
+  &quot;sections&quot;: {
+    &quot;completed&quot;: 3,
+    &quot;total&quot;: 5
+  },
+  &quot;timeline&quot;: [
+    { &quot;type&quot;: &quot;CLOCK_IN&quot;, &quot;at&quot;: &quot;2026-05-30T01:15:00.000Z&quot; }
+  ]
+}</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">34</div>
+  </section>
+<section class="page report-page" id="6-打卡-api-設計-2">
+    <div class="rh"><span>06 / 6. 打卡 API 設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">06</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>6. 打卡 API 設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>6. 打卡 API 設計 / 續讀 2</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>http</span><span>3 lines</span></figcaption>
+      <pre><code>POST /api/attendance/clock-in
+Authorization: Bearer &lt;your-session-token&gt;
+Content-Type: application/json</code></pre>
+    </figure>
+<p class="body-copy">Request:</p>
+<figure class="code-card">
+      <figcaption><span>json</span><span>9 lines</span></figcaption>
+      <pre><code>{
+  &quot;source&quot;: &quot;LIFF&quot;,
+  &quot;clientRequestId&quot;: &quot;uuid-from-frontend&quot;,
+  &quot;location&quot;: {
+    &quot;lat&quot;: 25.033,
+    &quot;lng&quot;: 121.565,
+    &quot;accuracy&quot;: 80
+  }
+}</code></pre>
+    </figure>
+<p class="body-copy">Response:</p>
+    </div>
+    <div class="pgn">35</div>
+  </section>
+<section class="page report-page" id="6-打卡-api-設計-3">
+    <div class="rh"><span>06 / 6. 打卡 API 設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">06</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>6. 打卡 API 設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>6. 打卡 API 設計 / 續讀 3</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>json</span><span>7 lines</span></figcaption>
+      <pre><code>{
+  &quot;ok&quot;: true,
+  &quot;status&quot;: &quot;ON_DUTY&quot;,
+  &quot;message&quot;: &quot;上班打卡成功&quot;,
+  &quot;sessionId&quot;: &quot;att_123&quot;,
+  &quot;clockInAt&quot;: &quot;2026-05-30T01:15:00.000Z&quot;
+}</code></pre>
+    </figure>
+<p class="body-copy"><code>clock-out</code> 類似。</p>
+<h3 class="content-heading h3">6.2 冪等設計</h3>
+<p class="body-copy">每次前端點按鈕都帶一個 <code>clientRequestId</code>。後端可以建一張 <code>idempotency_keys</code> 表：</p>
+<figure class="code-card">
+      <figcaption><span>sql</span><span>7 lines</span></figcaption>
+      <pre><code>CREATE TABLE idempotency_keys (
+  key TEXT PRIMARY KEY,
+  employee_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  response_json TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);</code></pre>
+    </figure>
+<p class="body-copy">處理邏輯：</p>
+    </div>
+    <div class="pgn">36</div>
+  </section>
+<section class="page report-page" id="6-打卡-api-設計-4">
+    <div class="rh"><span>06 / 6. 打卡 API 設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">06</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>6. 打卡 API 設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>6. 打卡 API 設計 / 續讀 4</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ol class="source-list"><li>收到請求。</li><li>先查 <code>clientRequestId</code> 是否存在。</li><li>如果存在，直接回之前的 response。</li><li>如果不存在，進入 transaction。</li><li>寫 session 和 event。</li><li>儲存 response。</li></ol>
+<h3 class="content-heading h3">6.3 防止同一使用者有兩個未下班 session</h3>
+<p class="body-copy">PostgreSQL 可用 partial unique index：</p>
+<figure class="code-card">
+      <figcaption><span>sql</span><span>3 lines</span></figcaption>
+      <pre><code>CREATE UNIQUE INDEX one_open_session_per_employee
+ON attendance_sessions(employee_id)
+WHERE clock_out_at IS NULL;</code></pre>
+    </figure>
+<p class="body-copy">這樣即使使用者連點、網路重試、兩臺手機同時開啟，也不會產生兩筆「上班中」。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">37</div>
+  </section>
+<section class="page report-page" id="7-前端狀態頁設計">
+    <div class="rh"><span>07 / 7. 前端狀態頁設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">07</div>
+      <div>
+        
+        <h2>7. 前端狀態頁設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>7. 前端狀態頁設計</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">7.1 頁面資訊架構</h3>
+<figure class="code-card">
+      <figcaption><span>text</span><span>18 lines</span></figcaption>
+      <pre><code>┌────────────────────────────┐
+│ 頭像  王小明                │
+│ 今日：2026/05/30            │
+├────────────────────────────┤
+│ 當前狀態：上班中             │
+│ 上班時間：09:15             │
+│ 已工作：2 小時 15 分         │
+├────────────────────────────┤
+│ [下班打卡]                  │
+├────────────────────────────┤
+│ 今日 Sections：3 / 5        │
+│ ✅ 開店檢查                 │
+│ ✅ 客戶回訪                 │
+│ ⏳ 庫存檔點                 │
+├────────────────────────────┤
+│ 最近紀錄                    │
+│ 09:15 上班打卡              │
+└────────────────────────────┘</code></pre>
+    </figure>
+<h3 class="content-heading h3">7.2 建議頁面狀態</h3>
+    </div>
+    <div class="pgn">38</div>
+  </section>
+<section class="page report-page" id="7-前端狀態頁設計-2">
+    <div class="rh"><span>07 / 7. 前端狀態頁設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">07</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>7. 前端狀態頁設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>7. 前端狀態頁設計 / 續讀 2</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <div class="table-wrap"><table>
+      <thead><tr><th>狀態</th><th>文案</th><th>按鈕</th></tr></thead>
+      <tbody><tr><td>loading</td><td>正在讀取 LINE 身份</td><td>無</td></tr><tr><td>auth_failed</td><td>LINE 身份驗證失敗</td><td>重新開啟</td></tr><tr><td>not_bound</td><td>你的 LINE 還沒有綁定員工資料</td><td>聯絡管理員 / 輸入員工碼</td></tr><tr><td>off_duty</td><td>目前尚未上班</td><td>上班打卡</td></tr><tr><td>on_duty</td><td>目前上班中</td><td>下班打卡</td></tr><tr><td>done_today</td><td>今日已下班</td><td>檢視今日記錄 / 再次上班</td></tr><tr><td>offline</td><td>網路異常</td><td>重新整理</td></tr></tbody>
+    </table></div>
+<h3 class="content-heading h3">7.3 前端打卡按鈕流程</h3>
+    </div>
+    <div class="pgn">39</div>
+  </section>
+<section class="page report-page" id="7-前端狀態頁設計-3">
+    <div class="rh"><span>07 / 7. 前端狀態頁設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">07</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>7. 前端狀態頁設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>7. 前端狀態頁設計 / 續讀 3</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>mermaid</span><span>13 lines</span></figcaption>
+      <pre><code>sequenceDiagram
+  participant U as User
+  participant FE as LIFF Frontend
+  participant API as Attendance API
+  participant DB as DB
+
+  U-&gt;&gt;FE: 點上班打卡
+  FE-&gt;&gt;FE: disable button + generate clientRequestId
+  FE-&gt;&gt;API: POST /clock-in
+  API-&gt;&gt;DB: transaction + idempotency + create session
+  DB--&gt;&gt;API: saved
+  API--&gt;&gt;FE: status ON_DUTY
+  FE--&gt;&gt;U: 顯示成功與最新狀態</code></pre>
+    </figure>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">40</div>
+  </section>
+<section class="page report-page" id="8-flex-message-整合方式">
+    <div class="rh"><span>08 / 8. Flex Message 整合方式</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">08</div>
+      <div>
+        
+        <h2>8. Flex Message 整合方式</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>8. Flex Message 整合方式</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">8.1 用 URI action 開啟 LIFF</h3>
+<p class="body-copy">你現有 Flex Message 可把按鈕 action 改成：</p>
+<figure class="code-card">
+      <figcaption><span>json</span><span>9 lines</span></figcaption>
+      <pre><code>{
+  &quot;type&quot;: &quot;button&quot;,
+  &quot;style&quot;: &quot;primary&quot;,
+  &quot;action&quot;: {
+    &quot;type&quot;: &quot;uri&quot;,
+    &quot;label&quot;: &quot;開啟打卡頁&quot;,
+    &quot;uri&quot;: &quot;https://liff.line.me/YOUR_LIFF_ID/attendance&quot;
+  }
+}</code></pre>
+    </figure>
+<p class="body-copy">上班按鈕：</p>
+<figure class="code-card">
+      <figcaption><span>json</span><span>9 lines</span></figcaption>
+      <pre><code>{
+  &quot;type&quot;: &quot;button&quot;,
+  &quot;style&quot;: &quot;primary&quot;,
+  &quot;action&quot;: {
+    &quot;type&quot;: &quot;uri&quot;,
+    &quot;label&quot;: &quot;上班打卡&quot;,
+    &quot;uri&quot;: &quot;https://liff.line.me/YOUR_LIFF_ID/attendance?action=clock_in&quot;
+  }
+}</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">41</div>
+  </section>
+<section class="page report-page" id="8-flex-message-整合方式-2">
+    <div class="rh"><span>08 / 8. Flex Message 整合方式</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">08</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>8. Flex Message 整合方式</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>8. Flex Message 整合方式 / 續讀 2</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <p class="body-copy">下班按鈕：</p>
+<figure class="code-card">
+      <figcaption><span>json</span><span>9 lines</span></figcaption>
+      <pre><code>{
+  &quot;type&quot;: &quot;button&quot;,
+  &quot;style&quot;: &quot;secondary&quot;,
+  &quot;action&quot;: {
+    &quot;type&quot;: &quot;uri&quot;,
+    &quot;label&quot;: &quot;下班打卡&quot;,
+    &quot;uri&quot;: &quot;https://liff.line.me/YOUR_LIFF_ID/attendance?action=clock_out&quot;
+  }
+}</code></pre>
+    </figure>
+<h3 class="content-heading h3">8.2 為什麼 Flex 按鈕建議先開啟 LIFF，而不是直接 postback 打卡</h3>
+<p class="body-copy">直接 postback 打卡可以更快，但缺點是：</p>
+<ul class="source-list"><li>使用者沒有確認畫面。</li><li>無法顯示當前狀態和今日 sections。</li><li>不容易取得地理位置、相機、QR code 等瀏覽器能力。</li><li>不容易處理「LINE Login Channel 的身份驗證」和「員工綁定」。</li></ul>
+<p class="body-copy">建議路線：</p>
+    </div>
+    <div class="pgn">42</div>
+  </section>
+<section class="page report-page" id="8-flex-message-整合方式-3">
+    <div class="rh"><span>08 / 8. Flex Message 整合方式</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">08</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>8. Flex Message 整合方式</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>8. Flex Message 整合方式 / 續讀 3</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ul class="source-list"><li>MVP：Flex → LIFF → 確認 → API 打卡。</li><li>高階：Rich Menu / postback 可做「快速打卡」，但仍保留 LIFF 詳情頁。</li></ul>
+<h3 class="content-heading h3">8.3 Flex Message 也可以顯示目前狀態</h3>
+<p class="body-copy">例如：</p>
+    </div>
+    <div class="pgn">43</div>
+  </section>
+<section class="page report-page" id="8-flex-message-整合方式-4">
+    <div class="rh"><span>08 / 8. Flex Message 整合方式</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">08</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>8. Flex Message 整合方式</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>8. Flex Message 整合方式 / 續讀 4</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>json</span><span>27 lines</span></figcaption>
+      <pre><code>{
+  &quot;type&quot;: &quot;bubble&quot;,
+  &quot;body&quot;: {
+    &quot;type&quot;: &quot;box&quot;,
+    &quot;layout&quot;: &quot;vertical&quot;,
+    &quot;contents&quot;: [
+      { &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;今日打卡狀態&quot;, &quot;weight&quot;: &quot;bold&quot;, &quot;size&quot;: &quot;lg&quot; },
+      { &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;目前：上班中&quot;, &quot;margin&quot;: &quot;md&quot; },
+      { &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;上班時間：09:15&quot;, &quot;size&quot;: &quot;sm&quot;, &quot;color&quot;: &quot;#888888&quot; }
+    ]
+  },
+  &quot;footer&quot;: {
+    &quot;type&quot;: &quot;box&quot;,
+    &quot;layout&quot;: &quot;vertical&quot;,
+    &quot;contents&quot;: [
+      {
+        &quot;type&quot;: &quot;button&quot;,
+        &quot;style&quot;: &quot;primary&quot;,
+        &quot;action&quot;: {
+          &quot;type&quot;: &quot;uri&quot;,
+          &quot;label&quot;: &quot;檢視詳情&quot;,
+          &quot;uri&quot;: &quot;https://liff.line.me/YOUR_LIFF_ID/today&quot;
+        }
+      }
+    ]
+  }
+}</code></pre>
+    </figure>
+<p class="body-copy">注意：Flex Message 只是當下生成的卡片，它不會自動即時更新。即時狀態要以 LIFF 頁面和後端 API 為準。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">44</div>
+  </section>
+<section class="page report-page" id="9-rich-menu-整合">
+    <div class="rh"><span>09 / 9. Rich Menu 整合</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">09</div>
+      <div>
+        
+        <h2>9. Rich Menu 整合</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>9. Rich Menu 整合</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">9.1 最簡單 Rich Menu</h3>
+<p class="body-copy">建立一個預設 Rich Menu，包含：</p>
+<ol class="source-list"><li>今日狀態 → LIFF <code>/today</code></li><li>上班/下班 → LIFF <code>/attendance</code></li><li>今日 sections → LIFF <code>/sections</code></li><li>聯絡主管 → 開啟聊天輸入或傳送 postback</li></ol>
+<p class="body-copy">Rich Menu 的 tappable area 可以使用 URI action 開啟 LIFF。</p>
+<h3 class="content-heading h3">9.2 高階：Rich Menu Switch</h3>
+<p class="body-copy">未來如果你想讓使用者狀態不同、選單不同：</p>
+<ul class="source-list"><li>未上班：顯示「上班打卡」。</li><li>上班中：顯示「下班打卡」「今日任務」。</li><li>主管：顯示「團隊狀態」「異常紀錄」。</li></ul>
+<p class="body-copy">做法：</p>
+    </div>
+    <div class="pgn">45</div>
+  </section>
+<section class="page report-page" id="9-rich-menu-整合-2">
+    <div class="rh"><span>09 / 9. Rich Menu 整合</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">09</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>9. Rich Menu 整合</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>9. Rich Menu 整合 / 續讀 2</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ul class="source-list"><li>可以用 Messaging API 建多個 Rich Menu。</li><li>對使用者 link 不同 Rich Menu。</li><li>或使用 Rich Menu Switch Action 做快速切換。</li></ul>
+<p class="body-copy">不過 MVP 不需要一開始就做。先用一個 Rich Menu 開啟 LIFF 即可。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">46</div>
+  </section>
+<section class="page report-page" id="10-webhook-接收-line-事件">
+    <div class="rh"><span>10 / 10. Webhook：接收 LINE 事件</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">10</div>
+      <div>
+        
+        <h2>10. Webhook：接收 LINE 事件</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>10. Webhook：接收 LINE 事件</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">10.1 Webhook 的角色</h3>
+<p class="body-copy">Webhook 適合處理：</p>
+<ul class="source-list"><li>使用者加好友。</li><li>使用者傳文字。</li><li>使用者點 Flex postback。</li><li>Rich Menu postback。</li><li>傳送狀態卡片。</li></ul>
+<p class="body-copy">但打卡主流程建議在 LIFF 內完成。</p>
+<h3 class="content-heading h3">10.2 Webhook signature 驗證</h3>
+<p class="body-copy"><strong>大雷點：不要在驗證 signature 前 JSON parse request body。</strong></p>
+<p class="body-copy"><code>src/webhook.ts</code></p>
+    </div>
+    <div class="pgn">47</div>
+  </section>
+<section class="page report-page" id="10-webhook-接收-line-事件-2">
+    <div class="rh"><span>10 / 10. Webhook：接收 LINE 事件</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">10</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>10. Webhook：接收 LINE 事件</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>10. Webhook：接收 LINE 事件 / 續讀 2</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>ts</span><span>39 lines</span></figcaption>
+      <pre><code>import crypto from &#39;crypto&#39;;
+import type { Request, Response } from &#39;express&#39;;
+
+function safeCompare(a: string, b: string): boolean {
+  const ba = Buffer.from(a);
+  const bb = Buffer.from(b);
+  return ba.length === bb.length &amp;&amp; crypto.timingSafeEqual(ba, bb);
+}
+
+export async function webhookHandler(req: Request, res: Response) {
+  const channelSecret = process.env.LINE_MESSAGING_CHANNEL_SECRET;
+  if (!channelSecret) return res.status(500).send(&#39;Missing channel secret&#39;);
+
+  const signature = req.header(&#39;x-line-signature&#39;) ?? &#39;&#39;;
+  const rawBody = req.body as Buffer;
+
+  const expected = crypto
+    .createHmac(&#39;sha256&#39;, channelSecret)
+    .update(rawBody)
+    .digest(&#39;base64&#39;);
+
+  if (!safeCompare(signature, expected)) {
+    return res.status(401).send(&#39;Bad signature&#39;);
+  }
+
+  const payload = JSON.parse(rawBody.toString(&#39;utf8&#39;));
+
+  // 先回 200，後面非同步處理，避免 LINE 重送。
+  res.status(200).end();
+
+  for (const event of payload.events ?? []) {
+    await handleLineEvent(event);
+  }
+}
+
+async function handleLineEvent(event: any) {
+  // TODO: 根據 event.type / event.postback.data 處理
+  console.log(event.type, event.source?.userId);
+}</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">48</div>
+  </section>
+<section class="page report-page" id="10-webhook-接收-line-事件-3">
+    <div class="rh"><span>10 / 10. Webhook：接收 LINE 事件</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">10</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>10. Webhook：接收 LINE 事件</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>10. Webhook：接收 LINE 事件 / 續讀 3</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <p class="body-copy"><code>src/server.ts</code></p>
+<figure class="code-card">
+      <figcaption><span>ts</span><span>8 lines</span></figcaption>
+      <pre><code>import express from &#39;express&#39;;
+import { webhookHandler } from &#39;./webhook&#39;;
+
+const app = express();
+
+app.post(&#39;/webhook&#39;, express.raw({ type: &#39;application/json&#39; }), webhookHandler);
+
+app.use(express.json());</code></pre>
+    </figure>
+<h3 class="content-heading h3">10.3 Webhook 重送與重複事件</h3>
+<p class="body-copy">LINE 可能重送 webhook。你要：</p>
+<ul class="source-list"><li>用 <code>webhookEventId</code> 去重。</li><li>處理順序不能完全依賴收到順序。</li><li>用 event <code>timestamp</code> 作為業務排序參考。</li><li>你的 handler 要儘快回 2xx。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">49</div>
+  </section>
+<section class="page report-page" id="11-今日-sections-模組">
+    <div class="rh"><span>11 / 11. 今日 Sections 模組</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">11</div>
+      <div>
+        
+        <h2>11. 今日 Sections 模組</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>11. 今日 Sections 模組</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">11.1 最小功能</h3>
+<p class="body-copy">API：</p>
+<figure class="code-card">
+      <figcaption><span>http</span><span>1 lines</span></figcaption>
+      <pre><code>GET /api/me/sections?date=2026-05-30</code></pre>
+    </figure>
+<p class="body-copy">Response:</p>
+<figure class="code-card">
+      <figcaption><span>json</span><span>10 lines</span></figcaption>
+      <pre><code>{
+  &quot;businessDate&quot;: &quot;2026-05-30&quot;,
+  &quot;completed&quot;: 3,
+  &quot;total&quot;: 5,
+  &quot;items&quot;: [
+    { &quot;id&quot;: &quot;s1&quot;, &quot;title&quot;: &quot;開店檢查&quot;, &quot;status&quot;: &quot;DONE&quot;, &quot;completedAt&quot;: &quot;2026-05-30T01:05:00Z&quot; },
+    { &quot;id&quot;: &quot;s2&quot;, &quot;title&quot;: &quot;客戶回訪&quot;, &quot;status&quot;: &quot;DONE&quot;, &quot;completedAt&quot;: &quot;2026-05-30T02:10:00Z&quot; },
+    { &quot;id&quot;: &quot;s3&quot;, &quot;title&quot;: &quot;庫存檔點&quot;, &quot;status&quot;: &quot;TODO&quot;, &quot;completedAt&quot;: null }
+  ]
+}</code></pre>
+    </figure>
+<figure class="code-card">
+      <figcaption><span>http</span><span>1 lines</span></figcaption>
+      <pre><code>POST /api/sections/{sectionId}/complete</code></pre>
+    </figure>
+    </div>
+    <div class="pgn">50</div>
+  </section>
+<section class="page report-page" id="11-今日-sections-模組-2">
+    <div class="rh"><span>11 / 11. 今日 Sections 模組</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">11</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>11. 今日 Sections 模組</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>11. 今日 Sections 模組 / 續讀 2</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">11.2 Section 狀態</h3>
+<div class="table-wrap"><table>
+      <thead><tr><th>狀態</th><th>說明</th></tr></thead>
+      <tbody><tr><td><code>TODO</code></td><td>尚未開始</td></tr><tr><td><code>IN_PROGRESS</code></td><td>進行中</td></tr><tr><td><code>DONE</code></td><td>已完成</td></tr><tr><td><code>SKIPPED</code></td><td>跳過，需要備註</td></tr><tr><td><code>BLOCKED</code></td><td>卡住，需要主管處理</td></tr></tbody>
+    </table></div>
+<h3 class="content-heading h3">11.3 Sections 與打卡的關係</h3>
+<p class="body-copy">建議規則：</p>
+<ul class="source-list"><li>未上班不能完成 section。</li><li>下班後不能修改 section，除非允許補登。</li><li>section 完成時間要寫 audit event。</li><li>可以讓主管後台調整。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">51</div>
+  </section>
+<section class="page report-page" id="12-員工綁定設計">
+    <div class="rh"><span>12 / 12. 員工綁定設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">12</div>
+      <div>
+        
+        <h2>12. 員工綁定設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>12. 員工綁定設計</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">12.1 最簡單：第一次開啟自動建立員工</h3>
+<p class="body-copy">適合內部小團隊。</p>
+<p class="body-copy">流程：</p>
+<ol class="source-list"><li>使用者開啟 LIFF。</li><li>後端驗證 LINE userId。</li><li>如果沒有 employee，就建立一筆 employee，狀態為 <code>pending</code>。</li><li>管理員後台把 pending 使用者改成正式員工。</li></ol>
+<p class="body-copy">優點：簡單。 缺點：任何加好友的人都可能進 pending。</p>
+<h3 class="content-heading h3">12.2 比較正式：員工碼綁定</h3>
+<p class="body-copy">流程：</p>
+<ol class="source-list"><li>HR 先建立員工資料，產生一次性綁定碼。</li><li>使用者開啟 LIFF。</li><li>輸入員工碼。</li><li>後端把 employee 和 LINE userId 綁定。</li><li>綁定碼作廢。</li></ol>
+    </div>
+    <div class="pgn">52</div>
+  </section>
+<section class="page report-page" id="12-員工綁定設計-2">
+    <div class="rh"><span>12 / 12. 員工綁定設計</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">12</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>12. 員工綁定設計</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>12. 員工綁定設計 / 續讀 2</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <p class="body-copy">推薦資料表：</p>
+<figure class="code-card">
+      <figcaption><span>sql</span><span>6 lines</span></figcaption>
+      <pre><code>CREATE TABLE employee_bind_codes (
+  code TEXT PRIMARY KEY,
+  employee_id TEXT NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used_at TIMESTAMP NULL
+);</code></pre>
+    </figure>
+<h3 class="content-heading h3">12.3 最正式：公司帳號登入 + LINE 綁定</h3>
+<p class="body-copy">如果你已有公司帳號系統：</p>
+<ol class="source-list"><li>使用者先用公司帳號登入。</li><li>再綁定 LINE Login userId。</li><li>後續打卡只用 LIFF 開啟即可。</li></ol>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">53</div>
+  </section>
+<section class="page report-page" id="13-打卡安全與定位">
+    <div class="rh"><span>13 / 13. 打卡安全與定位</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">13</div>
+      <div>
+        
+        <h2>13. 打卡安全與定位</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>13. 打卡安全與定位</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">13.1 地理位置</h3>
+<p class="body-copy">LIFF 本身不是定位 API；你會用瀏覽器 Geolocation API：</p>
+<figure class="code-card">
+      <figcaption><span>ts</span><span>9 lines</span></figcaption>
+      <pre><code>export function getCurrentPosition(): Promise&lt;GeolocationPosition&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: true,
+      timeout: 10_000,
+      maximumAge: 30_000,
+    });
+  });
+}</code></pre>
+    </figure>
+<p class="body-copy">注意：</p>
+<ul class="source-list"><li>使用者可以拒絕定位。</li><li>GPS 可被模擬，不應該把定位當成絕對防作弊。</li><li>需要在隱私政策中說明用途。</li><li>儲存 lat/lng 要考慮資安和儲存期限。</li></ul>
+    </div>
+    <div class="pgn">54</div>
+  </section>
+<section class="page report-page" id="13-打卡安全與定位-2">
+    <div class="rh"><span>13 / 13. 打卡安全與定位</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">13</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>13. 打卡安全與定位</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>13. 打卡安全與定位 / 續讀 2</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">13.2 QR code 打卡</h3>
+<p class="body-copy">更可靠的 MVP：店內貼 QR code。</p>
+<p class="body-copy">流程：</p>
+<ol class="source-list"><li>員工開啟 LIFF。</li><li>點「掃描店內 QR」。</li><li><code>liff.scanCodeV2()</code> 讀出門店 token。</li><li>後端驗證 token 是否有效、是否過期、是否屬於該門店。</li><li>成功才允許打卡。</li></ol>
+<p class="body-copy">注意：</p>
+<ul class="source-list"><li>LIFF app size 建議 Full。</li><li>LIFF 設定要啟用 Scan QR。</li><li>QR token 要定期輪換，不要永久固定。</li></ul>
+    </div>
+    <div class="pgn">55</div>
+  </section>
+<section class="page report-page" id="13-打卡安全與定位-3">
+    <div class="rh"><span>13 / 13. 打卡安全與定位</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">13</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>13. 打卡安全與定位</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>13. 打卡安全與定位 / 續讀 3</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">13.3 防止誤觸</h3>
+<ul class="source-list"><li>URI action 開啟 LIFF 後先顯示確認頁。</li><li>打卡按鈕按下後立即 disable。</li><li>成功後顯示明確結果。</li><li>後端以 DB transaction 和 unique index 兜底。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">56</div>
+  </section>
+<section class="page report-page" id="14-生產部署建議">
+    <div class="rh"><span>14 / 14. 生產部署建議</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">14</div>
+      <div>
+        
+        <h2>14. 生產部署建議</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>14. 生產部署建議</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">14.1 前端</h3>
+<p class="body-copy">適合：Vercel、Netlify、Cloudflare Pages、Firebase Hosting。</p>
+<p class="body-copy">檢查：</p>
+<ul class="source-list"><li>HTTPS。</li><li>SPA rewrite。</li><li>環境變數設定。</li><li>Endpoint URL 與實際 URL 對齊。</li><li>OGP tags：分享 LIFF URL 時顯示正確標題與縮圖。</li></ul>
+<h3 class="content-heading h3">14.2 後端</h3>
+<p class="body-copy">適合：Render、Railway、Fly.io、Cloud Run、AWS ECS、Zeabur。</p>
+<p class="body-copy">檢查：</p>
+<ul class="source-list"><li>HTTPS webhook URL。</li><li><code>/webhook</code> raw body 驗證。</li><li><code>POST /api/auth/line</code> CORS。</li><li>DB migration。</li><li>記錄。</li><li>錯誤監控。</li></ul>
+    </div>
+    <div class="pgn">57</div>
+  </section>
+<section class="page report-page" id="14-生產部署建議-2">
+    <div class="rh"><span>14 / 14. 生產部署建議</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">14</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>14. 生產部署建議</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>14. 生產部署建議 / 續讀 2</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">14.3 資料庫</h3>
+<p class="body-copy">MVP 可用：</p>
+<ul class="source-list"><li>SQLite：本地開發。</li><li>PostgreSQL：生產推薦。</li></ul>
+<p class="body-copy">生產建議：</p>
+<ul class="source-list"><li>所有時間存 UTC。</li><li>業務日期另存 <code>YYYY-MM-DD</code>。</li><li>關鍵操作寫 audit event。</li><li>每日備份。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">58</div>
+  </section>
+<section class="page report-page" id="15-測試清單">
+    <div class="rh"><span>15 / 15. 測試清單</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">15</div>
+      <div>
+        
+        <h2>15. 測試清單</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>15. 測試清單</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">15.1 LIFF 初始化測試</h3>
+<ul class="source-list"><li>[ ] 從 LINE App 點 LIFF URL。</li><li>[ ] 從外部瀏覽器點 LIFF URL。</li><li>[ ] <code>withLoginOnExternalBrowser</code> 正常。</li><li>[ ] <code>liff.getProfile()</code> 正常。</li><li>[ ] <code>liff.getIDToken()</code> 不為空。</li><li>[ ] Console 沒有 endpoint mismatch warning。</li><li>[ ] 不會在 <code>liff.init()</code> 完成前清 URL。</li></ul>
+<h3 class="content-heading h3">15.2 身份驗證測試</h3>
+<ul class="source-list"><li>[ ] 後端用 LINE Login Channel ID 驗證 ID token。</li><li>[ ] 錯誤 Channel ID 會失敗。</li><li>[ ] 過期 token 會失敗。</li><li>[ ] 前端傳假的 userId 不影響後端結果。</li></ul>
+    </div>
+    <div class="pgn">59</div>
+  </section>
+<section class="page report-page" id="15-測試清單-2">
+    <div class="rh"><span>15 / 15. 測試清單</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">15</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>15. 測試清單</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>15. 測試清單 / 續讀 2</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">15.3 打卡測試</h3>
+<ul class="source-list"><li>[ ] 未上班 → 上班成功。</li><li>[ ] 上班中 → 再點上班不會重複建立。</li><li>[ ] 上班中 → 下班成功。</li><li>[ ] 未上班 → 下班失敗並給友善提示。</li><li>[ ] 連點按鈕不會產生重複 session。</li><li>[ ] 網路重試不會重複 session。</li><li>[ ] 跨日規則符合公司政策。</li></ul>
+<h3 class="content-heading h3">15.4 Webhook 測試</h3>
+<ul class="source-list"><li>[ ] Verify webhook URL 成功。</li><li>[ ] signature 驗證使用 raw body。</li><li>[ ] 解析 JSON 發生在 signature 驗證之後。</li><li>[ ] 處理重複 webhookEventId。</li><li>[ ] 非 LINE 請求返回 401。</li></ul>
+    </div>
+    <div class="pgn">60</div>
+  </section>
+<section class="page report-page" id="15-測試清單-3">
+    <div class="rh"><span>15 / 15. 測試清單</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">15</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>15. 測試清單</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>15. 測試清單 / 續讀 3</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">15.5 Flex / Rich Menu 測試</h3>
+<ul class="source-list"><li>[ ] Flex URI action 可開啟 LIFF。</li><li>[ ] query action 正確進入確認頁。</li><li>[ ] 舊版 <code>line://app/{liffId}</code> 不使用。</li><li>[ ] Rich Menu 預設選單可顯示。</li><li>[ ] 入口路徑在 Endpoint URL 下層。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">61</div>
+  </section>
+<section class="page report-page" id="16-最常見踩雷點">
+    <div class="rh"><span>16 / 16. 最常見踩雷點</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">16</div>
+      <div>
+        
+        <h2>16. 最常見踩雷點</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>16. 最常見踩雷點</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">雷點 1：把 LIFF 加在錯誤 Channel</h3>
+<p class="body-copy">LIFF App 是加在 LINE Login Channel 或 LINE MINI App Channel 下，不是加在 Messaging API Channel 下。</p>
+<h3 class="content-heading h3">雷點 2：Provider 不同導致 userId 對不上</h3>
+<p class="body-copy">LINE 官方文件提醒，如果服務放在不同 Provider 下，使用者可能會得到不同 userId。打卡系統最怕身份對不上，所以 Messaging API Channel 和 LINE Login Channel 儘量同 Provider。</p>
+<h3 class="content-heading h3">雷點 3：Endpoint URL 與實際執行 <code>liff.init()</code> 的 URL 不匹配</h3>
+<p class="body-copy">如果 Endpoint URL 是 <code>/app/</code>，卻在 <code>/</code> 執行 <code>liff.init()</code>，就可能出問題。最穩做法是 Endpoint URL 設根路徑，或確保所有 LIFF 路由都在 Endpoint 下層。</p>
+<h3 class="content-heading h3">雷點 4：<code>liff.init()</code> 前修改 URL</h3>
+<p class="body-copy">LIFF 會在 URL 帶 <code>liff.state</code>、access token 或其他引數。不要在 <code>liff.init()</code> 解析完成前：</p>
+<ul class="source-list"><li>清 query string。</li><li><code>history.replaceState()</code>。</li><li>redirect。</li><li>把完整 URL 發給 analytics。</li></ul>
+    </div>
+    <div class="pgn">62</div>
+  </section>
+<section class="page report-page" id="16-最常見踩雷點-2">
+    <div class="rh"><span>16 / 16. 最常見踩雷點</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">16</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>16. 最常見踩雷點</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>16. 最常見踩雷點 / 續讀 2</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">雷點 5：Webhook signature 驗證前就 JSON parse</h3>
+<p class="body-copy">signature 必須用原始 request body 字串/Buffer 計算。任何格式化、轉義、emoji 處理、換行轉換，都可能導致驗證失敗。</p>
+<h3 class="content-heading h3">雷點 6：用錯 Channel Secret</h3>
+<p class="body-copy">Webhook signature 使用的是 Messaging API Channel secret，不是 LINE Login Channel secret。</p>
+<h3 class="content-heading h3">雷點 7：把 access token 或 channel secret 放前端</h3>
+<p class="body-copy">前端只能有 LIFF ID 和 API base URL。任何 secret 都必須在後端。</p>
+<h3 class="content-heading h3">雷點 8：以為 Flex Message 會自動更新</h3>
+<p class="body-copy">Flex 是一張訊息卡片，不會隨著資料庫狀態自動變化。狀態即時顯示要靠 LIFF 頁面或重新發送新 Flex。</p>
+<h3 class="content-heading h3">雷點 9：沒有處理重複 webhook 和重複打卡</h3>
+<p class="body-copy">網路重試、使用者連點、LINE webhook redelivery 都很常見。必須有冪等鍵、unique index、event 去重。</p>
+    </div>
+    <div class="pgn">63</div>
+  </section>
+<section class="page report-page" id="16-最常見踩雷點-3">
+    <div class="rh"><span>16 / 16. 最常見踩雷點</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">16</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>16. 最常見踩雷點</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>16. 最常見踩雷點 / 續讀 3</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">雷點 10：忘記時區</h3>
+<p class="body-copy">資料庫存 UTC，業務日期用 <code>Asia/Taipei</code> 算，前端顯示也用 <code>Asia/Taipei</code>。不要只用伺服器本地時間。</p>
+<h3 class="content-heading h3">雷點 11：<code>requestFriendship()</code> 不是所有場景都能用</h3>
+<p class="body-copy"><code>liff.requestFriendship()</code> 需要 Linked OA，且只能在 Full size LIFF browser 使用。若你只是想檢查好友狀態，<code>getFriendship()</code> 需要 <code>profile</code> scope 且 OA 已正確 linked。</p>
+<h3 class="content-heading h3">雷點 12：舊 LIFF URL 格式</h3>
+<p class="body-copy">不要用舊格式：</p>
+<figure class="code-card">
+      <figcaption><span>text</span><span>2 lines</span></figcaption>
+      <pre><code>line://app/{liffId}
+https://line.me/R/app/{liffId}</code></pre>
+    </figure>
+<p class="body-copy">使用：</p>
+<figure class="code-card">
+      <figcaption><span>text</span><span>1 lines</span></figcaption>
+      <pre><code>https://liff.line.me/{liffId}</code></pre>
+    </figure>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">64</div>
+  </section>
+<section class="page report-page" id="17-建議課程安排">
+    <div class="rh"><span>17 / 17. 建議課程安排</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">17</div>
+      <div>
+        
+        <h2>17. 建議課程安排</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>QA</span><span>17. 建議課程安排</span></div>
+    <div class="visual-title">測試要覆蓋重送與重複操作</div>
+    <p>Webhook 重送、連點、網路重試、跨日與時區都是打卡系統核心風險。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">重送</span><span style="--i:2">連點</span><span style="--i:3">時區</span><span style="--i:4">權限</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">Lesson 1：LINE 平台總覽</h3>
+<p class="body-copy">目標：分清 Messaging API、LINE Login、LIFF、Flex Message、Rich Menu。</p>
+<p class="body-copy">練習：畫出你自己的系統流程圖。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">Lesson 2：建立 Channel 與 LIFF App</h3>
+<p class="body-copy">目標：建立 LINE Login Channel、LIFF App、設定 Endpoint URL、Scopes、Linked OA。</p>
+<p class="body-copy">練習：開啟官方 LIFF starter 或自己的 health check 頁面。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">Lesson 3：LIFF SDK 初始化</h3>
+<p class="body-copy">目標：理解 <code>liff.init()</code>、<code>isLoggedIn()</code>、<code>login()</code>、<code>getProfile()</code>、<code>getIDToken()</code>。</p>
+<p class="body-copy">練習：做出 Health Check 頁面。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">Lesson 4：後端驗證 LINE 身份</h3>
+<p class="body-copy">目標：前端送 ID token，後端 verify，建立 employee。</p>
+<p class="body-copy">練習：<code>POST /api/auth/line</code>。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">65</div>
+  </section>
+<section class="page report-page" id="17-建議課程安排-2">
+    <div class="rh"><span>17 / 17. 建議課程安排</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">17</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>17. 建議課程安排</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>17. 建議課程安排 / 續讀 2</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">Lesson 5：個人狀態頁</h3>
+<p class="body-copy">目標：顯示目前狀態、今日工作時長、最近記錄。</p>
+<p class="body-copy">練習：<code>GET /api/me/status</code>。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">Lesson 6：上班/下班打卡</h3>
+<p class="body-copy">目標：實現 state machine、冪等、transaction、audit event。</p>
+<p class="body-copy">練習：<code>POST /clock-in</code>、<code>POST /clock-out</code>。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">Lesson 7：Flex Message 作為入口</h3>
+<p class="body-copy">目標：把現有 Flex 按鈕改成 URI action，開啟 LIFF。</p>
+<p class="body-copy">練習：Flex 開啟 <code>/attendance?action=clock_in</code>。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">Lesson 8：今日 Sections</h3>
+<p class="body-copy">目標：顯示今日任務完成進度。</p>
+<p class="body-copy">練習：<code>GET /sections</code>、<code>POST /sections/{id}/complete</code>。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">66</div>
+  </section>
+<section class="page report-page" id="17-建議課程安排-3">
+    <div class="rh"><span>17 / 17. 建議課程安排</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">17</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>17. 建議課程安排</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>17. 建議課程安排 / 續讀 3</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">Lesson 9：Webhook 與 Rich Menu</h3>
+<p class="body-copy">目標：收 webhook、驗證 signature、處理 postback、建立 Rich Menu 入口。</p>
+<p class="body-copy">練習：Webhook verify 成功，並能傳送一張狀態 Flex。</p>
+<hr class="soft-rule">
+<h3 class="content-heading h3">Lesson 10：生產化</h3>
+<p class="body-copy">目標：部署、監控、隱私、補卡、異常處理。</p>
+<p class="body-copy">練習：做一份上線檢查清單。</p>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">67</div>
+  </section>
+<section class="page report-page" id="18-建議專案目錄">
+    <div class="rh"><span>18 / 18. 建議專案目錄</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">18</div>
+      <div>
+        
+        <h2>18. 建議專案目錄</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>ARCH</span><span>18. 建議專案目錄</span></div>
+    <div class="visual-title">三層責任分工</div>
+    <p>Flex / LIFF / API 分開看，入口、互動與資料真相各自清楚。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Flex 入口</span><span style="--i:2">LIFF 介面</span><span style="--i:3">API + DB</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <figure class="code-card">
+      <figcaption><span>text</span><span>21 lines</span></figcaption>
+      <pre><code>line-attendance/
+  apps/
+    liff-web/
+      src/
+        lib/liffClient.ts
+        pages/AttendancePage.tsx
+        pages/TodayPage.tsx
+        api/client.ts
+      .env.local
+    api/
+      src/
+        server.ts
+        verifyLineIdToken.ts
+        attendanceService.ts
+        webhook.ts
+        flexMessages.ts
+      prisma/
+        schema.prisma
+      .env
+  docs/
+    line-liff-attendance-playbook.md</code></pre>
+    </figure>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">68</div>
+  </section>
+<section class="page report-page" id="19-第一週執行計畫">
+    <div class="rh"><span>19 / 19. 第一週執行計畫</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">19</div>
+      <div>
+        
+        <h2>19. 第一週執行計畫</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>MVP</span><span>19. 第一週執行計畫</span></div>
+    <div class="visual-title">從可開啟到可營運</div>
+    <p>先驗證 LIFF 身份，再做狀態、打卡、進度、後台與正式化。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">健康檢查</span><span style="--i:2">狀態頁</span><span style="--i:3">打卡</span><span style="--i:4">Sections</span><span style="--i:5">生產化</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">Day 1：後台準備</h3>
+<ul class="source-list"><li>建立或確認 LINE Official Account。</li><li>啟用 Messaging API。</li><li>建 LINE Login Channel。</li><li>新增 LIFF App。</li><li>設定 Endpoint URL 為臨時部署地址。</li></ul>
+<h3 class="content-heading h3">Day 2：LIFF Health Check</h3>
+<ul class="source-list"><li>建 React/Vite 專案。</li><li>安裝 <code>@line/liff</code>。</li><li>完成 <code>liff.init()</code>。</li><li>顯示 profile 和 idToken 是否存在。</li></ul>
+<h3 class="content-heading h3">Day 3：後端驗證身份</h3>
+<ul class="source-list"><li>建 Express API。</li><li>實作 <code>/api/auth/line</code>。</li><li>後端 verify ID token。</li><li>前端呼叫 auth API。</li></ul>
+    </div>
+    <div class="pgn">69</div>
+  </section>
+<section class="page report-page" id="19-第一週執行計畫-2">
+    <div class="rh"><span>19 / 19. 第一週執行計畫</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">19</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>19. 第一週執行計畫</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>19. 第一週執行計畫 / 續讀 2</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">Day 4：個人狀態頁</h3>
+<ul class="source-list"><li>建 employee 和 attendance session mock。</li><li>實作 <code>/api/me/status</code>。</li><li>前端顯示狀態。</li></ul>
+<h3 class="content-heading h3">Day 5：打卡操作</h3>
+<ul class="source-list"><li>實作 <code>/clock-in</code>、<code>/clock-out</code>。</li><li>加 transaction。</li><li>加冪等鍵。</li><li>前端按鈕串接。</li></ul>
+<h3 class="content-heading h3">Day 6：Flex Message 整合</h3>
+<ul class="source-list"><li>把 Flex 按鈕 URI 指到 LIFF。</li><li>根據 <code>action</code> query 顯示確認頁。</li><li>測試手機 LINE 內流程。</li></ul>
+    </div>
+    <div class="pgn">70</div>
+  </section>
+<section class="page report-page" id="19-第一週執行計畫-3">
+    <div class="rh"><span>19 / 19. 第一週執行計畫</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">19</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>19. 第一週執行計畫</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>19. 第一週執行計畫 / 續讀 3</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <h3 class="content-heading h3">Day 7：覆盤與補強</h3>
+<ul class="source-list"><li>整理踩雷清單。</li><li>加錯誤提示。</li><li>加記錄。</li><li>寫上線 checklist。</li></ul>
+<hr class="soft-rule">
+    </div>
+    <div class="pgn">71</div>
+  </section>
+<section class="page report-page" id="20-官方與參考資料">
+    <div class="rh"><span>20 / 20. 官方與參考資料</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">20</div>
+      <div>
+        
+        <h2>20. 官方與參考資料</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>AUTH</span><span>20. 官方與參考資料</span></div>
+    <div class="visual-title">後端驗證是信任邊界</div>
+    <p>前端取得 ID token，後端驗證後才決定使用者與資料權限。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">ID token</span><span style="--i:2">Verify</span><span style="--i:3">Session</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <p class="body-copy">官方文件：</p>
+    </div>
+    <div class="pgn">72</div>
+  </section>
+<section class="page report-page" id="20-官方與參考資料-2">
+    <div class="rh"><span>20 / 20. 官方與參考資料</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">20</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>20. 官方與參考資料</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>DATA</span><span>20. 官方與參考資料 / 續讀 2</span></div>
+    <div class="visual-title">資料模型服務狀態機</div>
+    <p>Employee、Attendance Session、Audit Event 共同支撐爭議排查。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">Employee</span><span style="--i:2">Session</span><span style="--i:3">Section</span><span style="--i:4">Audit</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <ul class="source-list"><li>LIFF Overview: <a href="https://developers.line.biz/en/docs/liff/overview/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/overview/</a></li><li>Create a channel for LIFF: <a href="https://developers.line.biz/en/docs/liff/getting-started/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/getting-started/</a></li><li>Adding a LIFF app: <a href="https://developers.line.biz/en/docs/liff/registering-liff-apps/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/registering-liff-apps/</a></li><li>Developing a LIFF app: <a href="https://developers.line.biz/en/docs/liff/developing-liff-apps/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/developing-liff-apps/</a></li><li>Opening a LIFF app: <a href="https://developers.line.biz/en/docs/liff/opening-liff-app/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/opening-liff-app/</a></li><li>LIFF API Reference: <a href="https://developers.line.biz/en/reference/liff/" target="_blank" rel="noreferrer">https://developers.line.biz/en/reference/liff/</a></li><li>Using user data in LIFF apps and servers: <a href="https://developers.line.biz/en/docs/liff/using-user-profile/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/using-user-profile/</a></li><li>Create LIFF App: <a href="https://developers.line.biz/en/docs/liff/cli-tool-create-liff-app/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/cli-tool-create-liff-app/</a></li><li>LIFF starter app: <a href="https://developers.line.biz/en/docs/liff/trying-liff-app/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/liff/trying-liff-app/</a></li><li>Messaging API Overview: <a href="https://developers.line.biz/en/docs/messaging-api/overview/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/messaging-api/overview/</a></li><li>Messaging API Getting Started: <a href="https://developers.line.biz/en/docs/messaging-api/getting-started/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/messaging-api/getting-started/</a></li><li>Receive messages webhook: <a href="https://developers.line.biz/en/docs/messaging-api/receiving-messages/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/messaging-api/receiving-messages/</a></li><li>Verify webhook signature: <a href="https://developers.line.biz/en/docs/messaging-api/verify-webhook-signature/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/messaging-api/verify-webhook-signature/</a></li><li>Flex Messages: <a href="https://developers.line.biz/en/docs/messaging-api/using-flex-messages/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/messaging-api/using-flex-messages/</a></li><li>Messaging API Actions: <a href="https://developers.line.biz/en/docs/messaging-api/actions/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/messaging-api/actions/</a></li><li>Rich Menus: <a href="https://developers.line.biz/en/docs/messaging-api/using-rich-menus/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/messaging-api/using-rich-menus/</a></li><li>Add friend option / Linked OA: <a href="https://developers.line.biz/en/docs/line-login/link-a-bot/" target="_blank" rel="noreferrer">https://developers.line.biz/en/docs/line-login/link-a-bot/</a></li><li>requestFriendship tip: <a href="https://developers.line.biz/en/tips/2026/05/21/line-request-friendship/" target="_blank" rel="noreferrer">https://developers.line.biz/en/tips/2026/05/21/line-request-friendship/</a></li></ul>
+    </div>
+    <div class="pgn">73</div>
+  </section>
+<section class="page report-page" id="20-官方與參考資料-3">
+    <div class="rh"><span>20 / 20. 官方與參考資料</span><span>LINE LIFF Attendance</span></div>
+    <div class="section-shell">
+      <div class="sec-num">20</div>
+      <div>
+        <span class="continuation">continued</span>
+        <h2>20. 官方與參考資料</h2>
+      </div>
+    </div>
+    <aside class="visual-card">
+    <div class="visual-meta"><span>FLOW</span><span>20. 官方與參考資料 / 續讀 3</span></div>
+    <div class="visual-title">所有入口都進確認頁</div>
+    <p>Flex / Rich Menu 可以帶 action，但不能打開即自動打卡。</p>
+    <div class="visual-lanes">
+      <span style="--i:1">URI</span><span style="--i:2">LIFF</span><span style="--i:3">確認</span><span style="--i:4">寫入</span>
+    </div>
+  </aside>
+    <div class="content-flow">
+      <p class="body-copy">社群與實踐參考：</p>
+<ul class="source-list"><li>快速建置 Line LIFF App: <a href="https://rian.cc/blog/quickly-build-your-line-liff-app" target="_blank" rel="noreferrer">https://rian.cc/blog/quickly-build-your-line-liff-app</a></li><li>LIFF v2 replace 模式與 URL 雷點: <a href="https://taichunmin.idv.tw/blog/2021-01-19-line-liff-v2-replace-deprecated.html" target="_blank" rel="noreferrer">https://taichunmin.idv.tw/blog/2021-01-19-line-liff-v2-replace-deprecated.html</a></li><li>在 LIFF 中確保使用者加官方帳號好友: <a href="https://taichunmin.idv.tw/blog/2020-09-06-line-liff-add-friend.html" target="_blank" rel="noreferrer">https://taichunmin.idv.tw/blog/2020-09-06-line-liff-add-friend.html</a></li><li>LINE Engineering：Rich Menu Switch Action: <a href="https://engineering.linecorp.com/zh-hant/blog/rich-menu-alias-switch-action/" target="_blank" rel="noreferrer">https://engineering.linecorp.com/zh-hant/blog/rich-menu-alias-switch-action/</a></li><li>LINE Bot 開發者指南：傳送 API 請求注意事項: <a href="https://engineering.linecorp.com/zh-hant/blog/line-bot-guideline-3/" target="_blank" rel="noreferrer">https://engineering.linecorp.com/zh-hant/blog/line-bot-guideline-3/</a></li><li>LINE Developers 串接教學：Channel、Webhook、LIFF: <a href="https://jetalk.com/jegrow-line-developers/" target="_blank" rel="noreferrer">https://jetalk.com/jegrow-line-developers/</a></li><li>GitHub issue：Webhook signature 與 emoji/escaping 相關踩雷: <a href="https://github.com/line/line-bot-sdk-nodejs/issues/922" target="_blank" rel="noreferrer">https://github.com/line/line-bot-sdk-nodejs/issues/922</a></li></ul>
+    </div>
+    <div class="pgn">74</div>
+  </section>
+  <script src="../assets/report-reader.js" defer></script>
+  <script src="../assets/report-actions.js" defer></script>
+</body>
+</html>
+<!-- Generated from /Users/linshangche/Desktop/line_liff_attendance_playbook.md with 1514 source lines into 74 A4 report pages. -->

@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-30T10:04:45.351Z",
-  "reportCount": 10,
+  "generatedAt": "2026-05-30T12:35:38.260Z",
+  "reportCount": 11,
   "clientGroups": {
     "政府與公共部門": 1,
-    "企業與研究機構": 1,
+    "企業與研究機構": 2,
     "AI 教育與內容製作": 1,
     "媒體、科技論壇與職場學習": 1,
     "設計商品、跨境電商與品牌零售": 2,
@@ -13,12 +13,15 @@
   },
   "visibility": {
     "public": 4,
-    "private": 6
+    "private": 6,
+    "internal": 1
   },
   "tags": [
     "一人公司",
     "工作流拆解",
+    "工程手冊",
     "方案比較",
+    "打卡系統",
     "生成式 AI",
     "自動化",
     "社群素材",
@@ -56,18 +59,23 @@
     "Caddy",
     "ChatGPT",
     "Docker",
+    "Flex Message",
     "Google Flow",
     "Higgsfield",
+    "LINE LIFF",
+    "Messaging API",
     "n8n",
     "nuvaClub",
     "PaaS",
     "PM 內訓",
     "PostgreSQL",
+    "Rich Menu",
     "Runbook",
     "Seedance 2.0",
     "Suno",
     "v1",
-    "v2"
+    "v2",
+    "Webhook"
   ],
   "pdfReadyCount": 0,
   "thumbnailReadyCount": 0

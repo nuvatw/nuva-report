@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node scripts/build-report-index.mjs",
     "audit:maintenance": "node scripts/audit-maintenance.mjs",
+    "build:line-liff-attendance": "node scripts/build-line-liff-attendance-report.mjs",
     "check:links": "node scripts/check-links.mjs",
     "check:reader": "node scripts/check-report-reader-layout.mjs",
     "check:visual": "node scripts/mobile-visual-check.mjs",
@@ -35,5 +36,8 @@
     "verify:week18": "node scripts/verify-week-eighteen.mjs",
     "verify:week19": "node scripts/verify-week-nineteen.mjs",
     "verify:week20": "node scripts/verify-week-twenty.mjs"
+  },
+  "devDependencies": {
+    "opencc-js": "^1.3.1"
   }
 }
