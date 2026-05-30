@@ -130,12 +130,12 @@
     const reportId = reportIdFromLocation();
     const overrides = readVisibilityOverrides();
     const visibility = overrides[reportId] || meta.visibility || 'public';
+    const metadataPin = normalizePin(meta.guestPin || meta.guestPassword || '');
     const pinOverrides = readGuestPins();
-    const guestPin = normalizePin(
-      Object.prototype.hasOwnProperty.call(pinOverrides, reportId)
-        ? pinOverrides[reportId]
-        : meta.guestPin || meta.guestPassword || ''
-    );
+    const overridePin = Object.prototype.hasOwnProperty.call(pinOverrides, reportId)
+      ? normalizePin(pinOverrides[reportId])
+      : '';
+    const guestPin = metadataPin.length === 4 ? metadataPin : overridePin;
     const isAdmin = readSessionValue(adminStorageKey) === 'true';
     const unlocked = Boolean(readGuestUnlocks()[reportId]);
 
